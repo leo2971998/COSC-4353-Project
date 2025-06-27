@@ -7,7 +7,16 @@ const corsOptions = {
   origin: ["http://localhost:5173/"],
 };
 
+// Allows us to parse JSON data in the request body.
+app.use(express.json());
+
+// Allows us to parse URL-encoded data (from HTML forms or URL-style strings). extended allows us to parse nested objects
+app.use(express.urlencoded({ extended: true }));
+
+// Use the CORS middleware with the specific options we defined.
 app.use(cors(corsOptions));
+
+// Starts the server on port 3000
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });
