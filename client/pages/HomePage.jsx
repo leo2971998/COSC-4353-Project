@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import About from "../components/About";
 import Footer from "../components/Footer";
+import Layout from "../components/Layout";
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,11 +17,11 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <Layout>
       <Navbar scrollToSection={scrollToSection} />
       <Hero scrollToSection={scrollToSection} />
       <About />
       <Footer />
-    </div>
+    </Layout>
   );
 }
