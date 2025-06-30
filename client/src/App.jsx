@@ -13,7 +13,7 @@ function App() {
     <Router>
       <Routes>
         {/* Place Public Routes Here */}
-        {/* <Route path="/" element={<HomePage />} /> */}
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>
   );
