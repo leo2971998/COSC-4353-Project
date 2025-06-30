@@ -5,13 +5,16 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import HomePage from "../pages/HomePage.jsx";
 import "./index.css";
 
 function App() {
   return (
     <Router>
-      {/* Place Public Routes Here */}
-      {/* <Route path="/" element={<HomePage />} /> */}
+      <Routes>
+        {/* Place Public Routes Here */}
+        {/* <Route path="/" element={<HomePage />} /> */}
+      </Routes>
     </Router>
   );
 }
