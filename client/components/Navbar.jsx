@@ -1,6 +1,3 @@
-// src/components/Navbar.jsx
-"use client";
-
 import { useState } from "react";
 import { Menu, X, Users } from "lucide-react";
 import { Button } from "../components/ui/Button";
