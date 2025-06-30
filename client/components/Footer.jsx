@@ -13,7 +13,7 @@ export default function Footer() {
             </span>
           </div>
           <p className="text-gray-400 text-center md:text-right">
-            © 2025 VolunteerHub. Connecting hearts, changing communities.
+            © 2025 VolunteerHub
           </p>
         </div>
       </div>

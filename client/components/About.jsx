@@ -67,13 +67,6 @@ export default function About() {
               >
                 Get Started Today
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 border-gray-500 text-gray-300 hover:border-blue-500 hover:text-blue-400 px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 bg-transparent hover:bg-gray-800/50"
-              >
-                Learn More
-              </Button>
             </div>
           </div>
         </div>
