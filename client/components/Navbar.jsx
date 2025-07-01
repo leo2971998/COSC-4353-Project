@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Menu, X, Users } from "lucide-react";
 import { Button } from "./ui/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const devMode = {
   isLoggedIn: true,
-  isProfileComplete: true,
-  currentRoute: "/", // simulate route for scroll behavior
+  isProfileComplete: false,
 };
 
 export default function Navbar({ scrollToSection }) {
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleScroll = (section) => {
@@ -33,7 +33,7 @@ export default function Navbar({ scrollToSection }) {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {!devMode.isLoggedIn && devMode.currentRoute === "/" && (
+            {!devMode.isLoggedIn && location.pathname === "/" && (
               <>
                 <button
                   onClick={() => handleScroll("hero")}
@@ -59,10 +59,17 @@ export default function Navbar({ scrollToSection }) {
               <>
                 <Link
                   to="/"
+                  onClick={(e) => {
+                    if (location.pathname === "/") {
+                      e.preventDefault();
+                      handleScroll("hero");
+                    }
+                  }}
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
                 >
                   Home
                 </Link>
+
                 <Link
                   to="/complete-profile"
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
@@ -79,10 +86,17 @@ export default function Navbar({ scrollToSection }) {
               <>
                 <Link
                   to="/"
+                  onClick={(e) => {
+                    if (location.pathname === "/") {
+                      e.preventDefault();
+                      handleScroll("hero");
+                    }
+                  }}
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
                 >
                   Home
                 </Link>
+
                 <Link
                   to="/dashboard"
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
@@ -121,7 +135,7 @@ export default function Navbar({ scrollToSection }) {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-800 bg-gray-900">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {!devMode.isLoggedIn && devMode.currentRoute === "/" && (
+              {!devMode.isLoggedIn && location.pathname === "/" && (
                 <>
                   <button
                     onClick={() => handleScroll("hero")}
@@ -145,41 +159,80 @@ export default function Navbar({ scrollToSection }) {
 
               {devMode.isLoggedIn && !devMode.isProfileComplete && (
                 <>
-                  <Link
-                    to="/"
-                    className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/complete-profile"
-                    className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
-                  >
-                    <Button className="w-full">Complete Profile</Button>
-                  </Link>
-                  <Button className="w-full text-gray-300 hover:text-blue-400 hover:bg-gray-800 transition">
-                    Logout
-                  </Button>
+                  <div className="space-y-2">
+                    {/* Left-aligned items */}
+                    <div className="flex flex-col">
+                      <Link
+                        to="/"
+                        onClick={(e) => {
+                          if (location.pathname === "/") {
+                            e.preventDefault();
+                            handleScroll("hero");
+                          }
+                        }}
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        Home
+                      </Link>
+
+                      <Link
+                        to="/complete-profile"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        Complete Profile
+                      </Link>
+                    </div>
+
+                    {/* Centered logout */}
+                    <div className="text-center">
+                      <button className="text-red-400 hover:text-red-400 hover:bg-gray-800 px-3 py-2 rounded-md">
+                        Logout
+                      </button>
+                    </div>
+                  </div>
                 </>
               )}
 
               {devMode.isLoggedIn && devMode.isProfileComplete && (
                 <>
-                  <Link
-                    to="/dashboard"
-                    className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    to="/history"
-                    className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
-                  >
-                    <Button className="w-full">History</Button>
-                  </Link>
-                  <Button className="w-full text-gray-300 hover:text-blue-400 hover:bg-gray-800 transition">
-                    Logout
-                  </Button>
+                  <div className="space-y-2">
+                    {/* Left-aligned items */}
+                    <div className="flex flex-col">
+                      <Link
+                        to="/"
+                        onClick={(e) => {
+                          if (location.pathname === "/") {
+                            e.preventDefault();
+                            handleScroll("hero");
+                          }
+                        }}
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        Home
+                      </Link>
+
+                      <Link
+                        to="/dashboard"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        Dashboard
+                      </Link>
+
+                      <Link
+                        to="/history"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        History
+                      </Link>
+                    </div>
+
+                    {/* Centered logout */}
+                    <div className="text-center">
+                      <button className="text-red-400 hover:text-red-400 hover:bg-gray-800 px-3 py-2 rounded-md">
+                        Logout
+                      </button>
+                    </div>
+                  </div>
                 </>
               )}
             </div>
