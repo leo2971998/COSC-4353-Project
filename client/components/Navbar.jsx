@@ -76,7 +76,7 @@ export default function Navbar({ scrollToSection }) {
                 >
                   <Button>Complete Profile</Button>
                 </Link>
-                <Button className="text-gray-300 hover:text-blue-400 transition">
+                <Button className="text-gray-300 hover:text-red-400 transition">
                   Logout
                 </Button>
               </>
