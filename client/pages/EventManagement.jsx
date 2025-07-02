@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "../components/CompleteProfile/Header";
 import Navbar from "../components/Navbar";
-import EventName from "../components/EventName";
+import EventInfo from "../components/EventManagement/EventInfo";
 
 // Test to see if I can see changes in console:
 console.log("Hello")
@@ -143,7 +143,17 @@ export default function EventManagement(){
                 <Header />
 
                 {/* Form Container */}
-                
+                <EventInfo
+                  eventName={manageData.eventName}
+                  error={errors.eventName}
+                  onChange={(value) => handleInputChange("eventName", value)}
+                />
+
+                <Description
+                  eventDescription={manageData.eventDescription}
+                  error={errors.eventDescription}
+                  onChange={(value) => handleInputChange("description", value)}
+                />
             </div>
         </>
     );
