@@ -15,8 +15,9 @@ export default function HomePage() {
     }
     setIsMenuOpen(false);
   };
-
+//test Notification Center
   return (
+    //<Layout notifications={["✅ Event Assigned", "📢 Profile updated"]}>
     <Layout>
       <Navbar scrollToSection={scrollToSection} />
       <Hero scrollToSection={scrollToSection} />
