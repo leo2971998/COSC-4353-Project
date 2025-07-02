@@ -6,6 +6,7 @@ import EventInfo from "../components/EventManagement/EventInfo";
 import Location from "../components/EventManagement/Location";
 import RequiredSkills from "../components/EventManagement/RequiredSkills";
 import Urgency from "../components/EventManagement/Urgency";
+import EventDate from "../components/EventManagement/EventDate"
 import Availability from "../components/CompleteProfile/Availability";
 import { STATES } from "../components/CompleteProfile/STATES";
 import { Button } from "../components/ui/Button";
@@ -214,20 +215,20 @@ export default function EventManagement(){
                   urgencyOptions={urgencyOptions}
                 />
 
-                {/* <Availability
+                <EventDate
                   eventDate={manageData.eventDate}
                   selectedDate={selectedDate}
                   onDateChange={setSelectedDate}
                   onAddDate={handleDateAdd}
                   onRemoveDate={handleDateRemove}
                   error={errors.eventDate}
-                /> */}
+                />
                 <div className="pt-6">
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                   >
-                    Complete Profile
+                    Create Event
                   </Button>
                 </div>
               </form>
