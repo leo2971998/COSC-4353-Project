@@ -4,8 +4,8 @@ import { Button } from "./ui/Button";
 import { Link, useLocation } from "react-router-dom";
 
 const devMode = {
-  isLoggedIn: false,
-  isProfileComplete: false,
+  isLoggedIn: true,
+  isProfileComplete: true,
 };
 
 export default function Navbar({ scrollToSection }) {
@@ -122,7 +122,7 @@ export default function Navbar({ scrollToSection }) {
                   Dashboard
                 </Link>
                 <Link
-                  to="/history"
+                  to="/volunteer-history"
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
                 >
                   History
@@ -243,7 +243,7 @@ export default function Navbar({ scrollToSection }) {
                       </Link>
 
                       <Link
-                        to="/history"
+                        to="/volunteer-history"
                         className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
                       >
                         History
