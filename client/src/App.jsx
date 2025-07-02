@@ -12,10 +12,12 @@ import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
+import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Place Public Routes Here */}
         <Route path="/" element={<HomePage />} />
