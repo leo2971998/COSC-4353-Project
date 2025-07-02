@@ -2,6 +2,8 @@ import { useState } from "react";
 import Header from "../components/CompleteProfile/Header";
 import Navbar from "../components/Navbar";
 import EventInfo from "../components/EventManagement/EventInfo";
+import Address from "../components/CompleteProfile/Address";
+import SkillsSection from "../components/CompleteProfile/Skills";
 
 // Test to see if I can see changes in console:
 console.log("Hello")
@@ -11,24 +13,24 @@ export default function EventManagement(){
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [manageData, setManageData] = useState({
-      // Event Features:
-      eventName: "",
-      eventDescription: "",
-      location: "",
-      requiredSkills: [],
-      urgency: "",
-      eventDate: [],
+    // Event Features:
+    eventName: "",
+    eventDescription: "",
+    location: "",
+    requiredSkills: [],
+    urgency: "",
+    eventDate: [],
   });
 
   useEffect(() => {
     // Verifies that all event features are filled out:
     const changed =
-        manageData.eventName ||
-        manageData.eventDescription ||
-        manageData.location ||
-        manageData.requiredSkills.length > 0 ||
-        manageData.urgency ||
-        manageData.eventDate.length > 0;
+      manageData.eventName ||
+      manageData.eventDescription ||
+      manageData.location ||
+      manageData.requiredSkills.length > 0 ||
+      manageData.urgency ||
+      manageData.eventDate.length > 0;
     setHasUnsavedChanges(changed);
   }, [manageData]);
 
@@ -137,11 +139,13 @@ export default function EventManagement(){
     };
 
     return (
-        <>
-            <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
-                <Navbar />
-                <Header />
-
+      <>
+        <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+          <Navbar />
+          <Header />
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-gray-900 rounded-3xl shadow-2xl border border-gray-700 p-8 sm:p-10">
+              <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Form Container */}
                 <EventInfo
                   eventName={manageData.eventName}
@@ -154,7 +158,51 @@ export default function EventManagement(){
                   error={errors.eventDescription}
                   onChange={(value) => handleInputChange("description", value)}
                 />
+
+                <Address
+                  manageData={manageData}
+                  errors={errors}
+                  onChange={handleInputChange}
+                  states={STATES}
+                />
+
+                <SkillsSection
+                  skills={manageData.requiredSkills}
+                  error={errors.skills}
+                  onToggle={handleSkillToggle}
+                  isOpen={isSkillsOpen}
+                  setIsOpen={setIsSkillsOpen}
+                  skillOptions={skillOptions}
+                />
+
+                <Urgency
+                  manageData={manageData}
+                  error={errors.skills}
+                  onToggle={handleUrgencyToggle}
+                  isOpen={setIsUrgencyOpen}
+                  urgencyOptions={urgencyOptions}
+                />
+
+                <Availability
+                  eventDate={manageData.eventDate}
+                  selectedDate={selectedDate}
+                  onDateChange={setSelectedDate}
+                  onAddDate={handleDateAdd}
+                  onRemoveDate={handleDateRemove}
+                  error={errors.eventDate}
+                />
+                <div className="pt-6">
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                  >
+                    Complete Profile
+                  </Button>
+                </div>
+              </form>
             </div>
-        </>
+          </div>
+        </div>
+      </>
     );
 }
