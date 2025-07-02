@@ -10,6 +10,7 @@ import CompleteProfile from "../pages/CompleteProfile.jsx";
 // Leo Nguyen - import login and register pages
 import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
+import EventManagement from "../pages/EventManagement.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
@@ -28,6 +29,7 @@ function App() {
 
         <Route path="/complete-profile" element={<CompleteProfile />} />
         <Route path="/volunteer-history" element={<VolunteerHistoryPage />} />
+        <Route path="/event-management" element={<EventManagement />} />
       </Routes>
     </Router>
   );

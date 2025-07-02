@@ -94,6 +94,12 @@ export default function Navbar({ scrollToSection }) {
                 >
                   <Button>Complete Profile</Button>
                 </Link>
+                <Link
+                  to="/event-management"
+                  className="text-gray-300 hover:text-blue-400 font-medium transition"
+                >
+                  <Button>Event Management</Button>
+                </Link>
                 <Button className="text-gray-300 hover:text-red-400 transition">
                   Logout
                 </Button>
@@ -204,6 +210,12 @@ export default function Navbar({ scrollToSection }) {
                         className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
                       >
                         Complete Profile
+                      </Link>
+                      <Link
+                        to="/event-management"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        Event Management Form
                       </Link>
                     </div>
 
