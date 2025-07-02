@@ -3,8 +3,8 @@ import Header from "../components/CompleteProfile/Header";
 import Navbar from "../components/Navbar";
 import Description from "../components/EventManagement/Description";
 import EventInfo from "../components/EventManagement/EventInfo";
-import Address from "../components/CompleteProfile/Address";
-import SkillsSection from "../components/CompleteProfile/Skills";
+import Location from "../components/EventManagement/Location";
+import RequiredSkills from "../components/EventManagement/RequiredSkills";
 import Urgency from "../components/EventManagement/Urgency";
 import Availability from "../components/CompleteProfile/Availability";
 import { STATES } from "../components/CompleteProfile/STATES";
@@ -186,19 +186,18 @@ export default function EventManagement(){
                 />
 
                 <Description
-                  eventDescription={manageData.eventDescription}
-                  error={errors.eventDescription}
+                  manageData={manageData}
                   onChange={(value) => handleInputChange("description", value)}
                 />
 
-                <Address
+                <Location
                   manageData={manageData}
                   errors={errors}
                   onChange={handleInputChange}
                   states={STATES}
                 />
 
-                {/* <SkillsSection
+                <RequiredSkills
                   skills={manageData.requiredSkills}
                   error={errors.requiredSkills}
                   onToggle={handleSkillToggle}
@@ -215,7 +214,7 @@ export default function EventManagement(){
                   urgencyOptions={urgencyOptions}
                 />
 
-                <Availability
+                {/* <Availability
                   eventDate={manageData.eventDate}
                   selectedDate={selectedDate}
                   onDateChange={setSelectedDate}
