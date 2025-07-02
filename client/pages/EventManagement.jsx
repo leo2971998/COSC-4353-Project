@@ -86,7 +86,7 @@ export default function EventManagement(){
 
     const handleInputChange = (field, value) => {
       const normalizedValue = field === "state" ? value.toUpperCase() : value;
-      setFormData((prev) => ({
+      setManageData((prev) => ({
         ...prev,
         [field]: normalizedValue,
       }));
@@ -115,7 +115,7 @@ export default function EventManagement(){
         e.preventDefault();
         if (validateForm()) {
         // Make a POST request to the backend storing this info in the database.
-        console.log("Form submitted: ", formData);
+        console.log("Form submitted: ", manageData);
         }
     };
 
@@ -198,7 +198,7 @@ export default function EventManagement(){
                   states={STATES}
                 />
 
-                <SkillsSection
+                {/* <SkillsSection
                   skills={manageData.requiredSkills}
                   error={errors.requiredSkills}
                   onToggle={handleSkillToggle}
@@ -222,7 +222,7 @@ export default function EventManagement(){
                   onAddDate={handleDateAdd}
                   onRemoveDate={handleDateRemove}
                   error={errors.eventDate}
-                />
+                /> */}
                 <div className="pt-6">
                   <Button
                     type="submit"
