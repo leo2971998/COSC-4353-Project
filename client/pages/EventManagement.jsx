@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/CompleteProfile/Header";
 import Navbar from "../components/Navbar";
+import Description from "../components/EventManagement/Description";
 import EventInfo from "../components/EventManagement/EventInfo";
 import Address from "../components/CompleteProfile/Address";
 import SkillsSection from "../components/CompleteProfile/Skills";
+import Urgency from "../components/EventManagement/Urgency";
+import Availability from "../components/CompleteProfile/Availability";
+import { STATES } from "../components/CompleteProfile/STATES";
+import { Button } from "../components/ui/Button";
 
 // Test to see if I can see changes in console:
 console.log("Hello")
@@ -79,6 +84,33 @@ export default function EventManagement(){
     const [isSkillsOpen, setIsSkillsOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
 
+    const handleInputChange = (field, value) => {
+      const normalizedValue = field === "state" ? value.toUpperCase() : value;
+      setFormData((prev) => ({
+        ...prev,
+        [field]: normalizedValue,
+      }));
+
+      if (errors[field]) {
+        setErrors((prev) => ({
+          ...prev,
+          [field]: "",
+        }));
+      }
+    };
+
+    const handleUrgencyToggle = () => {
+      console.log("Urgency toggled");
+    };
+
+    const handleDateRemove = (date) => {
+      console.log("Removed date:", date);
+    };
+
+    const [isUrgencyOpen, setIsUrgencyOpen] = useState(false);
+
+    const urgencyOptions = ["Low", "Medium", "High"];
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
@@ -105,7 +137,7 @@ export default function EventManagement(){
         }
 
         if (manageData.requiredSkills.length === 0){
-            newErrors.requiredSKills = "Please select at least one skill";
+            newErrors.requiredSkills = "Please select at least one skill";
         }
 
         if (!manageData.urgency){
@@ -120,7 +152,7 @@ export default function EventManagement(){
     };
 
     const handleSkillToggle = (skill) => {
-        setFormData((prev) => ({
+        setManageData((prev) => ({
         ...prev,
         requiredSkills: prev.requiredSkills.includes(skill)
             ? prev.requiredSkills.filter((s) => s !== skill)
@@ -130,7 +162,7 @@ export default function EventManagement(){
 
     const handleDateAdd = () => {
         if (selectedDate && !manageData.eventDate.includes(selectedDate)) {
-        setFormData((prev) => ({
+        setManageData((prev) => ({
             ...prev,
             eventDate: [...prev.eventDate, selectedDate],
         }));
@@ -168,7 +200,7 @@ export default function EventManagement(){
 
                 <SkillsSection
                   skills={manageData.requiredSkills}
-                  error={errors.skills}
+                  error={errors.requiredSkills}
                   onToggle={handleSkillToggle}
                   isOpen={isSkillsOpen}
                   setIsOpen={setIsSkillsOpen}

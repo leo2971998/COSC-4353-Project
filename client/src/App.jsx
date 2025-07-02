@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import HomePage from "../pages/HomePage.jsx";
 import CompleteProfile from "../pages/CompleteProfile.jsx";
+import EventManagement from "../pages/EventManagement.jsx";
 import "./index.css";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
 
         <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/event-management" element={<EventManagement />} />
       </Routes>
     </Router>
   );
