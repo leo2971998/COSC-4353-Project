@@ -33,20 +33,32 @@ export default function Navbar({ scrollToSection }) {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {!devMode.isLoggedIn && location.pathname === "/" && (
+            {!devMode.isLoggedIn && (
               <>
-                <button
-                  onClick={() => handleScroll("hero")}
+                <Link
+                  to="/"
+                  onClick={(e) => {
+                    if (location.pathname === "/") {
+                      e.preventDefault();
+                      handleScroll("hero");
+                    }
+                  }}
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
                 >
                   Home
-                </button>
-                <button
-                  onClick={() => handleScroll("about")}
+                </Link>
+                <Link
+                  to="/"
+                  onClick={(e) => {
+                    if (location.pathname === "/") {
+                      e.preventDefault();
+                      handleScroll("about");
+                    }
+                  }}
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
                 >
                   About
-                </button>
+                </Link>
                 {/* Leo Nguyen - add login and register links */}
                 <Link to="/login">
                   <Button className="text-gray-300 hover:text-blue-400 font-medium transition">
