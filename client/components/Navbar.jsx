@@ -4,7 +4,7 @@ import { Button } from "./ui/Button";
 import { Link, useLocation } from "react-router-dom";
 
 const devMode = {
-  isLoggedIn: true,
+  isLoggedIn: false,
   isProfileComplete: false,
 };
 
@@ -47,9 +47,15 @@ export default function Navbar({ scrollToSection }) {
                 >
                   About
                 </button>
+                {/* Leo Nguyen - add login and register links */}
                 <Link to="/login">
-                  <Button className="border-blue-500 text-blue-400 hover:bg-blue-500/10">
+                  <Button className="text-gray-300 hover:text-blue-400 font-medium transition">
                     Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="text-gray-300 hover:text-blue-400 font-medium transition">
+                    Register
                   </Button>
                 </Link>
               </>
@@ -149,9 +155,15 @@ export default function Navbar({ scrollToSection }) {
                   >
                     About
                   </button>
+                  {/* Leo Nguyen - add login and register links */}
                   <Link to="/login">
                     <Button className="w-full text-blue-400 hover:bg-blue-500/10">
                       Login
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button className="w-full text-blue-400 hover:bg-blue-500/10">
+                      Register
                     </Button>
                   </Link>
                 </>
