@@ -188,14 +188,12 @@ export default function EventManagement(){
 
                 <Description
                   manageData={manageData}
-                  onChange={(value) => handleInputChange("description", value)}
+                  onChange={(value) => handleInputChange("eventDescription", value)}
                 />
 
                 <Location
                   manageData={manageData}
-                  errors={errors}
-                  onChange={handleInputChange}
-                  states={STATES}
+                  onChange={(value) => handleInputChange("location", value)}
                 />
 
                 <RequiredSkills
