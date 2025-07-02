@@ -1,10 +1,28 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import TableCardDV from "./TableCardDV";
 
 export default function VolunteerHistoryMain({ events }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("date");
+
+  const filteredHistory = events
+    .filter((event) => {
+      const matchesSearch =
+        event.eventName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.location.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all" ||
+        event.participationStatus.toLowerCase() === statusFilter.toLowerCase();
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      if (sortBy === "date") {
+        return new Date(b.eventDate) - new Date(a.eventDate);
+      }
+      return a.eventName.localeCompare(b.eventName);
+    });
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -75,6 +93,31 @@ export default function VolunteerHistoryMain({ events }) {
               </div>
               <div className="text-sm text-gray-300">Total Events</div>
             </div>
+          </div>
+          <div className="hidden lg:block overflow-x-auto py-8">
+            <table className="w-full">
+              <thead className="bg-gray-700/50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">
+                    Event Details
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">
+                    Location & Skills
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">
+                    Date & Urgency
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {filteredHistory.map((event) => (
+                  <TableCardDV key={event.id} event={event} />
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
