@@ -1,4 +1,5 @@
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, WrenchIcon, X } from "lucide-react";
+import { Wrench } from 'lucide-react';
 
 export default function RequiredSkills({
   skills,
@@ -11,7 +12,7 @@ export default function RequiredSkills({
   return (
     <div>
       <div className="flex items-center mb-6">
-        <div className="w-5 h-5 bg-gradient-to-br from-green-500 to-green-600 rounded mr-2"></div>
+        <Wrench className="w-5 h-5 text-green-400 mr-2" />
         <h2 className="text-xl font-semibold text-white">Event Skills</h2>
       </div>
 

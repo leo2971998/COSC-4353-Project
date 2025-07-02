@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Header from "../components/CompleteProfile/Header";
+import EventHeader from "../components/EventManagement/EventHeader";
 import Navbar from "../components/Navbar";
 import Description from "../components/EventManagement/Description";
 import EventInfo from "../components/EventManagement/EventInfo";
@@ -175,7 +175,7 @@ export default function EventManagement(){
       <>
         <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
           <Navbar />
-          <Header />
+          <EventHeader />
           <div className="max-w-2xl mx-auto">
             <div className="bg-gray-900 rounded-3xl shadow-2xl border border-gray-700 p-8 sm:p-10">
               <form onSubmit={handleSubmit} className="space-y-8">

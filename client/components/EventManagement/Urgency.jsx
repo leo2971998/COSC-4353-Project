@@ -1,9 +1,11 @@
+import { AlertTriangle} from "lucide-react";
+
 export default function Urgency({ urgency, onChange }){
     return (
         
         <div>
             <div className="flex items-center mb-6">
-                <div className="w-5 h-5 bg-gradient-to-br from-red-500 to-red-600 rounded mr-2"></div>
+                <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
                 <h2 className="text-xl font-semibold text-white">Event Urgency</h2>
             </div>
 
