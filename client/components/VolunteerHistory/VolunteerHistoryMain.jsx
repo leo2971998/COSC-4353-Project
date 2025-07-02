@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 import TableCardDV from "./TableCardDV";
+import TableCardMV from "./TableCardMV";
 
 export default function VolunteerHistoryMain({ events }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -94,6 +95,7 @@ export default function VolunteerHistoryMain({ events }) {
               <div className="text-sm text-gray-300">Total Events</div>
             </div>
           </div>
+          <TableCardMV filteredHistory={filteredHistory} />
           <div className="hidden lg:block overflow-x-auto py-8">
             <table className="w-full">
               <thead className="bg-gray-700/50">
@@ -119,6 +121,19 @@ export default function VolunteerHistoryMain({ events }) {
               </tbody>
             </table>
           </div>
+          {filteredHistory.length === 0 && (
+            <div className="p-12 text-center">
+              <User className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-400 mb-2">
+                No volunteer history found
+              </h3>
+              <p className="text-gray-500">
+                {searchTerm || statusFilter !== "all"
+                  ? "Try adjusting your search or filter criteria."
+                  : "Start volunteering to see your history here!"}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

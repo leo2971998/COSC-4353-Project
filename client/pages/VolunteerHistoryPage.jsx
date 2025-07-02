@@ -63,7 +63,7 @@ export default function VolunteerHistoryPage() {
       requiredSkills: ["Technology & IT", "Teaching & Education"],
       urgency: "Medium",
       eventDate: "2024-11-15",
-      participationStatus: "Signed Up",
+      participationStatus: "Missed",
     },
     {
       id: 6,
