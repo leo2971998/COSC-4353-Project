@@ -11,6 +11,7 @@ import CompleteProfile from "../pages/CompleteProfile.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import "./index.css";
+import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
 
         <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/volunteer-history" element={<VolunteerHistoryPage />} />
       </Routes>
     </Router>
   );
