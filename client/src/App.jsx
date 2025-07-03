@@ -10,6 +10,7 @@ import CompleteProfile from "../pages/CompleteProfile.jsx";
 // Leo Nguyen - import login and register pages
 import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
+import VolunteerMatchingForm from "../pages/VolunteerMatchingForm.jsx";
 import EventManagement from "../pages/EventManagement.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
@@ -26,8 +27,8 @@ function App() {
         {/* Leo Nguyen - added login and registration routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
         <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/volunteer" element={<VolunteerMatchingForm />} />
         <Route path="/volunteer-history" element={<VolunteerHistoryPage />} />
         <Route path="/event-management" element={<EventManagement />} />
       </Routes>
