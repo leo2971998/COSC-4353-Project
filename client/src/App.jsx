@@ -11,12 +11,15 @@ import CompleteProfile from "../pages/CompleteProfile.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import VolunteerMatchingForm from "../pages/VolunteerMatchingForm.jsx";
-
+import EventManagement from "../pages/EventManagement.jsx";
 import "./index.css";
+import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
+import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Place Public Routes Here */}
         <Route path="/" element={<HomePage />} />
@@ -24,9 +27,10 @@ function App() {
         {/* Leo Nguyen - added login and registration routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
         <Route path="/complete-profile" element={<CompleteProfile />} />
         <Route path="/volunteer" element={<VolunteerMatchingForm />} />
+        <Route path="/volunteer-history" element={<VolunteerHistoryPage />} />
+        <Route path="/event-management" element={<EventManagement />} />
       </Routes>
     </Router>
   );

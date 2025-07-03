@@ -4,8 +4,8 @@ import { Button } from "./ui/Button";
 import { Link, useLocation } from "react-router-dom";
 
 const devMode = {
-  isLoggedIn: false,
-  isProfileComplete: false,
+  isLoggedIn: true,
+  isProfileComplete: true,
 };
 
 export default function Navbar({ scrollToSection }) {
@@ -94,6 +94,12 @@ export default function Navbar({ scrollToSection }) {
                 >
                   <Button>Complete Profile</Button>
                 </Link>
+                <Link
+                  to="/event-management"
+                  className="text-gray-300 hover:text-blue-400 font-medium transition"
+                >
+                  <Button>Event Management</Button>
+                </Link>
                 <Button className="text-gray-300 hover:text-red-400 transition">
                   Logout
                 </Button>
@@ -122,7 +128,7 @@ export default function Navbar({ scrollToSection }) {
                   Dashboard
                 </Link>
                 <Link
-                  to="/history"
+                  to="/volunteer-history"
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
                 >
                   History
@@ -205,6 +211,12 @@ export default function Navbar({ scrollToSection }) {
                       >
                         Complete Profile
                       </Link>
+                      <Link
+                        to="/event-management"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      >
+                        Event Management Form
+                      </Link>
                     </div>
 
                     {/* Centered logout */}
@@ -243,7 +255,7 @@ export default function Navbar({ scrollToSection }) {
                       </Link>
 
                       <Link
-                        to="/history"
+                        to="/volunteer-history"
                         className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
                       >
                         History
