@@ -9,11 +9,11 @@ export default function Footer() {
               <Users className="w-5 h-5 text-white" />
             </div>
             <span className="ml-2 text-lg font-semibold text-white">
-              VolunteerHub
+              Volentra
             </span>
           </div>
           <p className="text-gray-400 text-center md:text-right">
-            © 2025 VolunteerHub
+            © 2025 Volentra
           </p>
         </div>
       </div>

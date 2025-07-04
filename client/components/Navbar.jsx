@@ -27,7 +27,7 @@ export default function Navbar({ scrollToSection }) {
               <Users className="w-6 h-6 text-white" />
             </div>
             <span className="ml-3 text-xl font-semibold text-white">
-              VolunteerHub
+              Volentra
             </span>
           </div>
 
