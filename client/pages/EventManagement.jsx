@@ -112,14 +112,32 @@ export default function EventManagement(){
 
     const urgencyOptions = ["Low", "Medium", "High"];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateForm()) {
-        // Make a POST request to the backend storing this info in the database.
         console.log("Form submitted: ", manageData);
+        if (validateForm()) {
+          // Make a POST request to the backend storing this info in the database.
+          // console.log("Form submitted: ", manageData);
+          try{
+            console.log("About to send POST request...");
+            const response = await fetch("http://localhost:3000/events", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(manageData),
+            });
+            const result = await response.json();
+            console.log("Server Response:", result);
+
+            // Alert Message (can kick out the code):
+            alert("Event Successfully Created!");
+          } catch (error) {
+            console.error("Error Submitting Event:", error);
+          }
         }
     };
-
+    
     const validateForm = () => {
         const newErrors = {};
 
@@ -148,6 +166,7 @@ export default function EventManagement(){
         if (manageData.eventDate.length === 0){
             newErrors.eventDate = "Please select at least one available date";
         }
+        console.log("Validation Errors:", newErrors);
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -206,11 +225,10 @@ export default function EventManagement(){
                 />
 
                 <Urgency
-                  manageData={manageData}
-                  error={errors.skills}
-                  onToggle={handleUrgencyToggle}
-                  isOpen={setIsUrgencyOpen}
-                  urgencyOptions={urgencyOptions}
+                  urgency={manageData.urgency}
+                  onChange={(e) =>
+                    setManageData((prevData) => ({ ...prevData, urgency: e.target.value }))
+                  }
                 />
 
                 <EventDate
@@ -224,7 +242,7 @@ export default function EventManagement(){
                 <div className="pt-6">
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 cursor-pointer hover:bg-gradient-to-r hover:from-blue-800 hover:to-purple-800 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                   >
                     Create Event
                   </Button>

@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors";
 
+import eventRoutes from "./routes/eventRoutes.js";
+
 const app = express();
 const corsOptions = {
   // Origin: This is the frontend URL that will be allowed to access the server.
-  origin: ["http://localhost:5173/"],
+  origin: ["http://localhost:5173"],
 };
 
 // Allows us to parse JSON data in the request body.
@@ -15,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Use the CORS middleware with the specific options we defined.
 app.use(cors(corsOptions));
+
+// Using the event routes
+app.use("/", eventRoutes);
 
 // Starts the server on port 3000
 app.listen(3000, () => {
