@@ -83,7 +83,12 @@ app.post("/login", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-// Starts the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+
+if (!process.env.VERCEL) {
+  // Only start the server locally. Vercel provides the listener in production.
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
