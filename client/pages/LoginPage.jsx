@@ -5,21 +5,45 @@ import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import { Button } from "../components/ui/Button";
 // Leo Nguyen - link component for register button
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   // Leo Nguyen - login form state
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
+  const navigate = useNavigate();
 
   // Leo Nguyen - handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Leo Nguyen - placeholder submit handler
-  const handleSubmit = (e) => {
+  // Leo Nguyen - submit handler to call backend
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login submitted", formData);
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message);
+      } else {
+        console.log(data.message);
+        if (data.userId) {
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ id: data.userId, role: data.role })
+          );
+          navigate(data.role === "admin" ? "/admin" : "/");
+        }
+      }
+    } catch (err) {
+      console.error("Error logging in:", err);
+    }
   };
 
   return (
