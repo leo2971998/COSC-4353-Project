@@ -20,6 +20,9 @@ const db = mysql.createPool({
   database: process.env.DB_NAME || "your_database",
 });
 
+// Allows us to parse JSON data in the request body.
+app.use(express.json());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
@@ -47,6 +50,18 @@ app.post("/register", async (req, res) => {
 
   try {
     const [rows] = await db.query("SELECT id FROM login WHERE email = ?", [email]);
+// Register a new user
+app.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res
+      .status(400)
+      .json({ message: "name, email and password required" });
+  }
+  try {
+    const [rows] = await db.query("SELECT id FROM login WHERE email = ?", [
+      email,
+    ]);
     if (rows.length > 0) {
       return res.status(409).json({ message: "User already exists" });
     }
