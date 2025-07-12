@@ -7,7 +7,6 @@ import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import { Button } from "../components/ui/Button";
 
-
 export default function RegisterPage() {
   const navigate = useNavigate();
   const API_URL =
