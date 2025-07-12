@@ -5,13 +5,14 @@ import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import { Button } from "../components/ui/Button";
 // Leo Nguyen - link component for login button
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
   // Leo Nguyen - register form state
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirm: "" });
   const API_URL =
     import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
+  const navigate = useNavigate();
 
   // Leo Nguyen - handle input change
   const handleChange = (e) => {
@@ -40,6 +41,7 @@ export default function RegisterPage() {
         console.error(data.message);
       } else {
         console.log(data.message);
+        navigate("/login");
       }
     } catch (err) {
       console.error("Error registering:", err);
