@@ -10,7 +10,8 @@ import { Link } from "react-router-dom";
 export default function RegisterPage() {
   // Leo Nguyen - register form state
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirm: "" });
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
 
   // Leo Nguyen - handle input change
   const handleChange = (e) => {

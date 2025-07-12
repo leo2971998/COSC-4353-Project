@@ -10,7 +10,8 @@ import { Link } from "react-router-dom";
 export default function LoginPage() {
   // Leo Nguyen - login form state
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
 
   // Leo Nguyen - handle input change
   const handleChange = (e) => {

@@ -39,7 +39,7 @@ app.post("/register", async (req, res) => {
       .json({ message: "name, email and password required" });
   }
   try {
-    const [rows] = await db.query("SELECT id FROM users WHERE email = ?", [
+    const [rows] = await db.query("SELECT id FROM login WHERE email = ?", [
       email,
     ]);
     if (rows.length > 0) {
@@ -47,7 +47,7 @@ app.post("/register", async (req, res) => {
     }
     const hashed = await bcrypt.hash(password, 10);
     await db.query(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      "INSERT INTO login (name, email, password) VALUES (?, ?, ?)",
       [name, email, hashed]
     );
     res.status(201).json({ message: "User registered" });
@@ -64,7 +64,7 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ message: "email and password required" });
   }
   try {
-    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [
+    const [rows] = await db.query("SELECT * FROM login WHERE email = ?", [
       email,
     ]);
     if (rows.length === 0) {

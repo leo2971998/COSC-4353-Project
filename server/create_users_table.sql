@@ -2,7 +2,8 @@
 CREATE DATABASE IF NOT EXISTS your_database;
 USE your_database;
 
-CREATE TABLE IF NOT EXISTS users (
+-- Table to store user login information
+CREATE TABLE IF NOT EXISTS login (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
