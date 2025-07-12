@@ -25,6 +25,8 @@ export default function CompleteProfile() {
     preferences: "",
     availability: [],
   });
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
 
   useEffect(() => {
     const changed =
@@ -36,6 +38,27 @@ export default function CompleteProfile() {
 
     setHasUnsavedChanges(changed);
   }, [formData]);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+    fetch(`${API_URL}/profile/${userId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) {
+          setFormData((prev) => ({
+            ...prev,
+            address1: data.location || "",
+            skills: data.skills ? data.skills.split(/,\s*/) : [],
+            preferences: data.preferences || "",
+            availability: data.availability ? data.availability.split(/,\s*/) : [],
+          }));
+        }
+      })
+      .catch(() => {
+        /* ignore errors */
+      });
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -96,11 +119,36 @@ export default function CompleteProfile() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Make a POST request to the backend storing this info in the database.
-      console.log("Form submitted: ", formData);
+    if (!validateForm()) return;
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please log in first");
+      return;
+    }
+    const payload = {
+      userId,
+      location: `${formData.address1} ${formData.address2} ${formData.city} ${formData.state} ${formData.zipCode}`.trim(),
+      skills: formData.skills.join(", "),
+      preferences: formData.preferences,
+      availability: formData.availability.join(", "),
+    };
+    try {
+      const res = await fetch(`${API_URL}/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message);
+      } else {
+        console.log(data.message);
+        setHasUnsavedChanges(false);
+      }
+    } catch (err) {
+      console.error("Error saving profile:", err);
     }
   };
   const validateForm = () => {
