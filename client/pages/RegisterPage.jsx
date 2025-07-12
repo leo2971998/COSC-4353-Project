@@ -1,31 +1,24 @@
 // Leo Nguyen - Created RegisterPage component
-import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import { Button } from "../components/ui/Button";
-// Leo Nguyen - link component for login button
-import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
-  // Leo Nguyen - register form state
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", confirm: "" });
+  const navigate = useNavigate();
   const API_URL =
     import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
-  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ defaultValues: { name: "", email: "", password: "", confirm: "" } });
 
-  // Leo Nguyen - handle input change
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Leo Nguyen - submit handler to call backend
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirm) {
-      alert("Passwords do not match");
-      return;
-    }
+  const onSubmit = async (formData) => {
     try {
       const res = await fetch(`${API_URL}/register`, {
         method: "POST",
@@ -38,12 +31,13 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        console.error(data.message);
+        toast.error(data.message || "Registration failed");
       } else {
-        console.log(data.message);
+        toast.success("Registered successfully");
         navigate("/login");
       }
     } catch (err) {
+      toast.error("Error registering");
       console.error("Error registering:", err);
     }
   };
@@ -54,7 +48,7 @@ export default function RegisterPage() {
       <div className="min-h-screen pt-24 bg-gray-800 px-4">
         <div className="max-w-md mx-auto bg-gray-900 border border-gray-700 rounded-3xl p-8 shadow-2xl">
           <h1 className="text-2xl font-bold text-white mb-6 text-center">Create Account</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                 Full Name
@@ -63,11 +57,13 @@ export default function RegisterPage() {
                 id="name"
                 name="name"
                 type="text"
-                value={formData.name}
-                onChange={handleChange}
+                {...register("name", { required: "Name required", maxLength: 255 })}
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Your name"
               />
+              {errors.name && (
+                <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>
+              )}
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
@@ -77,11 +73,17 @@ export default function RegisterPage() {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email", {
+                  required: "Email required",
+                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" },
+                  maxLength: 255,
+                })}
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="you@example.com"
               />
+              {errors.email && (
+                <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+              )}
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
@@ -91,11 +93,13 @@ export default function RegisterPage() {
                 id="password"
                 name="password"
                 type="password"
-                value={formData.password}
-                onChange={handleChange}
+                {...register("password", { required: "Password required", minLength: 6, maxLength: 255 })}
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="********"
               />
+              {errors.password && (
+                <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+              )}
             </div>
             <div>
               <label htmlFor="confirm" className="block text-sm font-medium text-gray-300 mb-2">
@@ -105,11 +109,16 @@ export default function RegisterPage() {
                 id="confirm"
                 name="confirm"
                 type="password"
-                value={formData.confirm}
-                onChange={handleChange}
+                {...register("confirm", {
+                  required: "Confirm your password",
+                  validate: (value) => value === watch("password") || "Passwords do not match",
+                })}
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="********"
               />
+              {errors.confirm && (
+                <p className="text-red-400 text-sm mt-1">{errors.confirm.message}</p>
+              )}
             </div>
             <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
               Register

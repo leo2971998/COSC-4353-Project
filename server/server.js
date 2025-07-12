@@ -20,9 +20,6 @@ const db = mysql.createPool({
   database: process.env.DB_NAME || "your_database",
 });
 
-// Allows us to parse JSON data in the request body.
-app.use(express.json());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
@@ -49,34 +46,21 @@ app.post("/register", async (req, res) => {
   }
 
   try {
+    console.log("Register attempt", { name, email });
     const [rows] = await db.query("SELECT id FROM login WHERE email = ?", [email]);
-// Register a new user
-app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: "name, email and password required" });
-  }
-  try {
-    const [rows] = await db.query("SELECT id FROM login WHERE email = ?", [
-      email,
-    ]);
     if (rows.length > 0) {
       return res.status(409).json({ message: "User already exists" });
     }
     const hashed = await bcrypt.hash(password, 10);
     const [result] = await db.query(
-      "INSERT INTO login (name, email, password, role) VALUES (?, ?, ?, 'user')",
+      "INSERT INTO login (name, email, password) VALUES (?, ?, ?)",
       [name, email, hashed]
     );
-    await db.query(
-      "INSERT INTO profile (user_id) VALUES (?)",
-      [result.insertId]
-    );
+    console.log("Inserted user", result.insertId);
+    await db.query("INSERT INTO profile (user_id) VALUES (?)", [result.insertId]);
     res.status(201).json({ message: "User registered" });
   } catch (err) {
-    console.error(err);
+    console.error("Register error", err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -103,7 +87,7 @@ app.post("/login", async (req, res) => {
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    res.json({ message: "Login successful", userId: user.id, role: user.role });
+    res.json({ message: "Login successful", userId: user.id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
