@@ -10,16 +10,40 @@ import { Link } from "react-router-dom";
 export default function RegisterPage() {
   // Leo Nguyen - register form state
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirm: "" });
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
 
   // Leo Nguyen - handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Leo Nguyen - placeholder submit handler
-  const handleSubmit = (e) => {
+  // Leo Nguyen - submit handler to call backend
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Register submitted", formData);
+    if (formData.password !== formData.confirm) {
+      alert("Passwords do not match");
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message);
+      } else {
+        console.log(data.message);
+      }
+    } catch (err) {
+      console.error("Error registering:", err);
+    }
   };
 
   return (
