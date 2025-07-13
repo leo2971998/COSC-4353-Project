@@ -129,9 +129,7 @@ export default function EventManagement(){
             });
             const result = await response.json();
             console.log("Server Response:", result);
-
-            // Alert Message (can kick out the code):
-            alert("Event Successfully Created!");
+            
           } catch (error) {
             console.error("Error Submitting Event:", error);
           }
