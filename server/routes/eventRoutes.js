@@ -1,4 +1,5 @@
 import express from "express";
+import { createEvent } from "./controllers/eventControllers.js";
 
 const router = express.Router();
 
@@ -17,12 +18,15 @@ router.post("/events", (req, res) => {
   console.log("Event data received:", eventData);
 
   // For now, just push it into the in-memory array
-  events.push(eventData);
+  // events.push(eventData);
+
+  // Using the controller function to handle the logic
+  const newEvent = createEvent(eventData);
 
   // Respond to the client
   res.status(201).json({
     message: "Event created successfully",
-    event: eventData,
+    event: newEvent,
   });
 });
 
