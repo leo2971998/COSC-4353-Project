@@ -30,7 +30,7 @@ The server uses the following environment variables:
    cd client
    npm install
    ```
-2. Copy `.env.example` to `.env` and update `VITE_API_URL` to point to the backend server. For the deployed backend use `https://cosc-4353-backend.vercel.app`.
+2. Copy `.env.example` to `.env` and update `VITE_API_URL` to point to the backend server. For the deployed backend use `https://localhost:3000`.
 3. Start the development server:
    ```sh
    npm run dev
@@ -50,5 +50,5 @@ Make sure your database is accessible from Vercel and that the credentials are c
 ## Deploying the frontend to Vercel
 
 1. Push the contents of the `client` directory to a separate repository or configure a new Vercel project pointing to it.
-2. In the Vercel project settings, add `VITE_API_URL` with the value `https://cosc-4353-backend.vercel.app`.
+2. In the Vercel project settings, add `VITE_API_URL` with the value `https://localhost:3000`.
 3. Deploy the project and Vercel will build the React app.

@@ -10,8 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const API_URL =
-    import.meta.env.VITE_API_URL || "https://cosc-4353-backend.vercel.app";
+  const API_URL = "https://cosc-4353-backend.vercel.app";
   const {
     register,
     handleSubmit,
