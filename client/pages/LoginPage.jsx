@@ -34,11 +34,16 @@ export default function LoginPage() {
           JSON.stringify(["Login successful"])
         );
         if (data.userId) {
-          localStorage.setItem("userId", data.userId);
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ id: data.userId, role: data.role })
+          );
+          localStorage.setItem("userId", String(data.userId));
           localStorage.setItem(
             "profileComplete",
             data.profileComplete ? "true" : "false"
           );
+          localStorage.setItem("isLoggedIn", "true");
           if (data.profileComplete) {
             navigate("/");
           } else {

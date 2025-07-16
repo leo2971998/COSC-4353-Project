@@ -109,9 +109,15 @@ app.post("/login", async (req, res) => {
             "SELECT is_complete FROM profile WHERE user_id = ?",
             [user.id]
         );
-        const profileComplete = profileRows.length && profileRows[0].is_complete === 1;
+        const profileComplete =
+            profileRows.length && profileRows[0].is_complete === 1;
 
-        res.json({ message: "Login successful", userId: user.id, profileComplete });
+        res.json({
+            message: "Login successful",
+            userId: user.id,
+            role: user.role,
+            profileComplete,
+        });
     } catch (err) {
         console.error("Login error:", err);
         res.status(500).json({ message: "Server error" });
