@@ -29,9 +29,21 @@ export default function LoginPage() {
         toast.error(data.message || "Login failed");
       } else {
         toast.success("Login successful");
+        localStorage.setItem(
+          "flashMessages",
+          JSON.stringify(["Login successful"])
+        );
         if (data.userId) {
-          localStorage.setItem("user", JSON.stringify({ id: data.userId, role: data.role }));
-          navigate("/");
+          localStorage.setItem("userId", data.userId);
+          localStorage.setItem(
+            "profileComplete",
+            data.profileComplete ? "true" : "false"
+          );
+          if (data.profileComplete) {
+            navigate("/");
+          } else {
+            navigate("/complete-profile");
+          }
         }
       }
     } catch (err) {
