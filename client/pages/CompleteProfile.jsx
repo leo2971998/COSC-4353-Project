@@ -50,7 +50,12 @@ export default function CompleteProfile() {
         if (data) {
           setFormData((prev) => ({
             ...prev,
-            address1: data.location || "",
+            fullName: data.full_name || data.name || prev.fullName,
+            address1: data.address1 || "",
+            address2: data.address2 || "",
+            city: data.city || "",
+            state: data.state || "",
+            zipCode: data.zip_code || "",
             skills: data.skills ? data.skills.split(/,\s*/) : [],
             preferences: data.preferences || "",
             availability: data.availability ? data.availability.split(/,\s*/) : [],
