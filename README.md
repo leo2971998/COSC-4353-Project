@@ -47,6 +47,12 @@ The frontend reads `VITE_API_URL` when calling the `/register` and `/login` rout
 
 Make sure your database is accessible from Vercel and that the credentials are correct.
 
+## Database schema
+
+SQL definitions for the `login` and `profile` tables are provided in
+`server/db_schema.sql`. Apply this schema when initializing your MySQL
+database.
+
 ## Deploying the frontend to Vercel
 
 1. Push the contents of the `client` directory to a separate repository or configure a new Vercel project pointing to it.
