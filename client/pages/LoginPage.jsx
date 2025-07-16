@@ -44,7 +44,6 @@ export default function LoginPage() {
             data.profileComplete ? "true" : "false"
           );
           localStorage.setItem("isLoggedIn", "true");
-
           if (data.profileComplete) {
             navigate("/");
           } else {
