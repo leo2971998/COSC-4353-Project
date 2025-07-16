@@ -9,10 +9,12 @@ import Preferences from "../components/CompleteProfile/Preferences";
 import { STATES } from "../components/CompleteProfile/STATES";
 import { Button } from "../components/ui/Button";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Availability from "../components/CompleteProfile/Availability";
 
 export default function CompleteProfile() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -48,7 +50,12 @@ export default function CompleteProfile() {
         if (data) {
           setFormData((prev) => ({
             ...prev,
-            address1: data.location || "",
+            fullName: data.full_name || data.name || prev.fullName,
+            address1: data.address1 || "",
+            address2: data.address2 || "",
+            city: data.city || "",
+            state: data.state || "",
+            zipCode: data.zip_code || "",
             skills: data.skills ? data.skills.split(/,\s*/) : [],
             preferences: data.preferences || "",
             availability: data.availability ? data.availability.split(/,\s*/) : [],
@@ -129,7 +136,11 @@ export default function CompleteProfile() {
     }
     const payload = {
       userId,
-      location: `${formData.address1} ${formData.address2} ${formData.city} ${formData.state} ${formData.zipCode}`.trim(),
+      address1: formData.address1,
+      address2: formData.address2,
+      city: formData.city,
+      state: formData.state,
+      zipCode: formData.zipCode,
       skills: formData.skills.join(", "),
       preferences: formData.preferences,
       availability: formData.availability.join(", "),
@@ -146,6 +157,8 @@ export default function CompleteProfile() {
       } else {
         console.log(data.message);
         setHasUnsavedChanges(false);
+        localStorage.setItem("profileComplete", "true");
+        navigate("/");
       }
     } catch (err) {
       console.error("Error saving profile:", err);

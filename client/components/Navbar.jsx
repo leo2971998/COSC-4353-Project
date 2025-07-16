@@ -29,6 +29,9 @@ export default function Navbar({ scrollToSection }) {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("profileComplete");
+    localStorage.removeItem("isLoggedIn");
     setUser(null);
     setIsMenuOpen(false);
   };
