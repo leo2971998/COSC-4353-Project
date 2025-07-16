@@ -52,6 +52,10 @@ export default function RegisterPage() {
         toast.error(data.message || `Registration failed (${res.status})`);
       } else {
         toast.success("Registered successfully");
+        localStorage.setItem(
+          "flashMessages",
+          JSON.stringify(["Registration successful. Please log in."])
+        );
         navigate("/login");
       }
     } catch (err) {
