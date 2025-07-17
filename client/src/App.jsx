@@ -12,9 +12,22 @@ import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import VolunteerMatchingForm from "../pages/VolunteerMatchingForm.jsx";
 import EventManagement from "../pages/EventManagement.jsx";
+import AdminPage from "../pages/AdminPage.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
+
+function RequireAuth({ children, role }) {
+  const stored = localStorage.getItem("user");
+  const user = stored ? JSON.parse(stored) : null;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  if (role && user.role !== role) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
 function App() {
   return (
@@ -27,10 +40,46 @@ function App() {
         {/* Leo Nguyen - added login and registration routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/complete-profile" element={<CompleteProfile />} />
-        <Route path="/volunteer" element={<VolunteerMatchingForm />} />
-        <Route path="/volunteer-history" element={<VolunteerHistoryPage />} />
-        <Route path="/event-management" element={<EventManagement />} />
+        <Route
+          path="/complete-profile"
+          element={
+            <RequireAuth>
+              <CompleteProfile />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/volunteer"
+          element={
+            <RequireAuth>
+              <VolunteerMatchingForm />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/volunteer-history"
+          element={
+            <RequireAuth>
+              <VolunteerHistoryPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/event-management"
+          element={
+            <RequireAuth>
+              <EventManagement />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth role="admin">
+              <AdminPage />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </Router>
   );
