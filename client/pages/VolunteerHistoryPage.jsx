@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import TableCardDV from "../components/VolunteerHistory/TableCardDV";
 import VHeader from "../components/VolunteerHistory/VHeader";
 import VolunteerHistoryMain from "../components/VolunteerHistory/VolunteerHistoryMain";
 import axios from "axios";
@@ -11,6 +10,7 @@ export default function VolunteerHistoryPage() {
   // This is mock data for right now
   const [volunteerHistory, setVolunteerHistory] = useState([]);
 
+  // Fetches the data, makes a GET request to the backend path server/history <-- Calls the corresponding controller function there.
   const fetchvolHistory = async () => {
     try {
       const response = await axios.get(`${API_URL}/history`);
