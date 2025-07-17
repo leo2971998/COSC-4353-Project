@@ -1,5 +1,5 @@
 import express from "express";
-import { getVolunteerHistory } from "../controllers/historyController";
+import { getVolunteerHistory } from "../controllers/historyController.js";
 
 const router = express.Router();
 
