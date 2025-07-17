@@ -105,7 +105,19 @@ app.post("/login", async (req, res) => {
         const ok = await bcrypt.compare(password, user.password);
         if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-        res.json({ message: "Login successful", userId: user.id });
+        const [profileRows] = await db.query(
+            "SELECT is_complete FROM profile WHERE user_id = ?",
+            [user.id]
+        );
+        const profileComplete =
+            profileRows.length && profileRows[0].is_complete === 1;
+
+        res.json({
+            message: "Login successful",
+            userId: user.id,
+            role: user.role,
+            profileComplete,
+        });
     } catch (err) {
         console.error("Login error:", err);
         res.status(500).json({ message: "Server error" });
@@ -114,29 +126,71 @@ app.post("/login", async (req, res) => {
 
 // Create / update profile
 app.post("/profile", async (req, res) => {
-    const { userId, location, skills, preferences, availability } = req.body;
+    const {
+        userId,
+        fullName,
+        address1,
+        address2,
+        city,
+        state,
+        zipCode,
+        skills,
+        preferences,
+        availability,
+    } = req.body;
     if (!userId)
         return res.status(400).json({ message: "userId required" });
 
     if (
-        (location     && location.length     > 255) ||
-        (skills       && skills.length       > 255) ||
-        (preferences  && preferences.length  > 1000)||
-        (availability && availability.length > 255)
+        fullName && (typeof fullName !== "string" || fullName.length > 255)
+    ) {
+        return res.status(400).json({ message: "Invalid name" });
+    }
+
+    if (
+        (address1    && address1.length    > 100) ||
+        (address2    && address2.length    > 100) ||
+        (city        && city.length        > 100) ||
+        (state       && state.length       > 50)  ||
+        (zipCode     && zipCode.length     > 10)  ||
+        (skills      && skills.length      > 255) ||
+        (preferences && preferences.length > 1000)||
+        (availability&& availability.length> 255)
     ) {
         return res.status(400).json({ message: "Invalid field lengths" });
     }
 
     try {
+        if (fullName) {
+            await db.query(
+                "UPDATE login SET name = ? WHERE id = ?",
+                [fullName.trim(), userId]
+            );
+        }
         await db.query(
-            `INSERT INTO profile (user_id, location, skills, preferences, availability)
-         VALUES (?, ?, ?, ?, ?)
+            `INSERT INTO profile (user_id, address1, address2, city, state, zip_code, skills, preferences, availability, is_complete)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
            ON DUPLICATE KEY UPDATE
-                              location     = VALUES(location),
+                              address1     = VALUES(address1),
+                              address2     = VALUES(address2),
+                              city         = VALUES(city),
+                              state        = VALUES(state),
+                              zip_code     = VALUES(zip_code),
                               skills       = VALUES(skills),
                               preferences  = VALUES(preferences),
-                              availability = VALUES(availability)`,
-            [userId, location || null, skills || null, preferences || null, availability || null]
+                              availability = VALUES(availability),
+                              is_complete  = 1`,
+            [
+                userId,
+                address1 || null,
+                address2 || null,
+                city || null,
+                state || null,
+                zipCode || null,
+                skills || null,
+                preferences || null,
+                availability || null,
+            ]
         );
         res.json({ message: "Profile saved" });
     } catch (err) {
@@ -149,7 +203,11 @@ app.post("/profile", async (req, res) => {
 app.get("/profile/:userId", async (req, res) => {
     try {
         const [rows] = await db.query(
-            "SELECT user_id, location, skills, preferences, availability FROM profile WHERE user_id = ?",
+            `SELECT p.user_id, l.name AS full_name, p.address1, p.address2, p.city, p.state,
+                    p.zip_code, p.skills, p.preferences, p.availability, p.is_complete
+             FROM profile p
+             JOIN login l ON p.user_id = l.id
+             WHERE p.user_id = ?`,
             [req.params.userId]
         );
         if (!rows.length) return res.status(404).json({ message: "Profile not found" });
