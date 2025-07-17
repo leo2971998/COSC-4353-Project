@@ -1,8 +1,12 @@
-import { createEvent, events, resetEvents } from "../eventController.js";
+import {
+  createEvent,
+  events,
+  resetEvents,
+} from "../controllers/eventController.js";
 
 describe("createEvent", () => {
   beforeEach(() => {
-    resetEvents();  // ensure clean slate before each test
+    resetEvents(); // ensure clean slate before each test
   });
 
   test("should add a new event to the events array", () => {
