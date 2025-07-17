@@ -1,4 +1,5 @@
-// Leo Nguyen – RegisterPage component (fixed API path + nicer errors)
+// Leo Nguyen – RegisterPage component (uses fullName; backward-compatible payload)
+// Run inside your React Router app
 
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -12,7 +13,7 @@ import { Button } from "../components/ui/Button";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  // Point to the API root.  In production the Express app is mounted under /api.
+  // Backend root (no trailing slash)
   const API_ROOT = "https://cosc-4353-backend.vercel.app";
 
   const {
@@ -21,7 +22,7 @@ export default function RegisterPage() {
     watch,
     formState: { errors },
   } = useForm({
-    defaultValues: { name: "", email: "", password: "", confirm: "" },
+    defaultValues: { fullName: "", email: "", password: "", confirm: "" },
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,32 +30,34 @@ export default function RegisterPage() {
   const onSubmit = async (formData) => {
     setLoading(true);
     try {
+      const payload = {
+        fullName: formData.fullName, // new key used by updated backend
+        name: formData.fullName,     // legacy fallback (safe to remove later)
+        email: formData.email,
+        password: formData.password,
+      };
+
       const res = await fetch(`${API_ROOT}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      // If the response isn’t JSON (e.g. CORS blocked), fall back gracefully
+      // Try to parse JSON, tolerate non‑JSON error bodies
       let data = {};
       try {
         data = await res.json();
       } catch {
-        /* ignore */
+        /* ignore parse errors */
       }
 
       if (!res.ok) {
-        // Show whatever message came back or a generic one
         toast.error(data.message || `Registration failed (${res.status})`);
       } else {
         toast.success("Registered successfully");
         localStorage.setItem(
-          "flashMessages",
-          JSON.stringify(["Registration successful. Please log in."])
+            "flashMessages",
+            JSON.stringify(["Registration successful. Please log in."])
         );
         navigate("/login");
       }
@@ -76,27 +79,27 @@ export default function RegisterPage() {
             </h1>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Name */}
+              {/* Full Name */}
               <div>
                 <label
-                    htmlFor="name"
+                    htmlFor="fullName"
                     className="block text-sm font-medium text-gray-300 mb-2"
                 >
                   Full Name
                 </label>
                 <input
-                    id="name"
+                    id="fullName"
                     type="text"
-                    {...register("name", {
+                    {...register("fullName", {
                       required: "Name required",
                       maxLength: 255,
                     })}
                     placeholder="Your name"
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                {errors.name && (
+                {errors.fullName && (
                     <p className="text-red-400 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.fullName.message}
                     </p>
                 )}
               </div>
@@ -143,7 +146,10 @@ export default function RegisterPage() {
                     type="password"
                     {...register("password", {
                       required: "Password required",
-                      minLength: 6,
+                      minLength: {
+                        value: 6,
+                        message: "At least 6 characters",
+                      },
                       maxLength: 255,
                     })}
                     placeholder="********"
