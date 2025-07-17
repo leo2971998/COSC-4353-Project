@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+import eventRoutes from "./routes/eventRoutes.js";
+
 const app = express();
 
 // ───────────────────────────────────────────────────────────────
@@ -51,6 +53,14 @@ app.use(express.urlencoded({ extended: true }));
 
 const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
+
+// Using the event routes
+app.use("/", eventRoutes);
+
+// Starts the server on port 3000
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000")});
+
 // ───────────────────────────────────────────────────────────────
 // Routes
 // ───────────────────────────────────────────────────────────────
@@ -85,6 +95,7 @@ app.post("/register", async (req, res) => {
         console.error("Register error:", err);
         res.status(500).json({ message: "Server error" });
     }
+
 });
 
 // Login
