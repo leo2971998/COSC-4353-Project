@@ -16,6 +16,7 @@ import AdminPage from "../pages/AdminPage.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
+import VolunteerDashboard from "../pages/VolunteerDashboard.jsx";
 
 function RequireAuth({ children, role }) {
   const stored = localStorage.getItem("user");
@@ -80,6 +81,7 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
       </Routes>
     </Router>
   );
