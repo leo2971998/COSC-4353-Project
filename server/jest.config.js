@@ -1,5 +1,7 @@
 export default {
   testEnvironment: 'node',
+  extensionsToTreatAsEsm: ['.js'],
+  transform: {},
   collectCoverage: true,
   collectCoverageFrom: [
     'app/**/*.js'
