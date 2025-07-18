@@ -13,11 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "babel": "^5.8.38",
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "mysql2": "^3.6.0",
     "bcryptjs": "^2.4.3",
-    "dotenv": "^16.3.1"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.14.2"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1752521120708" clover="3.2.0">
-  <project timestamp="1752521120708" name="All files">
-    <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2" elements="6" coveredelements="6" complexity="0" loc="4" ncloc="4" packages="1" files="1" classes="1"/>
-    <file name="eventController.js" path="C:\Users\isrtr\OneDrive\Desktop\Programming\Software_Design_Project\server\controllers\eventController.js">
+<coverage generated="1752811875119" clover="3.2.0">
+  <project timestamp="1752811875120" name="All files">
+    <metrics statements="31" coveredstatements="30" conditionals="14" coveredconditionals="13" methods="10" coveredmethods="10" elements="55" coveredelements="53" complexity="0" loc="31" ncloc="31" packages="1" files="3" classes="3"/>
+    <file name="eventController.js" path="/Users/ishansunesara/COSC-4353-Project/server/controllers/eventController.js">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <line num="1" count="1" type="stmt"/>
       <line num="4" count="2" type="stmt"/>
       <line num="5" count="2" type="stmt"/>
       <line num="9" count="2" type="stmt"/>
+    </file>
+    <file name="matchController.js" path="/Users/ishansunesara/COSC-4353-Project/server/controllers/matchController.js">
+      <metrics statements="12" coveredstatements="12" conditionals="10" coveredconditionals="10" methods="4" coveredmethods="4"/>
+      <line num="5" count="2" type="stmt"/>
+      <line num="6" count="2" type="stmt"/>
+      <line num="8" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="9" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="2" type="stmt"/>
+      <line num="15" count="2" type="stmt"/>
+      <line num="16" count="2" type="stmt"/>
+      <line num="20" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="25" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="27" count="2" type="cond" truecount="4" falsecount="0"/>
+      <line num="30" count="1" type="stmt"/>
+    </file>
+    <file name="notificationsController.js" path="/Users/ishansunesara/COSC-4353-Project/server/controllers/notificationsController.js">
+      <metrics statements="15" coveredstatements="14" conditionals="4" coveredconditionals="3" methods="4" coveredmethods="4"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="9" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="3" type="stmt"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="23" count="1" type="cond" truecount="3" falsecount="1"/>
+      <line num="24" count="0" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="35" count="1" type="stmt"/>
     </file>
   </project>
 </coverage>

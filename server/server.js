@@ -10,6 +10,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import eventRoutes from "./routes/eventRoutes.js";
+import matchRoutes from "./routes/match.js";
+import notificationRoutes from './routes/notifications.js';
 
 const app = express();
 
@@ -56,6 +58,12 @@ const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
 // Using the event routes
 app.use("/", eventRoutes);
+
+//ISHAN VOLUNTEER MATCHING TEST
+app.use('/api/match', matchRoutes);
+
+//ISHAN NOTIFCATION TEST
+app.use('/api/notifications', notificationRoutes);
 
 // Starts the server on port 3000
 app.listen(3000, () => {
