@@ -1,9 +1,18 @@
 import Navbar from "../components/Navbar";
+import { NextEventCard } from "../components/VolunteerDashboard/NextEventCard";
 import { WelcomeBanner } from "../components/VolunteerDashboard/WelcomeBanner";
 
 export default function VolunteerDashboard() {
   const backendData = {
     name: "Sthiber",
+    nextEvent: {
+      eventName: "Community Food Drive",
+      date: "Dec 12, 2024",
+      time: "9:00 AM - 12:00 PM",
+      location: "Downtown Community Center",
+      category: "Food Distribution",
+      eventID: "1",
+    },
   };
   return (
     <>
@@ -12,7 +21,9 @@ export default function VolunteerDashboard() {
         <div className="container mx-auto px-4 py-6">
           <WelcomeBanner name={backendData.name} />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-            <div className="lg:col-span-2"></div>
+            <div className="lg:col-span-2">
+              <NextEventCard />
+            </div>
           </div>
         </div>
       </div>
