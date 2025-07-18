@@ -1,7 +1,8 @@
 let nextId = 1;
-const users = new Map();       // id -> { id, name, email, passwordHash, role }
-const emailIndex = new Map();  // email -> id
-const profiles = new Map();    // userId -> { ... }
+
+const users = new Map();
+const emailIndex = new Map();
+const profiles = new Map();
 
 export function resetRepo() {
   nextId = 1;
@@ -34,7 +35,12 @@ export async function upsertProfile(userId, data) {
 }
 
 export async function listUsers() {
-  return Array.from(users.values()).map(({ id, name, email, role }) => ({ id, name, email, role }));
+  return Array.from(users.values()).map(({ id, name, email, role }) => ({
+    id,
+    name,
+    email,
+    role
+  }));
 }
 
 export async function updateUserRole(userId, role) {

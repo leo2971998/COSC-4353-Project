@@ -1,3 +1,7 @@
+console.log("[validators.js] userId check test:", (function() {
+  const userId = -1;
+  return typeof userId !== "number" || !Number.isInteger(userId) || userId <= 0;
+})());
 export function isValidEmail(email) {
   return typeof email === "string" &&
          email.length <= 255 &&
@@ -27,8 +31,16 @@ export function validateProfileInput(data) {
     skills, preferences, availability
   } = data;
   const errors = {};
-  if (!userId || typeof userId !== "number") errors.userId = "userId required";
+  console.log("[validateProfileInput] received userId:", userId, "isInt?", Number.isInteger(userId));
 
+  if (
+      typeof userId !== "number" ||
+      !Number.isInteger(userId) ||
+      userId <= 0
+  ) {
+    console.log("[validateProfileInput] marking userId invalid for value:", userId);
+    errors.userId = "userId required";
+  }
   const str = (v) => v == null || typeof v === "string";
 
   if (!str(address1) || (address1 && address1.length > 100)) errors.address1 = "address1 invalid";

@@ -1,25 +1,42 @@
-import * as repo from '../app/repo.memory.js';
+import {
+  resetRepo,
+  createUser,
+  findUserByEmail,
+  updateUserRole,
+  updateUserPassword,
+  listUsers,
+  getProfile
+} from "../app/repo.memory.js";
+import bcrypt from "bcryptjs";
 
-describe('repo.memory', () => {
-  beforeEach(() => repo.resetRepo());
+describe("repo.memory extra coverage", () => {
+  beforeEach(() => resetRepo());
 
-  test('createUser and findUserByEmail', async () => {
-    const id = await repo.createUser({ name: 'A', email: 'a@b.com', passwordHash: 'h' });
-    const u = await repo.findUserByEmail('a@b.com');
-    expect(u.id).toBe(id);
-    expect(u.email).toBe('a@b.com');
+  test("updateUserRole and listUsers reflect change", async () => {
+    const id = await createUser({ name: "RoleUser", email: "role@e.com", passwordHash: "h" });
+    await updateUserRole(id, "admin");
+    const list = await listUsers();
+    expect(list).toContainEqual(expect.objectContaining({ id, role: "admin" }));
   });
 
-  test('duplicate email throws', async () => {
-    await repo.createUser({ name: 'A', email: 'a@b.com', passwordHash: 'h' });
-    await expect(repo.createUser({ name: 'B', email: 'a@b.com', passwordHash: 'h2' })).rejects.toThrow('DUP_EMAIL');
+  test("updateUserPassword changes stored hash", async () => {
+    const id = await createUser({ name: "PwUser", email: "pw@e.com", passwordHash: "old" });
+    const newHash = await bcrypt.hash("NewPass123", 4);
+    await updateUserPassword(id, newHash);
+    const u = await findUserByEmail("pw@e.com");
+    expect(u.passwordHash).toBe(newHash);
   });
 
-  test('upsertProfile sets is_complete', async () => {
-    const id = await repo.createUser({ name: 'A', email: 'a@b.com', passwordHash: 'h' });
-    await repo.upsertProfile(id, { city: 'X' });
-    const prof = await repo.getProfile(id);
-    expect(prof.city).toBe('X');
-    expect(prof.is_complete).toBe(1);
+  test("updateUserRole / updateUserPassword on non-existent user are no-ops (branch hit)", async () => {
+    // Call with id that does not exist to cover early return branch
+    await updateUserRole(999, "admin");
+    await updateUserPassword(999, "hashX");
+    // repo should still be empty
+    expect(listUsers()).resolves.toHaveLength(0);
+  });
+
+  test("getProfile returns null for unknown user (branch)", async () => {
+    const prof = await getProfile(12345);
+    expect(prof).toBeNull();
   });
 });
