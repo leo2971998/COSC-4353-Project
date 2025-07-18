@@ -15,5 +15,4 @@ npm-debug.log*
 # Optional: if using build tools
 dist/
 build/
-
 coverage/
