@@ -6,8 +6,9 @@ import cors from "cors";
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
-
 import eventRoutes from "./routes/eventRoutes.js";
+import matchRoutes from "./routes/match.js";
+import notificationRoutes from './routes/notifications.js';
 import historyRoutes from "./routes/historyRoutes.js";
 dotenv.config();
 
@@ -54,6 +55,12 @@ app.use(express.urlencoded({ extended: true }));
 const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
 // Using the event routes
+
+//ISHAN VOLUNTEER MATCHING TEST
+app.use('/api/match', matchRoutes);
+
+//ISHAN NOTIFCATION TEST
+app.use('/api/notifications', notificationRoutes);
 
 // Starts the server on port 3000
 app.listen(3000, () => {
