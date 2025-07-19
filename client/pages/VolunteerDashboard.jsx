@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import { NextEventCard } from "../components/VolunteerDashboard/NextEventCard";
+import { SuggestedEvents } from "../components/VolunteerDashboard/SuggestedEvents";
 import { WelcomeBanner } from "../components/VolunteerDashboard/WelcomeBanner";
 
 export default function VolunteerDashboard() {
@@ -14,6 +15,16 @@ export default function VolunteerDashboard() {
       eventID: "1",
     },
   };
+
+  const suggestedEvents = [
+    {
+      eventID: 1,
+      eventName: "Park Cleanup",
+      percentMatch: 95,
+      date: "Dec 23, 2024",
+      time: "4:30 PM",
+    },
+  ];
   return (
     <>
       <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
@@ -30,6 +41,7 @@ export default function VolunteerDashboard() {
                 category={backendData.nextEvent.category}
                 event={backendData.nextEvent.eventID}
               />
+              <SuggestedEvents suggestedEvents={suggestedEvents} />
             </div>
           </div>
         </div>
