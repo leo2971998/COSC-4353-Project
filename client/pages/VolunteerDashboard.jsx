@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import { NextEventCard } from "../components/VolunteerDashboard/NextEventCard";
+import { NotificationsPanel } from "../components/VolunteerDashboard/NotificationPanel";
 import { SuggestedEvents } from "../components/VolunteerDashboard/SuggestedEvents";
 import { WelcomeBanner } from "../components/VolunteerDashboard/WelcomeBanner";
 
@@ -25,6 +26,17 @@ export default function VolunteerDashboard() {
       time: "4:30 PM",
     },
   ];
+
+  const notifications = [
+    {
+      id: 1,
+      type: "invite",
+      eventName: "New Assignment Invitation",
+      message: "You've been invited to volunteer at the Community Food Drive.",
+      time: "2 hours ago",
+      actionRequired: true,
+    },
+  ];
   return (
     <>
       <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
@@ -43,6 +55,7 @@ export default function VolunteerDashboard() {
               />
               <SuggestedEvents suggestedEvents={suggestedEvents} />
             </div>
+            <NotificationsPanel notifications={notifications} />
           </div>
         </div>
       </div>
