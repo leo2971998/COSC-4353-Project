@@ -22,7 +22,14 @@ export default function VolunteerDashboard() {
           <WelcomeBanner name={backendData.name} />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
             <div className="lg:col-span-2">
-              <NextEventCard />
+              <NextEventCard
+                eventName={backendData.nextEvent.eventName}
+                date={backendData.nextEvent.date}
+                time={backendData.nextEvent.time}
+                location={backendData.nextEvent.location}
+                category={backendData.nextEvent.category}
+                event={backendData.nextEvent.eventID}
+              />
             </div>
           </div>
         </div>
