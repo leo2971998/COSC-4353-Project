@@ -237,6 +237,9 @@ app.get("/profile/:userId", async (req, res) => {
   }
 });
 
+// Create Event
+
+
 // Admin utilities
 app.get("/users", async (_req, res) => {
   try {
