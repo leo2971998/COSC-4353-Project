@@ -44,3 +44,12 @@ CREATE TABLE volunteer_history (
   FOREIGN KEY (volunteer_id) REFERENCES login(id),
   FOREIGN KEY (event_id) REFERENCES event_details(event_id)
 );
+CREATE TABLE eventManage (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    eventName VARCHAR(255) NOT NULL,
+    eventDescription TEXT,
+    location TEXT,
+    skills VARCHAR(255),
+    urgency ENUM('low', 'medium', 'high') DEFAULT 'low',
+    eventDate VARCHAR(255)
+)
