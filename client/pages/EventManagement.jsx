@@ -102,6 +102,7 @@ export default function EventManagement(){
       console.log("Removed date:", date);
     };
 
+    // --- Backend Handling ---
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Form submitted: ", manageData);
@@ -126,6 +127,7 @@ export default function EventManagement(){
         }
     };
     
+    // --- Validation ---
     const validateForm = () => {
         const newErrors = {};
 

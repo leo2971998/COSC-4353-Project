@@ -238,6 +238,72 @@ app.get("/profile/:userId", async (req, res) => {
 });
 
 // Create Event
+app.post("/createEvent", async (req, res) => {
+  const {
+    userId,
+    eventName,
+    eventDescription,
+    location,
+    skills,
+    urgency,
+    eventDate
+  } = req.body;
+  if (!userId) return res.status(400).json({ message: "userId required" });
+
+  if (
+    (eventName && eventName.length > 100) ||
+    (eventDescription && eventDescription.length > 1000) ||
+    (location && location.length > 1000) ||
+    (skills && skills.length > 255) ||
+    (urgency && urgency.length > 20) ||
+    (eventDate && eventDate.length > 255)
+  ) {
+    return res.status(400).json({ message: "Invalid field lengths" });
+  }
+
+  try {
+    await db.query(
+      `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
+        VALUES(?, ?, ?, ?, ?, ?, ?)
+          ON DUPLICATE KEY UPDATE
+                            eventName         = VALUES(eventName),
+                            eventDescription  = VALUES(eventDescription),
+                            location          = VALUES(location),
+                            skills            = VALUES(skills),
+                            urgency           = VALUES(urgency), 
+                            eventDate         = VALUES(eventDate)`,
+      [
+        userId,
+        eventName || null,
+        eventDescription || null,
+        location || null,
+        skills || null,
+        urgency || null
+      ]
+    );
+    res.json({ message: "Event saved"});
+  } catch (err) {
+    console.error("Event save error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Retrieve Event
+app.get("/createEvent/:userId", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT user_id, eventName, eventDescription, location, skills, urgency
+              FROM eventManage WHERE user_id = ?`,
+      [req.params.userId]
+    );
+    if (!rows.length)
+      return res.status(404).json({ message: "Event not found" });
+    res.json(rows[0]);
+  } catch (err) {
+    console.log("Event fetch error:", err);
+    res.status(500).json({ message: "Event error" });
+  }
+});
 
 
 // Admin utilities
