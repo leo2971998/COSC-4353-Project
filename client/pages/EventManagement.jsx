@@ -7,8 +7,6 @@ import Location from "../components/EventManagement/Location";
 import RequiredSkills from "../components/EventManagement/RequiredSkills";
 import Urgency from "../components/EventManagement/Urgency";
 import EventDate from "../components/EventManagement/EventDate"
-import Availability from "../components/CompleteProfile/Availability";
-import { STATES } from "../components/CompleteProfile/STATES";
 import { Button } from "../components/ui/Button";
 
 // Test to see if I can see changes in console:
@@ -100,17 +98,9 @@ export default function EventManagement(){
       }
     };
 
-    const handleUrgencyToggle = () => {
-      console.log("Urgency toggled");
-    };
-
     const handleDateRemove = (date) => {
       console.log("Removed date:", date);
     };
-
-    const [isUrgencyOpen, setIsUrgencyOpen] = useState(false);
-
-    const urgencyOptions = ["Low", "Medium", "High"];
 
     const handleSubmit = async (e) => {
         e.preventDefault();

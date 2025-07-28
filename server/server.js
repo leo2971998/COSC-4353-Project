@@ -315,6 +315,8 @@ app.get("/skills", async (_req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+// Create Event
+
 
 // Admin utilities
 app.get("/users", async (_req, res) => {
