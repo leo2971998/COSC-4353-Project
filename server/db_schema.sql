@@ -20,3 +20,13 @@ CREATE TABLE profile (
     is_complete TINYINT(1) DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES login(id)
 );
+
+CREATE TABLE eventManage (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    eventName VARCHAR(255) NOT NULL,
+    eventDescription TEXT,
+    location TEXT,
+    skills VARCHAR(255),
+    urgency ENUM('low', 'medium', 'high') DEFAULT 'low',
+    eventDate VARCHAR(255)
+)
