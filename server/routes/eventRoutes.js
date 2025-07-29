@@ -1,10 +1,11 @@
 import express from "express";
+import db from "../db.js";
 import { createEvent } from "../controllers/eventController.js";
 
 const router = express.Router();
 
 // Temporary array to hold event data in-memory
-let events = [];
+// let events = [];
 
 // Logging incoming requests:
 router.use((req, res, next) => {
@@ -12,22 +13,41 @@ router.use((req, res, next) => {
   next();
 });
 
-// POST route to create a new event
-router.post("/events", (req, res) => {
-  const eventData = req.body;
-  console.log("Event data received:", eventData);
+// Route to save event to MySQL
+router.post("/events", async (req, res) => {
+  console.log("Received Body:", req.body);
+  const {
+    eventName,
+    eventDescription,
+    location,
+    skills,
+    urgency,
+    eventDate,
+    userId,
+  } = req.body;
 
-  // For now, just push it into the in-memory array
-  // events.push(eventData);
+  if (!userId) return res.status(400).json({ message: "userId required" });
 
-  // Using the controller function to handle the logic
-  const newEvent = createEvent(eventData);
+  try {
+    await db.query(
+      `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        userId,
+        eventName || null,
+        eventDescription || null,
+        location || null,
+        skills || null,
+        urgency || null,
+        eventDate || null,
+      ]
+    );
 
-  // Respond to the client
-  res.status(201).json({
-    message: "Event created successfully",
-    event: newEvent,
-  });
+    res.status(200).json({ message: "Event saved" });
+  } catch (err) {
+    console.error("Event save error:", err);
+    res.status(500).json({ message: "Server error", error: err });
+  }
 });
 
 export default router;
