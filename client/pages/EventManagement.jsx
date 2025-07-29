@@ -14,8 +14,9 @@ console.log("Hello")
 
 // Main Function:
 export default function EventManagement(){
+  const navigate = useNavigate();
+  const API_URL = "https://cosc-4353-backend.vercel.app";
 
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [manageData, setManageData] = useState({
     // Event Features:
     eventName: "",
@@ -26,8 +27,34 @@ export default function EventManagement(){
     eventDate: [],
   });
 
+  // --- Local UI State ---
+  const [errors, setErrors] = useState({});
+  const [isSkillsOpen, setIsSkillsOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Hard-coded skill options for now. Replace with API later if needed.
+  const skillOptions = [
+    "Teaching & Education",
+    "Healthcare & Medical",
+    "Technology & IT",
+    "Construction & Manual Labor",
+    "Event Planning",
+    "Marketing & Communications",
+    "Food Service & Preparation",
+    "Administrative Support",
+    "Childcare & Youth Programs",
+    "Senior Care",
+    "Environmental & Conservation",
+    "Arts & Creative",
+    "Legal & Advocacy",
+    "Transportation",
+    "Language Translation",
+    "Financial & Accounting",
+  ];
+
+  // Verifies that all event features are filled out:
   useEffect(() => {
-    // Verifies that all event features are filled out:
     const changed =
       manageData.eventName ||
       manageData.eventDescription ||
@@ -38,50 +65,19 @@ export default function EventManagement(){
     setHasUnsavedChanges(changed);
   }, [manageData]);
 
-    useEffect(() => {
-        const handleBeforeUnload = (e) => {
-          if (
-            manageData.eventName ||
-            manageData.eventDescription ||
-            manageData.location ||
-            manageData.requiredSkills.length > 0 ||
-            manageData.urgency ||
-            manageData.eventDate.length > 0
-          ) {
-            e.preventDefault();
-            e.returnValue = ""; // Required to show browser prompt
-          }
-        };
-    
-        window.addEventListener("beforeunload", handleBeforeUnload);
-    
-        return () => {
-          window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [manageData]);
-
-    const skillOptions = [
-        "Teaching & Education",
-        "Healthcare & Medical",
-        "Technology & IT",
-        "Construction & Manual Labor",
-        "Event Planning",
-        "Marketing & Communications",
-        "Food Service & Preparation",
-        "Administrative Support",
-        "Childcare & Youth Programs",
-        "Senior Care",
-        "Environmental & Conservation",
-        "Arts & Creative",
-        "Legal & Advocacy",
-        "Transportation",
-        "Language Translation",
-        "Financial & Accounting",
-    ];
-
-    const [errors, setErrors] = useState({});
-    const [isSkillsOpen, setIsSkillsOpen] = useState(false);
-    const [selectedDate, setSelectedDate] = useState("");
+  // Warn on page unload if unsaved changes
+  useEffect(() => {
+      const handleBeforeUnload = (e) => {
+        if (hasUnsavedChanges) {
+          e.preventDefault();
+          e.returnValue = ""; // Required to show browser prompt
+        }
+      };
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+  }, [hasUnsavedChanges]);
 
     const handleInputChange = (field, value) => {
       const normalizedValue = field === "state" ? value.toUpperCase() : value;
@@ -99,44 +95,44 @@ export default function EventManagement(){
     };
 
     const handleDateRemove = (date) => {
-      console.log("Removed date:", date);
-    };
+          console.log("Removed date:", date);
+        };
 
     // --- Backend Handling ---
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log("Form submitted: ", manageData);
-        const userId = localStorage.getItem("userId")
-        if (!userId) {
-          alert("Please log in first.");
-          return;
-        }
+      e.preventDefault();
+      if (!validateForm()) return;
 
-        if (validateForm()) {
-          // Make a POST request to the backend storing this info in the database.
-          // console.log("Form submitted: ", manageData);
-          try {
-            console.log("About to send POST request...");
-            const response = await fetch("http://localhost:3000/events", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                ...manageData,
-                userId,
-                skills: manageData.requiredSkills.join(","),
-                eventDate: manageData.eventDate.join(",")
-              }),
-            });
+      const userId = localStorage.getItem("userId"); // pull from storage
+      if (!userId) { 
+        alert("Please log in first"); 
+        return; 
+      }
 
-            const result = await response.json();
-            console.log("Server Response:", result);
-          } catch (error) {
-            console.error("Error Submitting Event:", error);
-          }
-        }
+      const payload = {
+        userId,
+        eventName: manageData.eventName,
+        eventDescription: manageData.eventDescription,
+        location: manageData.location,
+        skills: manageData.requiredSkills.join(","), // convert array to string
+        urgency: manageData.urgency,
+        eventDate: manageData.eventDate.join(",") // convert array to string
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/events`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        console.log("Server Response:", result);
+      } catch (error) {
+        console.error("Error submitting event:", error);
+      }
     };
+
     
     // --- Validation ---
     const validateForm = () => {

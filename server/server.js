@@ -316,6 +316,7 @@ app.get("/skills", async (_req, res) => {
   }
 });
 // Create Event
+// Create Event
 app.post("/events", async (req, res) => {
   const {
     eventName,
@@ -326,25 +327,13 @@ app.post("/events", async (req, res) => {
     eventDate,
     userId
   } = req.body;
+
   if (!userId) return res.status(400).json({ message: "userId required" });
-
-  console.log("Inserting event with data:");
-
-  if (
-    (eventName && eventName.length > 100) ||
-    (eventDescription && eventDescription.length > 1000) ||
-    (location && location.length > 1000) ||
-    (skills && skills.length > 255) ||
-    (urgency && urgency.length > 20) ||
-    (eventDate && eventDate.length > 255)
-  ) {
-    return res.status(400).json({ message: "Invalid field lengths" });
-  }
 
   try {
     await db.query(
       `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         userId,
         eventName || null,
@@ -355,12 +344,14 @@ app.post("/events", async (req, res) => {
         eventDate || null
       ]
     );
-    res.json({ message: "Event saved"});
+
+    res.status(200).json({ message: "Event saved" });
   } catch (err) {
     console.error("Event save error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: err });
   }
 });
+
 
 // Retrieve Event
 app.get("/events/:userId", async (req, res) => {
