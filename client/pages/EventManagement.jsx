@@ -106,21 +106,32 @@ export default function EventManagement(){
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Form submitted: ", manageData);
+        const userId = localStorage.getItem("userId")
+        if (!userId) {
+          alert("Please log in first.");
+          return;
+        }
+
         if (validateForm()) {
           // Make a POST request to the backend storing this info in the database.
           // console.log("Form submitted: ", manageData);
-          try{
+          try {
             console.log("About to send POST request...");
             const response = await fetch("http://localhost:3000/events", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(manageData),
+              body: JSON.stringify({
+                ...manageData,
+                userId,
+                skills: manageData.requiredSkills.join(","),
+                eventDate: manageData.eventDate.join(",")
+              }),
             });
+
             const result = await response.json();
             console.log("Server Response:", result);
-            
           } catch (error) {
             console.error("Error Submitting Event:", error);
           }

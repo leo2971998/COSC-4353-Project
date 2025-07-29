@@ -238,17 +238,19 @@ app.get("/profile/:userId", async (req, res) => {
 });
 
 // Create Event
-app.post("/createEvent", async (req, res) => {
+app.post("/events", async (req, res) => {
   const {
-    userId,
     eventName,
     eventDescription,
     location,
     skills,
     urgency,
-    eventDate
+    eventDate,
+    userId
   } = req.body;
   if (!userId) return res.status(400).json({ message: "userId required" });
+
+  console.log("Inserting event with data:");
 
   if (
     (eventName && eventName.length > 100) ||
@@ -264,21 +266,15 @@ app.post("/createEvent", async (req, res) => {
   try {
     await db.query(
       `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
-        VALUES(?, ?, ?, ?, ?, ?, ?)
-          ON DUPLICATE KEY UPDATE
-                            eventName         = VALUES(eventName),
-                            eventDescription  = VALUES(eventDescription),
-                            location          = VALUES(location),
-                            skills            = VALUES(skills),
-                            urgency           = VALUES(urgency), 
-                            eventDate         = VALUES(eventDate)`,
+      VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         userId,
         eventName || null,
         eventDescription || null,
         location || null,
         skills || null,
-        urgency || null
+        urgency || null,
+        eventDate || null
       ]
     );
     res.json({ message: "Event saved"});
@@ -289,7 +285,7 @@ app.post("/createEvent", async (req, res) => {
 });
 
 // Retrieve Event
-app.get("/createEvent/:userId", async (req, res) => {
+app.get("/events/:userId", async (req, res) => {
   try {
     const [rows] = await db.query(
       `SELECT user_id, eventName, eventDescription, location, skills, urgency

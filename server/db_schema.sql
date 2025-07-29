@@ -28,5 +28,6 @@ CREATE TABLE eventManage (
     location TEXT,
     skills VARCHAR(255),
     urgency ENUM('low', 'medium', 'high') DEFAULT 'low',
-    eventDate VARCHAR(255)
+    eventDate VARCHAR(255),
+    user_id INT NOT NULL
 )
