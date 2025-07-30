@@ -32,14 +32,14 @@ CREATE TABLE eventManage (
     user_id INT NOT NULL
 )
 
-CREATE TABLE IF NOT EXISTS eventManage (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  eventName VARCHAR(100),
-  eventDescription TEXT,
-  location TEXT,
-  skills VARCHAR(255),
-  urgency ENUM('low', 'medium', 'high') DEFAULT 'low',
-  eventDate VARCHAR(255),
-  FOREIGN KEY (user_id) REFERENCES login(id)
+CREATE TABLE eventManage (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    eventName VARCHAR(100),
+    eventDescription TEXT,
+    location TEXT,
+    skills VARCHAR(255),
+    urgency ENUM('calm', 'moderate', 'severe') DEFAULT 'calm',
+    eventDate VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES login(id)
 );
