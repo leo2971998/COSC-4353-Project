@@ -14,7 +14,9 @@ export default function VolunteerDashboard() {
       time: "9:00 AM - 12:00 PM",
       location: "Downtown Community Center",
       category: "Food Distribution",
-      eventID: null,
+      eventInfo:
+        "This is a more detailed view of the upcoming event. You can add more fields or interactive options here like RSVP, contact info, or notes.",
+      eventID: 1,
     },
   };
 
@@ -70,6 +72,7 @@ export default function VolunteerDashboard() {
                 time={nextEventData.nextEvent.time}
                 location={nextEventData.nextEvent.location}
                 category={nextEventData.nextEvent.category}
+                eventInfo={nextEventData.nextEvent.eventInfo}
                 event={nextEventData.nextEvent.eventID}
               />
               <SuggestedEvents suggestedEvents={suggestedEvents} />
