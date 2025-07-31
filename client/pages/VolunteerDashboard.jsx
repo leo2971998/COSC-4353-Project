@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import { CalendarView } from "../components/VolunteerDashboard/Calendar";
 import { NextEventCard } from "../components/VolunteerDashboard/NextEventCard";
 import { NotificationsPanel } from "../components/VolunteerDashboard/NotificationPanel";
 import { SuggestedEvents } from "../components/VolunteerDashboard/SuggestedEvents";
@@ -54,6 +55,7 @@ export default function VolunteerDashboard() {
                 event={backendData.nextEvent.eventID}
               />
               <SuggestedEvents suggestedEvents={suggestedEvents} />
+              <CalendarView />
             </div>
             <NotificationsPanel notifications={notifications} />
           </div>
