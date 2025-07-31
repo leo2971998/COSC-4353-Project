@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import Description from "../components/EventManagement/Description";
 import EventInfo from "../components/EventManagement/EventInfo";
 import Location from "../components/EventManagement/Location";
-import RequiredSkills from "../components/EventManagement/RequiredSkills";
+import SkillsSection from "../components/CompleteProfile/Skills";
 import Urgency from "../components/EventManagement/Urgency";
 import EventDate from "../components/EventManagement/EventDate"
 import { Button } from "../components/ui/Button";
@@ -27,7 +27,7 @@ export default function EventManagement(){
     eventName: "",
     eventDescription: "",
     location: "",
-    requiredSkills: [],
+    skills: [],
     urgency: "",
     eventDate: [],
   });
@@ -64,7 +64,7 @@ export default function EventManagement(){
       manageData.eventName ||
       manageData.eventDescription ||
       manageData.location ||
-      manageData.requiredSkills.length > 0 ||
+      manageData.skills.length > 0 ||
       manageData.urgency ||
       manageData.eventDate.length > 0;
     setHasUnsavedChanges(changed);
@@ -100,7 +100,7 @@ export default function EventManagement(){
             eventName: data.eventName ?? "",
             eventDescription: data.eventDescription ?? "",
             location: data.location ?? "",
-            requiredSkills: data.requiredSkills ? data.requiredSkills.split(/,\s*/): [],
+            skills: data.skills ? data.skills.split(/,\s*/) : [],
             urgency: data.urgency ?? "",
             eventDate: data.eventDate ? data.eventDate.split(/,\s*/): [],
           }));
@@ -125,9 +125,9 @@ export default function EventManagement(){
   const handleSkillToggle = (skill) => {
     setManageData((prev) => ({
     ...prev,
-    requiredSkills: prev.requiredSkills.includes(skill)
-        ? prev.requiredSkills.filter((s) => s !== skill)
-        : [...prev.requiredSkills, skill],
+      skills: prev.skills.includes(skill)
+          ? prev.skills.filter((s) => s !== skill)
+          : [...prev.skills, skill],
     }));
   };
 
@@ -166,8 +166,8 @@ export default function EventManagement(){
           newErrors.location = "Event Location is required";
       }
 
-      if (manageData.requiredSkills.length === 0){
-          newErrors.requiredSkills = "Please select at least one skill";
+      if (manageData.skills.length === 0){
+          newErrors.skills = "Please select at least one skill";
       }
 
       if (!manageData.urgency){
@@ -198,7 +198,7 @@ export default function EventManagement(){
       eventName: manageData.eventName,
       eventDescription: manageData.eventDescription,
       location: manageData.location,
-      skills: manageData.requiredSkills.join(","), // convert array to string
+      skills: manageData.skills.join(","), // convert array to string
       urgency: manageData.urgency,
       eventDate: manageData.eventDate.join(",") // convert array to string
     };
@@ -254,13 +254,13 @@ export default function EventManagement(){
                 onChange={(value) => handleInputChange("location", value)}
               />
 
-              <RequiredSkills
-                skills={manageData.requiredSkills}
-                error={errors.requiredSkills}
-                onToggle={handleSkillToggle}
-                isOpen={isSkillsOpen}
-                setIsOpen={setIsSkillsOpen}
-                skillOptions={skillOptions}
+              <SkillsSection
+                  skills={manageData.skills}
+                  error={errors.skills}
+                  onToggle={handleSkillToggle}
+                  isOpen={isSkillsOpen}
+                  setIsOpen={setIsSkillsOpen}
+                  skillOptions={skillOptions}
               />
 
               <Urgency
