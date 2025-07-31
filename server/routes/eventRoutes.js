@@ -53,4 +53,19 @@ router.post("/events", async (req, res) => {
   }
 });
 
+router.get("/events/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const [rows] = await db.promise().query(
+      "SELECT * FROM eventManage WHERE user_id = ?",
+      [userId]
+    );
+    res.json(rows); // Send rows to frontend
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
