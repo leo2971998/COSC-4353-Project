@@ -38,6 +38,24 @@ export default function VolunteerDashboard() {
       actionRequired: true,
     },
   ];
+
+  const upcomingEvents = [
+    {
+      date: new Date(2025, 7, 15),
+      title: "Community Food Drive",
+    },
+  ];
+
+  const allEvents = [
+    {
+      date: new Date(2025, 7, 15),
+      title: "Community Food Drive",
+    },
+    {
+      date: new Date(2024, 11, 22),
+      title: "Senior Care Visit",
+    },
+  ];
   return (
     <>
       <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
@@ -55,7 +73,10 @@ export default function VolunteerDashboard() {
                 event={backendData.nextEvent.eventID}
               />
               <SuggestedEvents suggestedEvents={suggestedEvents} />
-              <CalendarView />
+              <CalendarView
+                upcomingEvents={upcomingEvents}
+                allEvents={allEvents}
+              />
             </div>
             <NotificationsPanel notifications={notifications} />
           </div>

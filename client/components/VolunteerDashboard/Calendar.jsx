@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export const CalendarView = () => {
+export const CalendarView = ({ upcomingEvents, allEvents }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const daysInMonth = new Date(
@@ -45,17 +45,6 @@ export const CalendarView = () => {
     );
   };
 
-  const events = [
-    {
-      date: new Date(2025, 6, 15), // Dec 15, 2024
-      title: "Community Food Drive",
-    },
-    {
-      date: new Date(2024, 11, 22), // Dec 22, 2024
-      title: "Senior Care Visit",
-    },
-  ];
-
   const renderCalendarDays = () => {
     const days = [];
 
@@ -64,7 +53,7 @@ export const CalendarView = () => {
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const event = events.find(
+      const event = allEvents.find(
         (e) =>
           e.date.getDate() === day &&
           e.date.getMonth() === currentMonth.getMonth() &&
@@ -123,7 +112,7 @@ export const CalendarView = () => {
       <div className="grid grid-cols-7 gap-1">{renderCalendarDays()}</div>
       <div className="mt-4 pt-4 border-t border-gray-700">
         <h3 className="font-medium mb-2">Upcoming Confirmed Events</h3>
-        {events.map((event, index) => (
+        {upcomingEvents.map((event, index) => (
           <div
             key={index}
             className="bg-[#1a2035] rounded-lg p-3 mb-2 flex justify-between"
