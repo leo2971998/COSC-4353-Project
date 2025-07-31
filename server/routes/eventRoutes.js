@@ -18,7 +18,7 @@ router.get("/events", getEvents);
 
 // Route to save event to MySQL
 router.post("/events", async (req, res) => {
-  console.log("Received Body:", req.body);
+  console.log("2. Backend: Received Request Body", req.body);
   const {
     eventName,
     eventDescription,

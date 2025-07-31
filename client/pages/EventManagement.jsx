@@ -202,7 +202,7 @@ export default function EventManagement(){
       urgency: manageData.urgency,
       eventDate: manageData.eventDate.join(",") // convert array to string
     };
-    console.log("Sending payload", payload);
+    console.log("1. Frontend: Sending Payload", payload);
 
     try {
       const res = await fetch(`${API_URL}/events`, {
