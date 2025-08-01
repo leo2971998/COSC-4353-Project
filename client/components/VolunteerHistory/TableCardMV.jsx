@@ -61,30 +61,32 @@ export default function TableCardMV({ filteredHistory }) {
           {/* Card Header */}
           <div className="flex items-start justify-between mb-4">
             <h3 className="text-lg font-semibold text-white pr-4">
-              {event.eventName}
+              {event.event_name}
             </h3>
-            <div className={getStatusBadge(event.participationStatus)}>
-              {getStatusIcon(event.participationStatus)}
-              {event.participationStatus}
+            <div className={getStatusBadge(event.event_status)}>
+              {getStatusIcon(event.event_status)}
+              {event.event_status}
             </div>
           </div>
 
           {/* Card Content */}
           <div className="space-y-4">
             <p className="text-sm text-gray-400 leading-relaxed">
-              {event.eventDescription}
+              {event.event_description}
             </p>
 
             <div className="flex items-start">
               <MapPin className="w-4 h-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
-              <span className="text-sm text-gray-300">{event.location}</span>
+              <span className="text-sm text-gray-300">
+                {event.event_location}
+              </span>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 text-gray-400 mr-2" />
                 <span className="text-sm text-gray-300">
-                  {new Date(event.eventDate).toLocaleDateString("en-US", {
+                  {new Date(event.start_time).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -98,7 +100,7 @@ export default function TableCardMV({ filteredHistory }) {
             </div>
 
             <div className="flex flex-wrap gap-1">
-              {event.requiredSkills.map((skill, i) => (
+              {event.skills.split(",").map((skill, i) => (
                 <span
                   key={i}
                   className="inline-block px-2 py-1 bg-gray-600/50 text-gray-300 text-xs rounded-md"

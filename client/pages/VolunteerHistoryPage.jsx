@@ -11,17 +11,30 @@ export default function VolunteerHistoryPage() {
   const [volunteerHistory, setVolunteerHistory] = useState([]);
 
   // Fetches the data, makes a GET request to the backend path server/history <-- Calls the corresponding controller function there.
-  const fetchvolHistory = async () => {
+  // const fetchvolHistory = async () => {
+  //   try {
+  //     const response = await axios.get(`${API_URL}/history`);
+  //     setVolunteerHistory(response.data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch volunteer history: ", error);
+  //   }
+  // };
+
+  const getVolunteerHistory = async () => {
     try {
-      const response = await axios.get(`${API_URL}/history`);
-      setVolunteerHistory(response.data);
+      const userID = localStorage.getItem("userId");
+      console.log(userID);
+      const response = await axios.get(`${API_URL}/history/${userID}`);
+      setVolunteerHistory(response.data.volunteer_history);
+      console.log(volunteerHistory);
     } catch (error) {
-      console.error("Failed to fetch volunteer history: ", error);
+      console.error("Failed to fetch history:", error);
     }
   };
 
   useEffect(() => {
-    fetchvolHistory();
+    // fetchvolHistory();
+    getVolunteerHistory();
   }, []);
   return (
     <>

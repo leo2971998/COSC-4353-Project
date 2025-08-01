@@ -19,7 +19,7 @@ const db = mysql.createPool({
 // it will most likely be the user ID.
 export const query = async (sql, params) => {
   try {
-    const [results] = await pool.execute(sql, params);
+    const [results] = await db.execute(sql, params);
     return results;
   } catch (err) {
     throw err; // Forward the error for handling elsewhere
