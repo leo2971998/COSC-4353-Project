@@ -48,7 +48,7 @@ export default function CompleteProfile() {
 
   useEffect(() => {
     fetch(`${API_URL}/skills`)
-        .then((res) => (res.ok ? res.json() : []))
+        .then((res) => (res.ok ? res.json() : Promise.resolve([])))
         .then((data) => {
           if (Array.isArray(data)) setSkillOptions(data);
         })
