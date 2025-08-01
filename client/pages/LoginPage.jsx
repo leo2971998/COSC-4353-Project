@@ -67,9 +67,11 @@ export default function LoginPage() {
           JSON.stringify(["Login successful"])
       );
 
-      // Redirect based on profile completion
-      if (data.profileComplete) {
-        navigate("/");
+      // Redirect based on role and profile completion
+      if (data.role === "admin") {
+        navigate("/admin");
+      } else if (data.profileComplete) {
+        navigate("/volunteer-dashboard");
       } else {
         navigate("/complete-profile");
       }
