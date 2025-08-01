@@ -20,3 +20,29 @@ CREATE TABLE profile (
     is_complete TINYINT(1) DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES login(id)
 );
+
+
+CREATE TABLE event (
+    event_id INT AUTO_INCREMENT PRIMARY KEY,
+    event_name VARCHAR(255) NOT NULL,
+    event_location VARCHAR(255) NOT NULL,
+    urgency ENUM('high', 'medium', 'low') NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    description TEXT,
+    created_by INT NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES login(id)
+)
+
+CREATE TABLE volunteer_history (
+  history_id INT AUTO_INCREMENT PRIMARY KEY,
+  volunteer_id INT NOT NULL,
+  event_id INT NOT NULL,
+  participation_date DATE NOT NULL,
+  hours_served DOUBLE NOT NULL,
+  feedback TEXT,
+  rating INT,
+  event_status ENUM('attended', 'upcoming', 'missed'),
+  FOREIGN KEY (volunteer_id) REFERENCES login(id),
+  FOREIGN KEY (event_id) REFERENCES event_details(event_id)
+);
