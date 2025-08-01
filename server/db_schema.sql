@@ -19,7 +19,6 @@ CREATE TABLE profile (
     is_complete TINYINT(1) DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES login(id)
 );
-
 CREATE TABLE skill (
     skill_id INT AUTO_INCREMENT PRIMARY KEY,
     skill_name VARCHAR(100) NOT NULL UNIQUE
@@ -33,59 +32,15 @@ CREATE TABLE profile_skill (
     FOREIGN KEY (skill_id) REFERENCES skill(skill_id)
 );
 
-CREATE TABLE states (
-    code CHAR(2) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+CREATE TABLE volunteer_history (
+  history_id INT AUTO_INCREMENT PRIMARY KEY,
+  volunteer_id INT NOT NULL,
+  event_id INT NOT NULL,
+  participation_date DATE NOT NULL,
+  hours_served DOUBLE NOT NULL,
+  feedback TEXT,
+  rating INT,
+  event_status ENUM('attended', 'upcoming', 'missed'),
+  FOREIGN KEY (volunteer_id) REFERENCES login(id),
+  FOREIGN KEY (event_id) REFERENCES event_details(event_id)
 );
-
-INSERT INTO states (code, name) VALUES
-    ('AL', 'Alabama'),
-    ('AK', 'Alaska'),
-    ('AZ', 'Arizona'),
-    ('AR', 'Arkansas'),
-    ('CA', 'California'),
-    ('CO', 'Colorado'),
-    ('CT', 'Connecticut'),
-    ('DE', 'Delaware'),
-    ('FL', 'Florida'),
-    ('GA', 'Georgia'),
-    ('HI', 'Hawaii'),
-    ('ID', 'Idaho'),
-    ('IL', 'Illinois'),
-    ('IN', 'Indiana'),
-    ('IA', 'Iowa'),
-    ('KS', 'Kansas'),
-    ('KY', 'Kentucky'),
-    ('LA', 'Louisiana'),
-    ('ME', 'Maine'),
-    ('MD', 'Maryland'),
-    ('MA', 'Massachusetts'),
-    ('MI', 'Michigan'),
-    ('MN', 'Minnesota'),
-    ('MS', 'Mississippi'),
-    ('MO', 'Missouri'),
-    ('MT', 'Montana'),
-    ('NE', 'Nebraska'),
-    ('NV', 'Nevada'),
-    ('NH', 'New Hampshire'),
-    ('NJ', 'New Jersey'),
-    ('NM', 'New Mexico'),
-    ('NY', 'New York'),
-    ('NC', 'North Carolina'),
-    ('ND', 'North Dakota'),
-    ('OH', 'Ohio'),
-    ('OK', 'Oklahoma'),
-    ('OR', 'Oregon'),
-    ('PA', 'Pennsylvania'),
-    ('RI', 'Rhode Island'),
-    ('SC', 'South Carolina'),
-    ('SD', 'South Dakota'),
-    ('TN', 'Tennessee'),
-    ('TX', 'Texas'),
-    ('UT', 'Utah'),
-    ('VT', 'Vermont'),
-    ('VA', 'Virginia'),
-    ('WA', 'Washington'),
-    ('WV', 'West Virginia'),
-    ('WI', 'Wisconsin'),
-    ('WY', 'Wyoming');
