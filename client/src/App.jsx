@@ -13,6 +13,7 @@ import RegisterPage from "../pages/RegisterPage.jsx";
 import VolunteerMatchingForm from "../pages/VolunteerMatchingForm.jsx";
 import EventManagement from "../pages/EventManagement.jsx";
 import AdminPage from "../pages/AdminPage.jsx";
+import ManageUsers from "../pages/ManageUsers.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
@@ -81,7 +82,23 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route
+          path="/manage-users"
+          element={
+            <RequireAuth role="admin">
+              <ManageUsers />
+            </RequireAuth>
+          }
+        />
         <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
+        <Route
+          path="/admin/volunteer-dashboard"
+          element={
+            <RequireAuth role="admin">
+              <VolunteerDashboard />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </Router>
   );
