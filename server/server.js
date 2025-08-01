@@ -10,7 +10,6 @@ import eventRoutes from "./routes/eventRoutes.js";
 import matchRoutes from "./routes/match.js";
 import notificationRoutes from './routes/notifications.js';
 import historyRoutes from "./routes/historyRoutes.js";
-import statesRoutes from "./routes/statesRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -75,7 +74,6 @@ app.listen(PORT, () => {
 
 app.use("/", eventRoutes);
 app.use("/history", historyRoutes);
-app.use("/states", statesRoutes);
 
 // Register
 app.post("/register", async (req, res) => {
@@ -286,6 +284,17 @@ app.put("/users/:id/password", async (req, res) => {
     res.json({ message: "Password updated" });
   } catch (err) {
     console.error("Password update error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.delete("/users/:id", async (req, res) => {
+  try {
+    await db.query("DELETE FROM profile WHERE user_id = ?", [req.params.id]);
+    await db.query("DELETE FROM login WHERE id = ?", [req.params.id]);
+    res.json({ message: "User deleted" });
+  } catch (err) {
+    console.error("User delete error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
