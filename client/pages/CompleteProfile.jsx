@@ -44,25 +44,16 @@ export default function CompleteProfile() {
   const [selectedDate, setSelectedDate] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // Hard-coded skill options for now. Replace with API later if needed.
-  const skillOptions = [
-    "Teaching & Education",
-    "Healthcare & Medical",
-    "Technology & IT",
-    "Construction & Manual Labor",
-    "Event Planning",
-    "Marketing & Communications",
-    "Food Service & Preparation",
-    "Administrative Support",
-    "Childcare & Youth Programs",
-    "Senior Care",
-    "Environmental & Conservation",
-    "Arts & Creative",
-    "Legal & Advocacy",
-    "Transportation",
-    "Language Translation",
-    "Financial & Accounting",
-  ];
+  const [skillOptions, setSkillOptions] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/skills`)
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data) => {
+          if (Array.isArray(data)) setSkillOptions(data);
+        })
+        .catch(() => {});
+  }, [API_URL]);
 
   // Track unsaved change state
   useEffect(() => {
@@ -114,7 +105,11 @@ export default function CompleteProfile() {
             city: data.city ?? "",
             state: data.state ?? "",
             zipCode: data.zipCode ?? data.zip_code ?? "",
-            skills: data.skills ? data.skills.split(/,\s*/) : [],
+            skills: Array.isArray(data.skills)
+                ? data.skills
+                : data.skills
+                    ? data.skills.split(/,\s*/)
+                    : [],
             preferences: data.preferences ?? "",
             availability: data.availability ? data.availability.split(/,\s*/) : [],
           }));
