@@ -58,11 +58,21 @@ export default function ManageUsers() {
       }
     }
     if (editPassword) {
-      await fetch(`${API_URL}/users/${editUser.id}/password`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: editPassword }),
-      });
+      try {
+        const res = await fetch(`${API_URL}/users/${editUser.id}/password`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: editPassword }),
+        });
+        if (!res.ok) {
+          const { message } = await res.json().catch(() => ({ message: res.statusText }));
+          throw new Error(message);
+        }
+      } catch (err) {
+        console.error("[saveEdit:password]", err.message);
+        alert(`Could not update password: ${err.message}`);
+        return; // Do not close modal or refresh users if password update fails
+      }
     }
     setEditUser(null);
     fetchUsers();
