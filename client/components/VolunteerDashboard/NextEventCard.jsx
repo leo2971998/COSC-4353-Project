@@ -17,6 +17,21 @@ export const NextEventCard = ({
   event,
 }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const startTime = new Date(date).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  const endTime = new Date(time).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 
   return (
     <div className="bg-[#222b45] rounded-xl p-6 mb-6">
@@ -29,11 +44,13 @@ export const NextEventCard = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="flex items-center">
               <Calendar className="mr-3 text-indigo-400" size={18} />
-              <span>{date}</span>
+              <span>{formattedDate}</span>
             </div>
             <div className="flex items-center">
               <Clock className="mr-3 text-indigo-400" size={18} />
-              <span>{time}</span>
+              <span>
+                {startTime} - {endTime}
+              </span>
             </div>
             <div className="flex items-center">
               <MapPin className="mr-3 text-indigo-400" size={18} />
@@ -67,11 +84,13 @@ export const NextEventCard = ({
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center">
                     <Calendar className="mr-3 text-indigo-400" size={18} />
-                    <span>{date}</span>
+                    <span>{formattedDate}</span>
                   </div>
                   <div className="flex items-center">
                     <Clock className="mr-3 text-indigo-400" size={18} />
-                    <span>{time}</span>
+                    <span>
+                      {startTime} - {endTime}
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <MapPin className="mr-3 text-indigo-400" size={18} />
