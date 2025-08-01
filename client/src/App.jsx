@@ -82,6 +82,14 @@ function App() {
           }
         />
         <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
+        <Route
+          path="/admin/volunteer-dashboard"
+          element={
+            <RequireAuth role="admin">
+              <VolunteerDashboard />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </Router>
   );

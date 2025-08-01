@@ -10,7 +10,6 @@ import eventRoutes from "./routes/eventRoutes.js";
 import matchRoutes from "./routes/match.js";
 import notificationRoutes from './routes/notifications.js';
 import historyRoutes from "./routes/historyRoutes.js";
-import statesRoutes from "./routes/statesRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -75,7 +74,6 @@ app.listen(PORT, () => {
 
 app.use("/", eventRoutes);
 app.use("/history", historyRoutes);
-app.use("/states", statesRoutes);
 
 // Register
 app.post("/register", async (req, res) => {
