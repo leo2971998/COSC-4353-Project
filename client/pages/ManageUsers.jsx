@@ -11,6 +11,7 @@ export default function ManageUsers() {
   const [editUser, setEditUser] = useState(null);
   const [editRole, setEditRole] = useState("user");
   const [editPassword, setEditPassword] = useState("");
+  const [deleteUser, setDeleteUser] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -30,9 +31,14 @@ export default function ManageUsers() {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this user?")) return;
-    await fetch(`${API_URL}/users/${id}`, { method: "DELETE" });
+  const confirmDelete = (u) => {
+    setDeleteUser(u);
+  };
+
+  const deleteConfirmed = async () => {
+    if (!deleteUser) return;
+    await fetch(`${API_URL}/users/${deleteUser.id}`, { method: "DELETE" });
+    setDeleteUser(null);
     fetchUsers();
   };
 
@@ -65,35 +71,39 @@ export default function ManageUsers() {
   return (
     <Layout>
       <Navbar />
-      <div className="pt-24 px-4">
-        <h1 className="text-2xl font-bold mb-4">Manage Users</h1>
-        <table className="w-full text-left">
-          <thead>
-            <tr>
-              <th className="p-2">Name</th>
-              <th className="p-2">Email</th>
-              <th className="p-2">Role</th>
-              <th className="p-2"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((u) => (
-              <tr key={u.id} className="border-t border-gray-700">
-                <td className="p-2">{u.name}</td>
-                <td className="p-2">{u.email}</td>
-                <td className="p-2">{u.role}</td>
-                <td className="p-2 flex gap-2">
-                  <button onClick={() => openEdit(u)} aria-label="Edit">
-                    <Edit className="w-5 h-5" />
-                  </button>
-                  <button onClick={() => handleDelete(u.id)} aria-label="Delete">
-                    <Trash className="w-5 h-5" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="min-h-screen pt-24 bg-gray-800 px-4 text-white">
+        <div className="max-w-5xl mx-auto bg-gray-900 border border-gray-700 rounded-3xl p-6 shadow-2xl">
+          <h1 className="text-2xl font-bold mb-6 text-center">Manage Users</h1>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left divide-y divide-gray-700">
+              <thead className="bg-gray-800">
+                <tr>
+                  <th className="p-3 font-semibold">Name</th>
+                  <th className="p-3 font-semibold">Email</th>
+                  <th className="p-3 font-semibold">Role</th>
+                  <th className="p-3"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-800/50">
+                    <td className="p-3">{u.name}</td>
+                    <td className="p-3 break-all">{u.email}</td>
+                    <td className="p-3 capitalize">{u.role}</td>
+                    <td className="p-3 flex gap-2">
+                      <button onClick={() => openEdit(u)} aria-label="Edit" className="hover:text-blue-500">
+                        <Edit className="w-5 h-5" />
+                      </button>
+                      <button onClick={() => confirmDelete(u)} aria-label="Delete" className="hover:text-red-500">
+                        <Trash className="w-5 h-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       {editUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -134,6 +144,18 @@ export default function ManageUsers() {
               <Button onClick={saveEdit} className="bg-blue-600 text-white">
                 Save
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {deleteUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 p-6 rounded-lg w-80">
+            <h2 className="text-xl font-semibold mb-4">Delete User</h2>
+            <p className="mb-4">Are you sure you want to delete {deleteUser.name}? This action cannot be undone.</p>
+            <div className="flex justify-end gap-2">
+              <Button onClick={() => setDeleteUser(null)} className="bg-gray-700 text-white">Cancel</Button>
+              <Button onClick={deleteConfirmed} className="bg-red-600 text-white">Delete</Button>
             </div>
           </div>
         </div>
