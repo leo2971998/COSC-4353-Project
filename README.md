@@ -49,9 +49,11 @@ Make sure your database is accessible from Vercel and that the credentials are c
 
 ## Database schema
 
-SQL definitions for the `login` and `profile` tables are provided in
+SQL definitions for the `login`, `profile`, and `states` tables are provided in
 `server/db_schema.sql`. Apply this schema when initializing your MySQL
-database.
+database. The `states` table contains the list of U.S. state codes and names and
+is used by the profile form. A protected `/states` page in the frontend displays
+these records for logged in users.
 
 ## Deploying the frontend to Vercel
 
