@@ -1,6 +1,6 @@
 CREATE TABLE login (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('user','admin') DEFAULT 'user'
@@ -14,11 +14,23 @@ CREATE TABLE profile (
     city VARCHAR(100),
     state VARCHAR(50),
     zip_code VARCHAR(10),
-    skills VARCHAR(255),
     preferences TEXT,
     availability VARCHAR(255),
     is_complete TINYINT(1) DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES login(id)
+);
+
+CREATE TABLE skill (
+    skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE profile_skill (
+    user_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    PRIMARY KEY (user_id, skill_id),
+    FOREIGN KEY (user_id) REFERENCES profile(user_id),
+    FOREIGN KEY (skill_id) REFERENCES skill(skill_id)
 );
 
 CREATE TABLE states (

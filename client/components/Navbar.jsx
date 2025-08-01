@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Users } from "lucide-react";
 import { Button } from "./ui/Button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Navbar({ scrollToSection }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem("user");
@@ -34,6 +35,7 @@ export default function Navbar({ scrollToSection }) {
     localStorage.removeItem("isLoggedIn");
     setUser(null);
     setIsMenuOpen(false);
+    navigate("/");
   };
 
   const loggedIn = !!user;
@@ -44,7 +46,7 @@ export default function Navbar({ scrollToSection }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link
-            to={loggedIn ? (isAdmin ? "/admin" : "/volunteer-dashboard") : "/"}
+            to="/"
             className="flex items-center"
             onClick={() => setIsMenuOpen(false)}
           >
@@ -96,6 +98,14 @@ export default function Navbar({ scrollToSection }) {
 
             {loggedIn && (
               <>
+                {!isAdmin && (
+                  <Link
+                    to="/volunteer-dashboard"
+                    className="text-gray-300 hover:text-blue-400 font-medium transition"
+                  >
+                    Dashboard
+                  </Link>
+                )}
                 <Link
                   to="/complete-profile"
                   className="text-gray-300 hover:text-blue-400 font-medium transition"
@@ -169,6 +179,15 @@ export default function Navbar({ scrollToSection }) {
 
               {loggedIn && (
                 <>
+                  {!isAdmin && (
+                    <Link
+                      to="/volunteer-dashboard"
+                      className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <Link
                     to="/complete-profile"
                     className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
