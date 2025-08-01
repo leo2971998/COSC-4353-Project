@@ -77,21 +77,21 @@ export default function VolunteerHistoryTableRow({ event }) {
               {event.event_location}
             </span>
           </div>
-          {/* <div className="flex flex-wrap gap-1">
-            {event.skills.slice(0, 2).map((skill, idx) => (
+          <div className="flex flex-wrap gap-1">
+            {event.skills.split(",").map((skill, idx) => (
               <span
                 key={idx}
                 className="inline-block px-2 py-1 bg-gray-600/50 text-gray-300 text-xs rounded-md"
               >
-                {skill}
+                {skill.trim()}
               </span>
             ))}
-            {event.skills.length > 2 && (
+            {event.skills.split(",").length > 2 && (
               <span className="inline-block px-2 py-1 bg-gray-600/50 text-gray-300 text-xs rounded-md">
-                +{event.requiredSkills.length - 2} more
+                +{event.skills.split(",").length - 2} more
               </span>
             )}
-          </div> */}
+          </div>
         </div>
       </td>
 

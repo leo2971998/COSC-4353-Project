@@ -99,8 +99,8 @@ export default function TableCardMV({ filteredHistory }) {
               </div>
             </div>
 
-            {/* <div className="flex flex-wrap gap-1">
-              {event.skills.map((skill, i) => (
+            <div className="flex flex-wrap gap-1">
+              {event.skills.split(",").map((skill, i) => (
                 <span
                   key={i}
                   className="inline-block px-2 py-1 bg-gray-600/50 text-gray-300 text-xs rounded-md"
@@ -108,7 +108,7 @@ export default function TableCardMV({ filteredHistory }) {
                   {skill}
                 </span>
               ))}
-            </div> */}
+            </div>
           </div>
         </div>
       ))}

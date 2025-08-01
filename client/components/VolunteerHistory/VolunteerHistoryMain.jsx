@@ -79,7 +79,7 @@ export default function VolunteerHistoryMain({ events }) {
             </div>
             <div className="bg-gray-700/50 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-blue-400">
-                {events.filter((e) => e.event_status === "Signed Up").length}
+                {events.filter((e) => e.event_status === "Upcoming").length}
               </div>
               <div className="text-sm text-gray-300">Upcoming Events</div>
             </div>
