@@ -11,18 +11,19 @@ export default function VolunteerHistoryMain({ events }) {
   const filteredHistory = events
     .filter((event) => {
       const matchesSearch =
-        event.eventName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.location.toLowerCase().includes(searchTerm.toLowerCase());
+        event.event_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.event_location?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus =
         statusFilter === "all" ||
-        event.participationStatus.toLowerCase() === statusFilter.toLowerCase();
+        (event.event_status &&
+          event.event_status.toLowerCase() === statusFilter.toLowerCase());
       return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
       if (sortBy === "date") {
-        return new Date(b.eventDate) - new Date(a.eventDate);
+        return new Date(b.start_time) - new Date(a.start_time);
       }
-      return a.eventName.localeCompare(b.eventName);
+      return a.event_name.localeCompare(b.event_name);
     });
 
   return (
@@ -72,19 +73,13 @@ export default function VolunteerHistoryMain({ events }) {
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-gray-700/50 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-green-400">
-                {
-                  events.filter((e) => e.participationStatus === "Attended")
-                    .length
-                }
+                {events.filter((e) => e.event_status === "Attended").length}
               </div>
               <div className="text-sm text-gray-300">Events Attended</div>
             </div>
             <div className="bg-gray-700/50 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-blue-400">
-                {
-                  events.filter((e) => e.participationStatus === "Signed Up")
-                    .length
-                }
+                {events.filter((e) => e.event_status === "Signed Up").length}
               </div>
               <div className="text-sm text-gray-300">Upcoming Events</div>
             </div>
@@ -116,7 +111,7 @@ export default function VolunteerHistoryMain({ events }) {
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {filteredHistory.map((event) => (
-                  <TableCardDV key={event.id} event={event} />
+                  <TableCardDV key={event.history_id} event={event} />
                 ))}
               </tbody>
             </table>
