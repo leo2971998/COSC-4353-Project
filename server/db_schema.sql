@@ -22,17 +22,6 @@ CREATE TABLE profile (
 );
 
 
-CREATE TABLE event (
-    event_id INT AUTO_INCREMENT PRIMARY KEY,
-    event_name VARCHAR(255) NOT NULL,
-    event_location VARCHAR(255) NOT NULL,
-    urgency ENUM('high', 'medium', 'low') NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME NOT NULL,
-    description TEXT,
-    created_by INT NOT NULL,
-    FOREIGN KEY (created_by) REFERENCES login(id)
-)
 
 CREATE TABLE volunteer_history (
   history_id INT AUTO_INCREMENT PRIMARY KEY,
