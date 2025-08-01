@@ -14,7 +14,7 @@ export const getVolunteerHistoryParams = async (req, res) => {
 
     res.status(200).json({ volunteer_history });
   } catch (error) {
-    console.error("Error fetching volunteer's history ", error);
+    console.error("Error fetching volunteer's history ", error.message);
     res
       .status(500)
       .json({ message: "Server error fetching volunteer's history" });
