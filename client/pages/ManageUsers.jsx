@@ -46,11 +46,16 @@ export default function ManageUsers() {
   const saveEdit = async () => {
     if (!editUser) return;
     if (editRole !== editUser.role) {
-      await fetch(`${API_URL}/users/${editUser.id}/role`, {
+      const res = await fetch(`${API_URL}/users/${editUser.id}/role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: editRole }),
       });
+      if (!res.ok) {
+        const { message } = await res.json().catch(() => ({ message: res.statusText }));
+        alert(`Could not update role: ${message}`);
+        return;
+      }
     }
     if (editPassword) {
       await fetch(`${API_URL}/users/${editUser.id}/password`, {
