@@ -6,16 +6,24 @@ import { Button } from "../components/ui/Button";
 import { Edit, Trash } from "lucide-react";
 
 export default function ManageUsers() {
-  const API_URL = import.meta.env.VITE_API_URL || "https://localhost:3000";
+  const API_URL = "https://cosc-4353-backend.vercel.app";
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
   const [editRole, setEditRole] = useState("user");
   const [editPassword, setEditPassword] = useState("");
 
   const fetchUsers = async () => {
-    const res = await fetch(`${API_URL}/users`);
-    const data = await res.json();
-    setUsers(data);
+    try {
+      const res = await fetch(`${API_URL}/users`);
+      if (!res.ok) {
+        const { message } = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error(message);
+      }
+      setUsers(await res.json());
+    } catch (err) {
+      console.error("fetchUsers error:", err.message);
+      alert(`Could not load users: ${err.message}`);
+    }
   };
 
   useEffect(() => {

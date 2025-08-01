@@ -241,14 +241,16 @@ app.get("/profile/:userId", async (req, res) => {
 // Admin utilities
 app.get("/users", async (_req, res) => {
   try {
-    const [rows] = await db.query("SELECT id, name, email, role FROM login");
+    const [rows] = await db.query(
+        "SELECT id, full_name AS name, email, role FROM login"
+        //                ^^^^^^^^^^^^^^^ alias keeps front-end unchanged
+    );
     res.json(rows);
   } catch (err) {
     console.error("Users list error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
-
 app.put("/users/:id/role", async (req, res) => {
   const { role } = req.body;
   if (!["user", "admin"].includes(role))
