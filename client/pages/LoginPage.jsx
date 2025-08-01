@@ -11,7 +11,7 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"; // no trailing slash
+  const API_URL = "https://cosc-4353-backend.vercel.app"; // no trailing slash
   const [loading, setLoading] = useState(false);
 
   const {

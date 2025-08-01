@@ -5,8 +5,8 @@ import VolunteerHistoryMain from "../components/VolunteerHistory/VolunteerHistor
 import axios from "axios";
 
 export default function VolunteerHistoryPage() {
-  // Import the URL from the env file or default to localhost
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  // Import the URL from the env file.
+  const API_URL = import.meta.env.VITE_API_URL;
   // This is mock data for right now
   const [volunteerHistory, setVolunteerHistory] = useState([]);
 

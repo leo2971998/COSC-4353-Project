@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import { Button } from "../components/ui/Button";
 
 export default function AdminPage() {
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL = import.meta.env.VITE_API_URL || "https://localhost:3000";
   const [users, setUsers] = useState([]);
   const [changes, setChanges] = useState({});
 

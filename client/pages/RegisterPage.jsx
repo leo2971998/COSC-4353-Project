@@ -14,7 +14,7 @@ import { Button } from "../components/ui/Button";
 export default function RegisterPage() {
   const navigate = useNavigate();
   // Backend root (no trailing slash)
-  const API_ROOT = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_ROOT = "https://cosc-4353-backend.vercel.app";
 
   const {
     register,

@@ -26,11 +26,11 @@ app.options("*", cors(corsOptions)); // pre-flight
 // MySQL pool  +  connectivity check
 // ───────────────────────────────────────────────────────────────
 const db = mysql.createPool({
-  host: process.env.DB_HOST || "104.10.143.45",
+  host: process.env.DB_HOST || "192.168.1.198",
   port: 3306,
-  user: process.env.DB_USER || "your_username",
-  password: process.env.DB_PASSWORD || "your_password",
-  database: process.env.DB_NAME || "your_database",
+  user: process.env.DB_USER || "Leo",
+  password: process.env.DB_PASSWORD || "Test=123!",
+  database: process.env.DB_NAME || "COSC4353",
   connectionLimit: 5,
 });
 

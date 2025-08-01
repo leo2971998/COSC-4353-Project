@@ -13,10 +13,10 @@ import RegisterPage from "../pages/RegisterPage.jsx";
 import VolunteerMatchingForm from "../pages/VolunteerMatchingForm.jsx";
 import EventManagement from "../pages/EventManagement.jsx";
 import AdminPage from "../pages/AdminPage.jsx";
-import StatesPage from "../pages/StatesPage.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
+import VolunteerDashboard from "../pages/VolunteerDashboard.jsx";
 
 function RequireAuth({ children, role }) {
   const stored = localStorage.getItem("user");
@@ -74,14 +74,6 @@ function App() {
           }
         />
         <Route
-          path="/states"
-          element={
-            <RequireAuth>
-              <StatesPage />
-            </RequireAuth>
-          }
-        />
-        <Route
           path="/admin"
           element={
             <RequireAuth role="admin">
@@ -89,6 +81,7 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
       </Routes>
     </Router>
   );
