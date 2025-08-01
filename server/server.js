@@ -248,7 +248,7 @@ app.get("/profile/:userId", async (req, res) => {
   try {
     const [rows] = await db.query(
       `SELECT p.user_id,
-              l.full_name,
+              l.full_name AS fullName,
               p.address1,
               p.address2,
               p.city,
@@ -272,7 +272,7 @@ app.get("/profile/:userId", async (req, res) => {
     const skills = row.skills ? row.skills.split(/,\s*/) : [];
     res.json({
       user_id: row.user_id,
-      fullName: row.full_name,
+      fullName: row.fullName,
       address1: row.address1,
       address2: row.address2,
       city: row.city,
