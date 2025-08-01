@@ -69,7 +69,11 @@ export default function LoginPage() {
 
       // Redirect based on profile completion
       if (data.profileComplete) {
-        navigate("/");
+        if (data.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/volunteer-dashboard");
+        }
       } else {
         navigate("/complete-profile");
       }

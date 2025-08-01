@@ -288,4 +288,15 @@ app.put("/users/:id/password", async (req, res) => {
   }
 });
 
+app.delete("/users/:id", async (req, res) => {
+  try {
+    await db.query("DELETE FROM profile WHERE user_id = ?", [req.params.id]);
+    await db.query("DELETE FROM login WHERE id = ?", [req.params.id]);
+    res.json({ message: "User deleted" });
+  } catch (err) {
+    console.error("User delete error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default app;

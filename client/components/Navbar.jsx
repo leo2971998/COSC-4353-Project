@@ -43,12 +43,16 @@ export default function Navbar({ scrollToSection }) {
     <nav className="fixed top-0 left-0 right-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <Link
+            to={loggedIn ? (isAdmin ? "/admin" : "/volunteer-dashboard") : "/"}
+            className="flex items-center"
+            onClick={() => setIsMenuOpen(false)}
+          >
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <Users className="w-6 h-6 text-white" />
             </div>
             <span className="ml-3 text-xl font-semibold text-white">Volentra</span>
-          </div>
+          </Link>
 
           <div className="hidden md:flex items-center space-x-8">
             {!loggedIn && (
@@ -105,12 +109,20 @@ export default function Navbar({ scrollToSection }) {
                   Event Management
                 </Link>
                 {isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="text-gray-300 hover:text-blue-400 font-medium transition"
-                  >
-                    Admin
-                  </Link>
+                  <>
+                    <Link
+                      to="/admin"
+                      className="text-gray-300 hover:text-blue-400 font-medium transition"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/manage-users"
+                      className="text-gray-300 hover:text-blue-400 font-medium transition"
+                    >
+                      Manage Users
+                    </Link>
+                  </>
                 )}
                 <Button onClick={handleLogout} className="text-gray-300 hover:text-red-400 transition">
                   Logout
@@ -172,13 +184,22 @@ export default function Navbar({ scrollToSection }) {
                     Event Management
                   </Link>
                   {isAdmin && (
-                    <Link
-                      to="/admin"
-                      className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Admin
-                    </Link>
+                    <>
+                      <Link
+                        to="/admin"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        to="/manage-users"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Manage Users
+                      </Link>
+                    </>
                   )}
                   <div className="text-center">
                     <button
