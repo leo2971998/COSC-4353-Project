@@ -104,6 +104,12 @@ export default function Navbar({ scrollToSection }) {
                 >
                   Event Management
                 </Link>
+                <Link
+                  to="/states"
+                  className="text-gray-300 hover:text-blue-400 font-medium transition"
+                >
+                  States
+                </Link>
                 {isAdmin && (
                   <Link
                     to="/admin"
@@ -170,6 +176,13 @@ export default function Navbar({ scrollToSection }) {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Event Management
+                  </Link>
+                  <Link
+                    to="/states"
+                    className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    States
                   </Link>
                   {isAdmin && (
                     <Link

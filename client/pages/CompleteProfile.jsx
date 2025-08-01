@@ -23,7 +23,7 @@ import { Button } from "../components/ui/Button";
 
 export default function CompleteProfile() {
   const navigate = useNavigate();
-  const API_URL = "https://cosc-4353-backend.vercel.app"; // no trailing slash
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"; // no trailing slash
 
   // --- Form State ---
   const [formData, setFormData] = useState({

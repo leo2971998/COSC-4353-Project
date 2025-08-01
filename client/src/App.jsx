@@ -13,6 +13,7 @@ import RegisterPage from "../pages/RegisterPage.jsx";
 import VolunteerMatchingForm from "../pages/VolunteerMatchingForm.jsx";
 import EventManagement from "../pages/EventManagement.jsx";
 import AdminPage from "../pages/AdminPage.jsx";
+import StatesPage from "../pages/StatesPage.jsx";
 import "./index.css";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
@@ -69,6 +70,14 @@ function App() {
           element={
             <RequireAuth>
               <EventManagement />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/states"
+          element={
+            <RequireAuth>
+              <StatesPage />
             </RequireAuth>
           }
         />

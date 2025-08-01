@@ -6,7 +6,9 @@ import EventInfo from "../components/EventManagement/EventInfo";
 import Location from "../components/EventManagement/Location";
 import RequiredSkills from "../components/EventManagement/RequiredSkills";
 import Urgency from "../components/EventManagement/Urgency";
-import EventDate from "../components/EventManagement/EventDate"
+import EventDate from "../components/EventManagement/EventDate";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 import Availability from "../components/CompleteProfile/Availability";
 import { STATES } from "../components/CompleteProfile/STATES";
 import { Button } from "../components/ui/Button";
@@ -120,7 +122,7 @@ export default function EventManagement(){
           // console.log("Form submitted: ", manageData);
           try{
             console.log("About to send POST request...");
-            const response = await fetch("http://localhost:3000/events", {
+            const response = await fetch(`${API_URL}/events`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

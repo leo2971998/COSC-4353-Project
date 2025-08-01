@@ -10,6 +10,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import matchRoutes from "./routes/match.js";
 import notificationRoutes from './routes/notifications.js';
 import historyRoutes from "./routes/historyRoutes.js";
+import statesRoutes from "./routes/statesRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -62,9 +63,10 @@ app.use('/api/match', matchRoutes);
 //ISHAN NOTIFCATION TEST
 app.use('/api/notifications', notificationRoutes);
 
-// Starts the server on port 3000
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+// Starts the server on port 3000 by default
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 // ───────────────────────────────────────────────────────────────
@@ -73,6 +75,7 @@ app.listen(3000, () => {
 
 app.use("/", eventRoutes);
 app.use("/history", historyRoutes);
+app.use("/states", statesRoutes);
 
 // Register
 app.post("/register", async (req, res) => {
