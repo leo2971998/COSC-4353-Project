@@ -8,8 +8,9 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import eventRoutes from "./routes/eventRoutes.js";
 import matchRoutes from "./routes/match.js";
-import notificationRoutes from './routes/notifications.js';
+import notificationRoutes from "./routes/notifications.js";
 import historyRoutes from "./routes/historyRoutes.js";
+import volunteerDashboardRoutes from "./routes/volunteerDashboardRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -57,10 +58,10 @@ const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 // Using the event routes
 
 //ISHAN VOLUNTEER MATCHING TEST
-app.use('/api/match', matchRoutes);
+app.use("/api/match", matchRoutes);
 
 //ISHAN NOTIFCATION TEST
-app.use('/api/notifications', notificationRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Starts the server on port 3000
 app.listen(3000, () => {
@@ -286,5 +287,7 @@ app.put("/users/:id/password", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+app.use("/volunteer-dashboard", volunteerDashboardRoutes);
 
 export default app;
