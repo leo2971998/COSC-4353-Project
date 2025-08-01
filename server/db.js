@@ -12,4 +12,13 @@ const db = mysql.createPool({
   connectionLimit: 5,
 });
 
+export const query = async (sql, params) => {
+  try {
+    const [results] = await pool.execute(sql, params);
+    return results;
+  } catch (err) {
+    throw err; // Forward the error for handling elsewhere
+  }
+};
+
 export default db;
