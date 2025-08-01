@@ -52,6 +52,9 @@ export default function AdminPage() {
     <Layout>
       <Navbar />
       <div className="pt-24 px-4">
+        <a href="/admin/volunteer-dashboard" className="text-blue-300 underline">
+          Volunteer Dashboard
+        </a>
         <h1 className="text-2xl font-bold mb-4">Manage Users</h1>
         <table className="w-full text-left">
           <thead>
