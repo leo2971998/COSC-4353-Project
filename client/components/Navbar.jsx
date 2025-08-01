@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Users } from "lucide-react";
 import { Button } from "./ui/Button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Navbar({ scrollToSection }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem("user");
@@ -34,6 +35,7 @@ export default function Navbar({ scrollToSection }) {
     localStorage.removeItem("isLoggedIn");
     setUser(null);
     setIsMenuOpen(false);
+    navigate("/");
   };
 
   const loggedIn = !!user;
