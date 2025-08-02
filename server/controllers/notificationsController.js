@@ -1,70 +1,79 @@
-// server/controllers/notificationsController.js
+// controllers/notificationsController.js
 import db from "../db.js";
 
-/**
- * GET /api/notifications
- * Returns all notifications (newest first).
- */
+const USE_DB = process.env.USE_DB === "1";
+
+let memory = [
+  { id: 1, userId: 1, message: "Event A", read: false },
+  { id: 2, userId: 1, message: "Event B", read: false },
+  { id: 3, userId: 2, message: "Event C", read: false },
+];
+
+export function addNotification(userId, message) {
+  if (!USE_DB) {
+    const n = { id: Date.now(), userId: Number(userId), message, read: false };
+    memory.push(n);
+    return n;
+  }
+  // DB path handled where needed (matchController inserts directly)
+  return null;
+}
+
 export async function getAllNotifications(_req, res) {
+  if (!USE_DB) return res.json(memory);
+
   try {
-    const [rows] = await db.query(
-      "SELECT id, userId, message, is_read, created_at FROM notifications ORDER BY created_at DESC"
-    );
-    // normalize is_read to boolean in response
-    const data = rows.map((r) => ({ ...r, is_read: !!r.is_read }));
-    res.json(data);
-  } catch (err) {
-    console.error("Error fetching notifications:", err);
-    res.status(500).json({ error: "Server error" });
+    const [rows] = await db.query("SELECT id, userId, message, is_read FROM notifications ORDER BY id DESC");
+    const out = rows.map(r => ({
+      id: r.id,
+      userId: r.userId,
+      message: r.message,
+      read: !!(r.read ?? r.is_read),        // normalize
+    }));
+    return res.json(out);
+  } catch {
+    return res.status(500).json({ message: "Server error" });
   }
 }
 
-/**
- * GET /api/notifications/:userId
- * Returns notifications for a specific user (newest first).
- */
 export async function getNotificationsByUserId(req, res) {
-  const { userId } = req.params;
+  const id = Number(req.params.userId);
+  if (!USE_DB) return res.json(memory.filter(n => n.userId === id));
+
   try {
     const [rows] = await db.query(
-      "SELECT id, userId, message, is_read, created_at FROM notifications WHERE userId = ? ORDER BY created_at DESC",
-      [userId]
+      "SELECT id, userId, message, is_read FROM notifications WHERE userId = ? ORDER BY id DESC",
+      [id]
     );
-    const data = rows.map((r) => ({ ...r, is_read: !!r.is_read }));
-    res.json(data);
-  } catch (err) {
-    console.error("Error fetching user notifications:", err);
-    res.status(500).json({ error: "Server error" });
+    const out = rows.map(r => ({
+      id: r.id,
+      userId: r.userId,
+      message: r.message,
+      read: !!(r.read ?? r.is_read),
+    }));
+    return res.json(out);
+  } catch {
+    return res.status(500).json({ message: "Server error" });
   }
 }
 
-/**
- * POST /api/notifications
- * Body: { userId, message }
- * Creates a new notification (unread).
- */
 export async function createNotification(req, res) {
-  const { userId, message } = req.body;
+  const { userId, message } = req.body || {};
+  if (!userId || !message) return res.status(400).json({ error: "Missing fields" });
 
-  if (!userId || !message || String(message).trim().length === 0) {
-    return res.status(400).json({ error: "Missing fields: userId, message" });
+  if (!USE_DB) {
+    const n = { id: Date.now(), userId: Number(userId), message, read: false };
+    memory.push(n);
+    return res.status(201).json(n);
   }
 
   try {
-    const [result] = await db.query(
+    await db.query(
       "INSERT INTO notifications (userId, message, is_read) VALUES (?, ?, ?)",
-      [userId, message.trim(), false]
+      [Number(userId), message, 0]
     );
-
-    const [rows] = await db.query(
-      "SELECT id, userId, message, is_read, created_at FROM notifications WHERE id = ?",
-      [result.insertId]
-    );
-
-    const created = rows[0] ? { ...rows[0], is_read: !!rows[0].is_read } : null;
-    res.status(201).json(created);
-  } catch (err) {
-    console.error("Error creating notification:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(201).json({ userId: Number(userId), message, read: false });
+  } catch {
+    return res.status(500).json({ message: "Server error" });
   }
 }
