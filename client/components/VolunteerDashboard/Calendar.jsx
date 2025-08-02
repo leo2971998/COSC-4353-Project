@@ -118,21 +118,24 @@ export const CalendarView = ({ upcomingEvents, allEvents }) => {
         {/* Upcoming list */}
         <div className="mt-4 pt-4 border-t border-gray-700">
           <h3 className="font-medium mb-2">Upcoming Confirmed Events</h3>
-          {upcomingEvents.map((event, idx) => (
-              <div
-                  key={idx}
-                  className="bg-[#1a2035] rounded-lg p-3 mb-2 flex justify-between"
-              >
-                <span>{event.title}</span>
-                <span className="text-indigo-400">
-              {event.date.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </span>
-              </div>
-          ))}
+
+          {[...upcomingEvents]              // clone so we don’t mutate state
+              .sort((a, b) => a.date - b.date)   // earliest → latest
+              .map((event, idx) => (
+                  <div
+                      key={idx}
+                      className="bg-[#1a2035] rounded-lg p-3 mb-2 flex justify-between"
+                  >
+                    <span>{event.title}</span>
+                    <span className="text-indigo-400">
+            {event.date.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </span>
+                  </div>
+              ))}
         </div>
 
         {/* Pop-up */}
