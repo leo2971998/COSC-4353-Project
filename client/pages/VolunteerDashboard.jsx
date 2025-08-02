@@ -43,27 +43,28 @@ export default function VolunteerDashboard() {
     },
   ];
 
-  const upcomingEvents = [
-    {
-      date: new Date(2025, 7, 15),
-      title: "Community Food Drive",
-    },
-  ];
-
-  const allEvents = [
-    {
-      date: new Date(2025, 7, 15),
-      title: "Community Food Drive",
-    },
-    {
-      date: new Date(2024, 11, 22),
-      title: "Senior Care Visit",
-    },
-  ];
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [nextEvent, setNextEvent] = useState({});
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/events`);
+      const events = response.data.events.map((e) => ({
+        date: new Date(e.start_time),
+        title: e.event_name,
+        details: e,
+      }));
+      setAllEvents(events);
+      const upcoming = events.filter((e) => e.date >= new Date());
+      setUpcomingEvents(upcoming);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const getNextEvent = async () => {
     try {
@@ -78,6 +79,7 @@ export default function VolunteerDashboard() {
 
   useEffect(() => {
     getNextEvent();
+    fetchEvents();
   }, []);
 
   return (

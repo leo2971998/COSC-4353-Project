@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const CalendarView = ({ upcomingEvents, allEvents }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
@@ -63,6 +64,7 @@ export const CalendarView = ({ upcomingEvents, allEvents }) => {
       days.push(
         <div
           key={day}
+          onClick={() => event && setSelectedEvent(event.details || event)}
           className={`h-10 md:h-14 flex flex-col items-center justify-center rounded-lg ${
             event
               ? "bg-indigo-800 hover:bg-indigo-700 cursor-pointer"
@@ -128,6 +130,28 @@ export const CalendarView = ({ upcomingEvents, allEvents }) => {
           </div>
         ))}
       </div>
+      {selectedEvent && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-[#1a2035] text-white rounded-xl p-6 w-[90%] max-w-md relative shadow-lg">
+            <button
+              onClick={() => setSelectedEvent(null)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-red-400"
+            >
+              &times;
+            </button>
+            <h3 className="text-2xl font-semibold text-indigo-400 mb-4">
+              {selectedEvent.event_name || selectedEvent.title}
+            </h3>
+            <p className="text-sm mb-2">{selectedEvent.event_description}</p>
+            <p className="text-sm">
+              {new Date(selectedEvent.start_time || selectedEvent.date).toLocaleString()}
+            </p>
+            {selectedEvent.event_location && (
+              <p className="text-sm mt-1">{selectedEvent.event_location}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
