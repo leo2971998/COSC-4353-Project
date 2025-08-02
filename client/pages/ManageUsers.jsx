@@ -9,7 +9,7 @@ import { Button } from "../components/ui/Button";
 import { Edit, Trash, UserCircle, X } from "lucide-react";
 
 export default function ManageUsers() {
-  const API_URL = process.env.REACT_APP_API_URL || "https://cosc-4353-backend.vercel.app";
+  const API_URL = "https://cosc-4353-backend.vercel.app";
 
   const [users,        setUsers]        = useState([]);
   const [editUser,     setEditUser]     = useState(null);
