@@ -1,5 +1,5 @@
 import express from "express";
-import { createEvent } from "../controllers/eventController.js";
+import { createEvent, getEvents } from "../controllers/eventController.js";
 
 const router = express.Router();
 
@@ -11,6 +11,9 @@ router.use((req, res, next) => {
   console.log(`Incoming ${req.method} request to ${req.url}`);
   next();
 });
+
+// GET route to fetch events from database
+router.get("/events", getEvents);
 
 // POST route to create a new event
 router.post("/events", (req, res) => {
