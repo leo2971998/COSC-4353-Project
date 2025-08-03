@@ -5,12 +5,15 @@ import { NextEventCard } from "../components/VolunteerDashboard/NextEventCard";
 import { NotificationsPanel } from "../components/VolunteerDashboard/NotificationPanel";
 import { SuggestedEvents } from "../components/VolunteerDashboard/SuggestedEvents";
 import { WelcomeBanner } from "../components/VolunteerDashboard/WelcomeBanner";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { User, ChevronRight } from "lucide-react";
 import axios from "axios";
 
 export default function VolunteerDashboard() {
   /* ─────────────────────────────
-     Local state
-     ───────────────────────────── */
+      Local state
+      ───────────────────────────── */
+  const [loading, setLoading] = useState(true);
   const [nextEvent, setNextEvent] = useState({});
   const [suggestedEvents, setSuggestedEvents] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -21,8 +24,8 @@ export default function VolunteerDashboard() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   /* ─────────────────────────────
-     Fetch calendar events
-     ───────────────────────────── */
+      Fetch calendar events
+      ───────────────────────────── */
   const fetchEvents = async () => {
     try {
       const { data } = await axios.get(`${API_URL}/events`);
@@ -43,8 +46,8 @@ export default function VolunteerDashboard() {
   };
 
   /* ─────────────────────────────
-     Fetch next confirmed event
-     ───────────────────────────── */
+      Fetch next confirmed event
+      ───────────────────────────── */
   const fetchNextEvent = async (userID) => {
     try {
       const { data } = await axios.get(
@@ -57,9 +60,9 @@ export default function VolunteerDashboard() {
   };
 
   /* ─────────────────────────────
-     Fetch suggested events (backend should return
-     [{ event_id, event_name, percent_match, … }])
-     ───────────────────────────── */
+      Fetch suggested events (backend should return
+      [{ event_id, event_name, percent_match, … }])
+      ───────────────────────────── */
   const fetchSuggestedEvents = async (userID) => {
     try {
       const { data } = await axios.get(`${API_URL}/suggested-events/${userID}`);
@@ -70,8 +73,8 @@ export default function VolunteerDashboard() {
   };
 
   /* ─────────────────────────────
-     Fetch volunteer notifications
-     ───────────────────────────── */
+      Fetch volunteer notifications
+      ───────────────────────────── */
   const fetchNotifications = async (userID) => {
     try {
       const { data } = await axios.get(`${API_URL}/notifications/${userID}`);
@@ -82,25 +85,39 @@ export default function VolunteerDashboard() {
   };
 
   /* ─────────────────────────────
-     Composite load on mount
-     ───────────────────────────── */
+      Composite load on mount
+      ───────────────────────────── */
   useEffect(() => {
     const userID = localStorage.getItem("userId");
     if (!userID) return;
-
-    fetchEvents();
-    fetchNextEvent(userID);
-    fetchSuggestedEvents(userID);
-    fetchNotifications(userID);
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([
+          fetchEvents(),
+          fetchNextEvent(userID),
+          fetchSuggestedEvents(userID),
+          fetchNotifications(userID),
+        ]);
+      } catch (error) {
+        console.error("Error loading dashboard", error);
+      } finally {
+        setTimeout(() => setLoading(false), 500);
+      }
+    };
+    loadData();
   }, []);
 
   /* ─────────────────────────────
-     Render
-     ───────────────────────────── */
+      Render
+      ───────────────────────────── */
   return (
     <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
       <Navbar />
-      {nextEvent.is_complete == 1 ? (
+
+      {loading ? (
+        <LoadingSpinner fullScreen text="Loading your dashboard" />
+      ) : nextEvent?.is_complete == 1 ? (
         <div className="container mx-auto px-4 py-6">
           <WelcomeBanner name={nextEvent.full_name} />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
@@ -125,17 +142,37 @@ export default function VolunteerDashboard() {
           </div>
         </div>
       ) : (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/30">
-          <div className="bg-gray-900 rounded-lg p-8 max-w-md w-full text-center shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">
-              Please complete your profile before accessing the dashboard
-            </h2>
-            <button
-              onClick={() => (window.location.href = "/complete-profile")}
-              className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-medium"
-            >
-              Take Me There
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+          <div className="bg-[#1a2035] text-white rounded-xl p-8 max-w-md w-full mx-4 shadow-lg border border-gray-700/50">
+            <div className="text-center">
+              <div className="mx-auto w-16 h-16 bg-indigo-600/20 rounded-full flex items-center justify-center mb-6">
+                <User className="text-indigo-400" size={32} />
+              </div>
+
+              <h2 className="text-2xl font-semibold text-white mb-3">
+                Complete Your Profile
+              </h2>
+
+              <p className="text-gray-300 mb-8 leading-relaxed">
+                Please finish setting up your profile to access all dashboard
+                features and get the most out of your experience.
+              </p>
+
+              <button
+                onClick={() => (window.location.href = "/complete-profile")}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center group"
+              >
+                Complete Profile Now
+                <ChevronRight
+                  size={18}
+                  className="ml-2 group-hover:translate-x-1 transition-transform duration-200"
+                />
+              </button>
+
+              <p className="text-xs text-gray-400 mt-4">
+                This will only take a few minutes
+              </p>
+            </div>
           </div>
         </div>
       )}
