@@ -1,7 +1,5 @@
 import express from "express";
 import db from "../db.js";
-import { createEvent, getEvents } from "../controllers/eventController.js";
-import { createEvent } from "../controllers/eventController.js";
 
 const router = express.Router();
 
@@ -13,39 +11,6 @@ router.use((req, res, next) => {
   console.log(`Incoming ${req.method} request to ${req.url}`);
   next();
 });
-
-// GET route to fetch events from database
-router.get("/events", getEvents);
-
-// Route to save event to MySQL
-router.post("/events", async (req, res) => {
-  console.log("2. Backend: Received Request Body", req.body);
-  const {
-    eventName,
-    eventDescription,
-    location,
-    skills,
-    urgency,
-    eventDate,
-    userId,
-  } = req.body;
-
-  if (!userId) return res.status(400).json({ message: "userId required" });
-
-  try {
-    await db.query(
-      `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        userId,
-        eventName || null,
-        eventDescription || null,
-        location || null,
-        skills || null,
-        urgency || null,
-        eventDate || null,
-      ]
-    );
 
 // Route to save event to MySQL
 router.post("/events", async (req, res) => {
