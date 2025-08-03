@@ -11,11 +11,11 @@ export default function VolunteerDashboard() {
   /* ─────────────────────────────
      Local state
      ───────────────────────────── */
-  const [nextEvent,       setNextEvent]       = useState({});
+  const [nextEvent, setNextEvent] = useState({});
   const [suggestedEvents, setSuggestedEvents] = useState([]);
-  const [notifications,   setNotifications]   = useState([]);
-  const [upcomingEvents,  setUpcomingEvents]  = useState([]);
-  const [allEvents,       setAllEvents]       = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
 
   const API_URL = "https://cosc-4353-backend.vercel.app";
 
@@ -45,14 +45,7 @@ export default function VolunteerDashboard() {
      Fetch next confirmed event
      ───────────────────────────── */
   const fetchNextEvent = async (userID) => {
-    try {
-      const { data } = await axios.get(`${API_URL}/volunteer-dashboard/${userID}`);
-      const next = Array.isArray(data?.next_event) ? data.next_event[0] : undefined;
-      setNextEvent(next ?? {});
-    } catch (err) {
-      console.error("fetchNextEvent error:", err.message);
-      setNextEvent({});
-    }
+    //blank for now
   };
 
   /* ─────────────────────────────
@@ -61,9 +54,7 @@ export default function VolunteerDashboard() {
      ───────────────────────────── */
   const fetchSuggestedEvents = async (userID) => {
     try {
-      const { data } = await axios.get(
-          `${API_URL}/suggested-events/${userID}`
-      );
+      const { data } = await axios.get(`${API_URL}/suggested-events/${userID}`);
       setSuggestedEvents(data.suggested_events ?? []);
     } catch (err) {
       console.error("fetchSuggestedEvents error:", err);
@@ -75,9 +66,7 @@ export default function VolunteerDashboard() {
      ───────────────────────────── */
   const fetchNotifications = async (userID) => {
     try {
-      const { data } = await axios.get(
-          `${API_URL}/notifications/${userID}`
-      );
+      const { data } = await axios.get(`${API_URL}/notifications/${userID}`);
       setNotifications(data.notifications ?? []);
     } catch (err) {
       console.error("fetchNotifications error:", err);
@@ -101,31 +90,31 @@ export default function VolunteerDashboard() {
      Render
      ───────────────────────────── */
   return (
-      <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
-        <Navbar />
-        <div className="container mx-auto px-4 py-6">
-          <WelcomeBanner name={nextEvent.full_name} />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-            <div className="lg:col-span-2">
-              <NextEventCard
-                  eventName={nextEvent.event_name}
-                  date={nextEvent.start_time}
-                  time={nextEvent.end_time}
-                  location={nextEvent.event_location}
-                  category={nextEvent.event_category}
-                  eventInfo={nextEvent.event_description}
-                  event={nextEvent.event_id}
-                  requiredSkills={nextEvent.required_skills}
-              />
-              <SuggestedEvents suggestedEvents={suggestedEvents} />
-              <CalendarView
-                  upcomingEvents={upcomingEvents}
-                  allEvents={allEvents}
-              />
-            </div>
-            <NotificationsPanel notifications={notifications} />
+    <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
+      <Navbar />
+      <div className="container mx-auto px-4 py-6">
+        <WelcomeBanner name={nextEvent.full_name} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+          <div className="lg:col-span-2">
+            <NextEventCard
+              eventName={nextEvent.event_name}
+              date={nextEvent.start_time}
+              time={nextEvent.end_time}
+              location={nextEvent.event_location}
+              category={nextEvent.event_category}
+              eventInfo={nextEvent.event_description}
+              event={nextEvent.event_id}
+              requiredSkills={nextEvent.required_skills}
+            />
+            <SuggestedEvents suggestedEvents={suggestedEvents} />
+            <CalendarView
+              upcomingEvents={upcomingEvents}
+              allEvents={allEvents}
+            />
           </div>
+          <NotificationsPanel notifications={notifications} />
         </div>
       </div>
+    </div>
   );
 }
