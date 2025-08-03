@@ -302,20 +302,6 @@ app.get("/profile/:userId", async (req, res) => {
   }
 });
 
-// List all skills
-app.get("/skills", async (_req, res) => {
-  try {
-    const [rows] = await db.query(
-      "SELECT skill_name FROM skill ORDER BY skill_name"
-    );
-    const names = rows.map((r) => r.skill_name);
-    res.json(names);
-  } catch (err) {
-    console.error("Skills fetch error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
 // Admin utilities
 app.get("/users", async (_req, res) => {
   try {

@@ -1,10 +1,10 @@
 import express from "express";
-import { createEvent, getEvents } from "../controllers/eventController.js";
+import db from "../db.js";
 
 const router = express.Router();
 
 // Temporary array to hold event data in-memory
-let events = [];
+// let events = [];
 
 // Logging incoming requests:
 router.use((req, res, next) => {
@@ -12,25 +12,56 @@ router.use((req, res, next) => {
   next();
 });
 
-// GET route to fetch events from database
-router.get("/events", getEvents);
+// Route to save event to MySQL
+router.post("/events", async (req, res) => {
+  console.log("2. Backend: Received Request Body", req.body);
+  const {
+    eventName,
+    eventDescription,
+    location,
+    skills,
+    urgency,
+    eventDate,
+    userId,
+  } = req.body;
 
-// POST route to create a new event
-router.post("/events", (req, res) => {
-  const eventData = req.body;
-  console.log("Event data received:", eventData);
+  if (!userId) return res.status(400).json({ message: "userId required" });
 
-  // For now, just push it into the in-memory array
-  // events.push(eventData);
+  try {
+    await db.query(
+      `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        userId,
+        eventName || null,
+        eventDescription || null,
+        location || null,
+        skills || null,
+        urgency || null,
+        eventDate || null,
+      ]
+    );
 
-  // Using the controller function to handle the logic
-  const newEvent = createEvent(eventData);
+    res.status(200).json({ message: "Event saved" });
+  } catch (err) {
+    console.error("Event save error:", err);
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
 
-  // Respond to the client
-  res.status(201).json({
-    message: "Event created successfully",
-    event: newEvent,
-  });
+router.get("/events/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const [rows] = await db.promise().query(
+      "SELECT * FROM eventManage WHERE user_id = ?",
+      [userId]
+    );
+    res.json(rows); // Send rows to frontend
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 export default router;
