@@ -24,8 +24,8 @@ export default function EventManagement(){
 
   const [manageData, setManageData] = useState({
     // Event Features:
-    eventName: "",
-    eventDescription: "",
+    event_name: "",
+    eventDescriptio_d: "",
     location: "",
     skills: [],
     urgency: "",
@@ -61,9 +61,9 @@ export default function EventManagement(){
   // Verifies that all event features are filled out:
   useEffect(() => {
     const changed =
-      manageData.eventName ||
-      manageData.eventDescription ||
-      manageData.location ||
+      manageData.event_name ||
+      manageData.eventDescriptio_d ||
+      manageData.event_location ||
       manageData.skills.length > 0 ||
       manageData.urgency ||
       manageData.eventDate.length > 0;
@@ -97,9 +97,9 @@ export default function EventManagement(){
           setManageData((prev) => ({
             ...prev,
             // prefer new backend alias -> fallback legacy fields -> keep existing
-            eventName: data.eventName ?? "",
-            eventDescription: data.eventDescription ?? "",
-            location: data.location ?? "",
+            event_name: data.event_name ?? "",
+            eventDescriptio_d: data.eventDescriptio_d ?? "",
+            event_location: data.event_location ?? "",
             skills: data.skills ? data.skills.split(/,\s*/) : [],
             urgency: data.urgency ?? "",
             eventDate: data.eventDate ? data.eventDate.split(/,\s*/): [],
@@ -152,18 +152,18 @@ export default function EventManagement(){
   const validateForm = () => {
       const newErrors = {};
 
-      if (!manageData.eventName.trim()){
-          newErrors.eventName = "Event Name is required";
-      } else if (manageData.eventName.length > 100){
-          newErrors.eventName = "Event Name must be 100 characters or less";
+      if (!manageData.event_name.trim()){
+          newErrors.event_name = "Event Name is required";
+      } else if (manageData.event_name.length > 100){
+          newErrors.event_name = "Event Name must be 100 characters or less";
       }
 
-      if (!manageData.eventDescription.trim()){
-          newErrors.eventDescription = "Event Description is required";
+      if (!manageData.eventDescriptio_d.trim()){
+          newErrors.eventDescriptio_d = "Event Description is required";
       }
       
-      if (!manageData.location.trim()){
-          newErrors.location = "Event Location is required";
+      if (!manageData.event_location.trim()){
+          newErrors.event_location = "Event Location is required";
       }
 
       if (manageData.skills.length === 0){
@@ -195,9 +195,9 @@ export default function EventManagement(){
 
     const payload = {
       userId,
-      eventName: manageData.eventName,
-      eventDescription: manageData.eventDescription,
-      location: manageData.location,
+      event_name: manageData.event_name,
+      eventDescriptio_d: manageData.eventDescriptio_d,
+      event_location: manageData.event_location,
       skills: manageData.skills.join(","), // convert array to string
       urgency: manageData.urgency,
       eventDate: manageData.eventDate.join(",") // convert array to string
@@ -228,6 +228,18 @@ export default function EventManagement(){
     }
   };
 
+  // event_id (int)
+  // event_name (varchar(255))
+  // event_description (text)
+  // event_location (varchar(255))
+  // skills (varchar(255))
+  // urgency (enum('High', 'Medium', 'Low'))
+  // eventDate (varchar(255))
+  // created_by (int)
+  
+  // start_time (datetime: clock time)
+  // end_time (datetime: clock time)
+
   // --- Render ---
   return (
     <>
@@ -239,19 +251,19 @@ export default function EventManagement(){
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Form Container */}
               <EventInfo
-                eventName={manageData.eventName}
-                error={errors.eventName}
-                onChange={(value) => handleInputChange("eventName", value)}
+                event_name={manageData.event_name}
+                error={errors.event_name}
+                onChange={(value) => handleInputChange("event_name", value)}
               />
 
               <Description
                 manageData={manageData}
-                onChange={(value) => handleInputChange("eventDescription", value)}
+                onChange={(value) => handleInputChange("event_description", value)}
               />
 
               <Location
                 manageData={manageData}
-                onChange={(value) => handleInputChange("location", value)}
+                onChange={(value) => handleInputChange("event_location", value)}
               />
 
               <SkillsSection
