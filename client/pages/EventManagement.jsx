@@ -31,8 +31,8 @@ export default function EventManagement(){
     skills: [],
     urgency: "",
     eventDate: [],
-    event_start: [],
-    event_end: []
+    event_start: "",
+    event_end: ""
   });
 
   // --- Local UI State ---
@@ -44,8 +44,7 @@ export default function EventManagement(){
   // Start & End Time:
   const [selectedStart, setSelectedStart] = useState("");
   const [selectedEnd, setSelectedEnd] = useState("");
-  const onStartChange = (time) => setSelectedStart(time);
-  const onEndChange = (time) => setSelectedEnd(time);
+
 
   // Hard-coded skill options for now. Replace with API later if needed.
   const skillOptions = [
@@ -71,7 +70,7 @@ export default function EventManagement(){
   useEffect(() => {
     const changed =
       manageData.event_name ||
-      manageData.eventDescriptio_d ||
+      manageData.event_description ||
       manageData.event_location ||
       manageData.skills.length > 0 ||
       manageData.urgency ||
@@ -107,7 +106,7 @@ export default function EventManagement(){
             ...prev,
             // prefer new backend alias -> fallback legacy fields -> keep existing
             event_name: data.event_name ?? "",
-            eventDescriptio_d: data.eventDescriptio_d ?? "",
+            event_description: data.event_description ?? "",
             event_location: data.event_location ?? "",
             skills: data.skills ? data.skills.split(/,\s*/) : [],
             urgency: data.urgency ?? "",
@@ -156,6 +155,14 @@ export default function EventManagement(){
       eventDate: prev.eventDate.filter((d) => d !== dateToRemove),
     }));
   };
+
+  const onStartChange = (value) => {
+    setManageData(prev => ({ ...prev, event_start: value }));
+  };
+
+  const onEndChange = (value) => {
+    setManageData(prev => ({ ...prev, event_end: value }));
+  };
     
   // --- Validation ---
   const validateForm = () => {
@@ -167,8 +174,8 @@ export default function EventManagement(){
           newErrors.event_name = "Event Name must be 100 characters or less";
       }
 
-      if (!manageData.eventDescriptio_d.trim()){
-          newErrors.eventDescriptio_d = "Event Description is required";
+      if (!manageData.event_description.trim()){
+          newErrors.event_description = "Event Description is required";
       }
       
       if (!manageData.event_location.trim()){
@@ -205,11 +212,13 @@ export default function EventManagement(){
     const payload = {
       userId,
       event_name: manageData.event_name,
-      eventDescriptio_d: manageData.eventDescriptio_d,
+      event_description: manageData.event_description,
       event_location: manageData.event_location,
       skills: manageData.skills.join(","), // convert array to string
       urgency: manageData.urgency,
-      eventDate: manageData.eventDate.join(",") // convert array to string
+      eventDate: manageData.eventDate.join(","), // convert array to string
+      event_start: manageData.event_start,
+      event_end: manageData.event_end
     };
     console.log("1. Frontend: Sending Payload", payload);
 
@@ -289,8 +298,8 @@ export default function EventManagement(){
               />
 
               <EventTime
-                selectedStartTime={selectedStart}
-                selectedEndTime={selectedEnd}
+                selectedStartTime={manageData.event_start}
+                selectedEndTime={manageData.event_end}
                 onStartTimeChange={onStartChange}
                 onEndTimeChange={onEndChange}
                 error={errors.event_time}
