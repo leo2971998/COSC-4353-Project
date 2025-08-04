@@ -13,7 +13,7 @@ router.use((req, res, next) => {
 });
 
 // Route to save event to MySQL
-router.post("/events", async (req, res) => {
+router.post("/", async (req, res) => {
   console.log("2. Backend: Received Request Body", req.body);
   const {
     eventName,
@@ -49,7 +49,7 @@ router.post("/events", async (req, res) => {
   }
 });
 
-router.get("/events/:userId", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   const userId = req.params.userId;
 
   try {

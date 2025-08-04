@@ -20,7 +20,7 @@ console.log("Hello")
 // Main Function:
 export default function EventManagement(){
   const navigate = useNavigate();
-  const API_URL = "https://cosc-4353-backend.vercel.app";
+  const API_URL = "http://localhost:3000";
 
   const [manageData, setManageData] = useState({
     // Event Features:
@@ -205,7 +205,7 @@ export default function EventManagement(){
     console.log("1. Frontend: Sending Payload", payload);
 
     try {
-      const res = await fetch(`${API_URL}/events`, {
+      const res = await fetch(`${API_URL}/event-management/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
