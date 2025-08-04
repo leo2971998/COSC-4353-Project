@@ -23,7 +23,7 @@ export default function EventTime({
             type="time"
             value={selectedStartTime}
             onChange={(e) => onStartTimeChange(e.target.value)}
-            className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            className="flex-1 px-8 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           />
         </div>
         <div>
@@ -34,7 +34,7 @@ export default function EventTime({
             type="time"
             value={selectedEndTime}
             onChange={(e) => onEndTimeChange(e.target.value)}
-            className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            className="flex-1 px-8 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           />
         </div>
 

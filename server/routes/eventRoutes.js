@@ -16,6 +16,7 @@ router.use((req, res, next) => {
 router.post("/", async (req, res) => {
   console.log("2. Backend: Received Request Body", req.body);
   const {
+    userId,
     event_name,
     event_description,
     event_location,
