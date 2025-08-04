@@ -25,7 +25,7 @@ export default function eventInfo({ event_name, error, onChange }) {
             onChange={(e) => onChange(e.target.value)}
             maxLength={50}
             className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-            placeholder="(Event Name)"
+            placeholder="Name of the Event"
           />
           {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
           <p className="mt-1 text-xs text-gray-500">

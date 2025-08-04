@@ -288,13 +288,13 @@ export default function EventManagement(){
                 error={errors.eventDate}
               />
 
-              {/* <EventTime
+              <EventTime
                 selectedStartTime={selectedStart}
                 selectedEndTime={selectedEnd}
                 onStartTimeChange={onStartChange}
                 onEndTimeChange={onEndChange}
                 error={errors.event_time}
-              /> */}
+              />
 
               <div className="pt-6">
                 <Button
