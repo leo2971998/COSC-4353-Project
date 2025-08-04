@@ -6,11 +6,9 @@ import cors from "cors";
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
-import eventRoutes from "./routes/eventRoutes.js";
-import matchRoutes from "./routes/match.js";
-import notificationRoutes from "./routes/notifications.js";
-import historyRoutes from "./routes/historyRoutes.js";
-import volunteerDashboardRoutes from "./routes/volunteerDashboardRoutes.js";
+import { events } from "./data/events.js";
+import { volunteers as mockVolunteers } from "./data/volunteers.js";
+import { volunteerHistory } from "./data/volunteerHistory.js";
 dotenv.config();
 
 const app = express();
@@ -34,6 +32,34 @@ const db = mysql.createPool({
   connectionLimit: 5,
 });
 
+const USE_DB =
+  String(process.env.USE_DB || "").toLowerCase() === "1" ||
+  String(process.env.USE_DB || "").toLowerCase() === "true";
+
+const query = async (sql, params) => {
+  const [results] = await db.execute(sql, params);
+  return results;
+};
+
+let notificationsMemory = [
+  { id: 1, userId: 1, message: "Event A", read: false },
+  { id: 2, userId: 1, message: "Event B", read: false },
+  { id: 3, userId: 2, message: "Event C", read: false },
+];
+
+async function addNotification(userId, message) {
+  if (!USE_DB) {
+    const n = { id: Date.now(), userId: Number(userId), message, read: false };
+    notificationsMemory.push(n);
+    return n;
+  }
+  await db.query(
+    "INSERT INTO notifications (userId, message, is_read) VALUES (?, ?, ?)",
+    [Number(userId), message, 0]
+  );
+  return { userId: Number(userId), message, read: false };
+}
+
 // Ping once to verify connectivity
 (async () => {
   try {
@@ -55,26 +81,246 @@ app.use(express.urlencoded({ extended: true }));
 
 const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
-// Using the event routes
+// Log every incoming request
+app.use((req, res, next) => {
+  console.log(`Incoming ${req.method} request to ${req.url}`);
+  next();
+});
 
-//ISHAN VOLUNTEER MATCHING TEST
-app.use("/api/match", matchRoutes);
+// Event routes
+app.post("/events", async (req, res) => {
+  console.log("2. Backend: Received Request Body", req.body);
+  const {
+    eventName,
+    eventDescription,
+    location,
+    skills,
+    urgency,
+    eventDate,
+    userId,
+  } = req.body;
 
-//ISHAN NOTIFCATION TEST
-app.use("/api/notifications", notificationRoutes);
+  if (!userId) return res.status(400).json({ message: "userId required" });
+
+  try {
+    await db.query(
+      `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        userId,
+        eventName || null,
+        eventDescription || null,
+        location || null,
+        skills || null,
+        urgency || null,
+        eventDate || null,
+      ]
+    );
+
+    res.status(200).json({ message: "Event saved" });
+  } catch (err) {
+    console.error("Event save error:", err);
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
+app.get("/events/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM eventManage WHERE user_id = ?",
+      [userId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Volunteer matching
+app.get("/api/match/:volunteerId", async (req, res) => {
+  const { volunteerId } = req.params;
+
+  try {
+    let volunteer;
+    if (USE_DB) {
+      const [rows] = await db.query(
+        `SELECT id, location, skills, preferences, availability_start, availability_end
+         FROM volunteers WHERE id = ?`,
+        [volunteerId]
+      );
+      if (!rows.length) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+      volunteer = rows[0];
+      volunteer.skills = (volunteer.skills || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      volunteer.preferences = (volunteer.preferences || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      volunteer.availability = {
+        start: volunteer.availability_start,
+        end: volunteer.availability_end,
+      };
+    } else {
+      volunteer = mockVolunteers.find(
+        (v) => String(v.id) === String(volunteerId)
+      );
+      if (!volunteer) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+    }
+
+    const matchedEvents = events
+      .map((ev) => {
+        const locationMatch = ev.location === volunteer.location;
+
+        const matchedSkills = ev.requiredSkills.filter((skill) =>
+          (volunteer.skills || []).includes(skill)
+        );
+        const skillScore = matchedSkills.length;
+
+        const availabilityMatch =
+          new Date(volunteer.availability?.start) <= new Date(ev.startTime) &&
+          new Date(volunteer.availability?.end) >= new Date(ev.endTime);
+
+        const preferenceBonus = (volunteer.preferences || []).includes(
+          ev.preferenceTag
+        )
+          ? 1
+          : 0;
+
+        const matchScore =
+          (locationMatch ? 1 : 0) +
+          (availabilityMatch ? 1 : 0) +
+          skillScore +
+          preferenceBonus;
+
+        return { ...ev, matchScore, matchedSkills };
+      })
+      .filter((ev) => ev.matchScore > 2)
+      .sort((a, b) => b.matchScore - a.matchScore);
+
+    if (matchedEvents.length > 0) {
+      const top = matchedEvents[0];
+      const message = `You've been matched to ${top.title}!`;
+      await addNotification(volunteer.id, message);
+    }
+
+    return res.json(matchedEvents);
+  } catch (err) {
+    console.error("Error matching volunteer:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Notifications
+app.get("/api/notifications", async (_req, res) => {
+  if (!USE_DB) return res.json(notificationsMemory);
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id, userId, message, is_read FROM notifications ORDER BY id DESC"
+    );
+    const out = rows.map((r) => ({
+      id: r.id,
+      userId: r.userId,
+      message: r.message,
+      read: !!(r.read ?? r.is_read),
+    }));
+    return res.json(out);
+  } catch {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get("/api/notifications/:userId", async (req, res) => {
+  const id = Number(req.params.userId);
+  if (!USE_DB)
+    return res.json(notificationsMemory.filter((n) => n.userId === id));
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id, userId, message, is_read FROM notifications WHERE userId = ? ORDER BY id DESC",
+      [id]
+    );
+    const out = rows.map((r) => ({
+      id: r.id,
+      userId: r.userId,
+      message: r.message,
+      read: !!(r.read ?? r.is_read),
+    }));
+    return res.json(out);
+  } catch {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/api/notifications", async (req, res) => {
+  const { userId, message } = req.body || {};
+  if (!userId || !message)
+    return res.status(400).json({ error: "Missing fields" });
+
+  try {
+    const n = await addNotification(userId, message);
+    return res.status(201).json(n);
+  } catch {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+// History routes
+app.get("/history", (req, res) => {
+  res.json(volunteerHistory);
+});
+
+app.get("/history/:userID", async (req, res) => {
+  try {
+    const volunteer_id = req.params.userID;
+    const sql =
+      "SELECT vh.history_id, em.event_id, em.event_name, em.event_description, em.event_location, em.start_time, vh.event_status, em.urgency, GROUP_CONCAT(sk.skill_name) AS skills FROM volunteer_history AS vh JOIN eventManage AS em ON vh.event_id = em.event_id JOIN event_skill AS ek ON em.event_id = ek.event_id JOIN skill AS sk ON ek.skill_id = sk.skill_id WHERE vh.volunteer_id = ? GROUP BY vh.history_id, em.event_id;";
+    const volunteer_history = await query(sql, [volunteer_id]);
+
+    res.status(200).json({ volunteer_history });
+  } catch (error) {
+    console.error("Error fetching volunteer's history ", error.message);
+    res
+      .status(500)
+      .json({ message: "Server error fetching volunteer's history" });
+  }
+});
+
+// Volunteer dashboard
+app.get("/volunteer-dashboard/:userID", async (req, res) => {
+  try {
+    const volunteerID = req.params.userID;
+    const sql =
+      "SELECT l.full_name, em.event_id, em.event_name,em.start_time, em.end_time, em.event_location, em.event_description FROM login AS l JOIN volunteer_history AS vh ON l.id = vh.volunteer_id JOIN eventManage AS em ON vh.event_id = em.event_id WHERE l.id = ? AND em.start_time > NOW() ORDER BY em.start_time ASC LIMIT 1;";
+
+    const next_event = await query(sql, [volunteerID]);
+
+    res.status(200).json({ next_event });
+  } catch (error) {
+    console.error(
+      "Error fetching volunteer's history (Backend)",
+      error.message
+    );
+    res
+      .status(500)
+      .json({ message: "Server error fetching volunteer's next event" });
+  }
+});
 
 // Starts the server on port 3000 by default
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-// ───────────────────────────────────────────────────────────────
-// Routes
-// ───────────────────────────────────────────────────────────────
-
-app.use("/", eventRoutes);
-app.use("/history", historyRoutes);
 
 // Register
 app.post("/register", async (req, res) => {
@@ -364,7 +610,5 @@ app.delete("/users/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-app.use("/volunteer-dashboard", volunteerDashboardRoutes);
 
 export default app;
