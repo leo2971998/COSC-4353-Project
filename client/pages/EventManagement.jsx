@@ -12,6 +12,7 @@ import Location from "../components/EventManagement/Location";
 import SkillsSection from "../components/CompleteProfile/Skills";
 import Urgency from "../components/EventManagement/Urgency";
 import EventDate from "../components/EventManagement/EventDate"
+import EventTime from "../components/EventManagement/EventTime";
 import { Button } from "../components/ui/Button";
 
 // Test to see if I can see changes in console:
@@ -25,11 +26,13 @@ export default function EventManagement(){
   const [manageData, setManageData] = useState({
     // Event Features:
     event_name: "",
-    eventDescriptio_d: "",
-    location: "",
+    event_description: "",
+    event_location: "",
     skills: [],
     urgency: "",
     eventDate: [],
+    event_start: [],
+    event_end: []
   });
 
   // --- Local UI State ---
@@ -37,6 +40,12 @@ export default function EventManagement(){
   const [isSkillsOpen, setIsSkillsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Start & End Time:
+  const [selectedStart, setSelectedStart] = useState("");
+  const [selectedEnd, setSelectedEnd] = useState("");
+  const onStartChange = (time) => setSelectedStart(time);
+  const onEndChange = (time) => setSelectedEnd(time);
 
   // Hard-coded skill options for now. Replace with API later if needed.
   const skillOptions = [
@@ -228,18 +237,6 @@ export default function EventManagement(){
     }
   };
 
-  // event_id (int)
-  // event_name (varchar(255))
-  // event_description (text)
-  // event_location (varchar(255))
-  // skills (varchar(255))
-  // urgency (enum('High', 'Medium', 'Low'))
-  // eventDate (varchar(255))
-  // created_by (int)
-  
-  // start_time (datetime: clock time)
-  // end_time (datetime: clock time)
-
   // --- Render ---
   return (
     <>
@@ -290,6 +287,15 @@ export default function EventManagement(){
                 onRemoveDate={handleDateRemove}
                 error={errors.eventDate}
               />
+
+              {/* <EventTime
+                selectedStartTime={selectedStart}
+                selectedEndTime={selectedEnd}
+                onStartTimeChange={onStartChange}
+                onEndTimeChange={onEndChange}
+                error={errors.event_time}
+              /> */}
+
               <div className="pt-6">
                 <Button
                   type="submit"

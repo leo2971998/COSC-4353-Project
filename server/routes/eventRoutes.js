@@ -16,29 +16,33 @@ router.use((req, res, next) => {
 router.post("/", async (req, res) => {
   console.log("2. Backend: Received Request Body", req.body);
   const {
-    eventName,
-    eventDescription,
-    location,
+    event_name,
+    event_description,
+    event_location,
     skills,
     urgency,
     eventDate,
-    userId,
+    created_by,
+    start_time,
+    end_time
   } = req.body;
 
   if (!userId) return res.status(400).json({ message: "userId required" });
 
   try {
     await db.query(
-      `INSERT INTO eventManage (user_id, eventName, eventDescription, location, skills, urgency, eventDate)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO eventManage (user_id, event_name, event_description, event_location, skills, urgency, created_by, start_time, end_time)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        userId,
-        eventName || null,
-        eventDescription || null,
-        location || null,
+        event_name || null,
+        event_description || null,
+        event_location || null,
         skills || null,
         urgency || null,
         eventDate || null,
+        created_by || null,
+        start_time || null,
+        end_time || null
       ]
     );
 
