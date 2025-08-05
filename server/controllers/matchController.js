@@ -150,7 +150,7 @@ export async function matchVolunteer(req, res) {
 
         return { ...ev, matchScore, matchedSkills };
       })
-      .filter((ev) => ev.matchScore > 2)
+      .filter((ev) => ev.matchScore >= 2)
       .sort((a, b) => b.matchScore - a.matchScore)
       .slice(0, 5);
 
@@ -173,6 +173,7 @@ export async function matchVolunteer(req, res) {
     // }
 
     // 4) Return ranked matches
+
     return res.json(matchedEvents);
   } catch (err) {
     console.error("Error matching volunteer:", err);
