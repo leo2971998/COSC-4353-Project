@@ -108,14 +108,6 @@ export default function VolunteerDashboard() {
     loadData();
   }, []);
 
-  useEffect(() => {
-    if (suggestedEvents.length > 0) {
-      console.log("Got suggested events:", suggestedEvents);
-    } else {
-      console.log("No suggestions found.");
-    }
-  }, [suggestedEvents]);
-
   /* ─────────────────────────────
       Render
       ───────────────────────────── */
