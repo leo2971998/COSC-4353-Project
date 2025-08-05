@@ -16,7 +16,6 @@ router.use((req, res, next) => {
 router.post("/", async (req, res) => {
   console.log("2. Backend: Received Request Body", req.body);
   const {
-    userId,
     event_name,
     event_description,
     event_location,
@@ -28,11 +27,17 @@ router.post("/", async (req, res) => {
     end_time
   } = req.body;
 
-  if (!userId) return res.status(400).json({ message: "userId required" });
+  if (!created_by) return res.status(400).json({ message: "created_by id required" });
+  const formatTime = (t) => {
+    if (!t) return null;
+    // If only HH:mm, append seconds and space between date and time
+    return t.length === 5 ? `${eventDate} ${t}:00` : `${eventDate} ${t}`;
+  };
 
+  
   try {
     await db.query(
-      `INSERT INTO eventManage (user_id, event_name, event_description, event_location, skills, urgency, created_by, start_time, end_time)
+      `INSERT INTO eventManage (event_name, event_description, event_location, skills, urgency, eventDate, created_by, start_time, end_time)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         event_name || null,
@@ -42,8 +47,8 @@ router.post("/", async (req, res) => {
         urgency || null,
         eventDate || null,
         created_by || null,
-        start_time || null,
-        end_time || null
+        formatTime(start_time) || null,
+        formatTime(end_time) || null
       ]
     );
 
@@ -54,13 +59,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
-  const userId = req.params.userId;
+router.get("/:created_by", async (req, res) => {
+  const created_by = req.params.created_by;
 
   try {
     const [rows] = await db.promise().query(
-      "SELECT * FROM eventManage WHERE user_id = ?",
-      [userId]
+      "SELECT * FROM eventManage WHERE created_by = ?",
+      [created_by]
     );
     res.json(rows); // Send rows to frontend
   } catch (err) {

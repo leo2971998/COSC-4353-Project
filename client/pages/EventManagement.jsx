@@ -31,8 +31,8 @@ export default function EventManagement(){
     skills: [],
     urgency: "",
     eventDate: [],
-    event_start: "",
-    event_end: ""
+    start_time: "",
+    end_time: ""
   });
 
   // --- Local UI State ---
@@ -94,10 +94,10 @@ export default function EventManagement(){
 
   // Loading Event Details:
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
+    const created_by = localStorage.getItem("created_by");
+    if (!created_by) return;
 
-    fetch(`${API_URL}/events/${userId}`)
+    fetch(`${API_URL}/events/${created_by}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!data) return;
@@ -157,11 +157,11 @@ export default function EventManagement(){
   };
 
   const onStartChange = (value) => {
-    setManageData(prev => ({ ...prev, event_start: value }));
+    setManageData(prev => ({ ...prev, start_time: value }));
   };
 
   const onEndChange = (value) => {
-    setManageData(prev => ({ ...prev, event_end: value }));
+    setManageData(prev => ({ ...prev, end_time: value }));
   };
     
   // --- Validation ---
@@ -203,22 +203,22 @@ export default function EventManagement(){
     e.preventDefault();
     if (!validateForm()) return;
 
-    const userId = localStorage.getItem("userId"); // pull from storage
-    if (!userId) { 
+    const created_by = localStorage.getItem("userId"); // pull from storage
+    if (!created_by) { 
       alert("Please log in first"); 
       return; 
     }
 
     const payload = {
-      userId,
+      created_by,
       event_name: manageData.event_name,
       event_description: manageData.event_description,
       event_location: manageData.event_location,
       skills: manageData.skills.join(","), // convert array to string
       urgency: manageData.urgency,
       eventDate: manageData.eventDate.join(","), // convert array to string
-      event_start: manageData.event_start,
-      event_end: manageData.event_end
+      start_time: manageData.start_time,
+      end_time: manageData.end_time
     };
     console.log("1. Frontend: Sending Payload", payload);
 
@@ -298,8 +298,8 @@ export default function EventManagement(){
               />
 
               <EventTime
-                selectedStartTime={manageData.event_start}
-                selectedEndTime={manageData.event_end}
+                selectedStartTime={manageData.start_time}
+                selectedEndTime={manageData.end_time}
                 onStartTimeChange={onStartChange}
                 onEndTimeChange={onEndChange}
                 error={errors.event_time}
