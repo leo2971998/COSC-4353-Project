@@ -1,8 +1,9 @@
 import express from "express";
-import { getNextEvent } from "../controllers/vDashController.js";
+import { getNextEvent, postInterest } from "../controllers/vDashController.js";
 
 const router = express.Router();
 
 router.get("/:userID", getNextEvent);
+router.post("/interest/:eventID", postInterest);
 
 export default router;

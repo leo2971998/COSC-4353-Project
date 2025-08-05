@@ -24,3 +24,19 @@ export const getNextEvent = async (req, res) => {
       .json({ message: "Error occured retrieving next event for dashboard" });
   }
 };
+
+export const postInterest = async (req, res) => {
+  const userID = req.body.userID;
+  const eventID = req.params.eventID;
+
+  try {
+    await query(
+      "INSERT INTO volunteer_history (volunteer_id, event_id) VALUES (?, ?);",
+      [userID, eventID]
+    );
+    res.status(201).json({ message: "Interest recorded" });
+  } catch (error) {
+    console.error("Error in the backend for postInterest, ", error);
+    res.status(500).json({ message: "Error in post interest" });
+  }
+};

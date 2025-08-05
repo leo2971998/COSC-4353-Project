@@ -87,24 +87,27 @@ export default function VolunteerDashboard() {
   /* ─────────────────────────────
       Composite load on mount
       ───────────────────────────── */
-  useEffect(() => {
-    const userID = localStorage.getItem("userId");
+  const userID = localStorage.getItem("userId");
+
+  const loadData = async () => {
     if (!userID) return;
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        await Promise.all([
-          fetchEvents(),
-          fetchNextEvent(userID),
-          fetchSuggestedEvents(userID),
-          fetchNotifications(userID),
-        ]);
-      } catch (error) {
-        console.error("Error loading dashboard", error);
-      } finally {
-        setTimeout(() => setLoading(false), 500);
-      }
-    };
+
+    try {
+      setLoading(true);
+      await Promise.all([
+        fetchEvents(),
+        fetchNextEvent(userID),
+        fetchSuggestedEvents(userID),
+        fetchNotifications(userID),
+      ]);
+    } catch (error) {
+      console.error("Error loading dashboard", error);
+    } finally {
+      setTimeout(() => setLoading(false), 500);
+    }
+  };
+  useEffect(() => {
+    if (!userID) return;
     loadData();
   }, []);
 
@@ -132,7 +135,10 @@ export default function VolunteerDashboard() {
                 event={nextEvent.event_id}
                 requiredSkills={nextEvent.required_skills}
               />
-              <SuggestedEvents suggestedEvents={suggestedEvents} />
+              <SuggestedEvents
+                suggestedEvents={suggestedEvents}
+                onRefresh={loadData}
+              />
               <CalendarView
                 upcomingEvents={upcomingEvents}
                 allEvents={allEvents}

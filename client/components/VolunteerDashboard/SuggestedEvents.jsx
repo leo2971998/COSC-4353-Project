@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import {
   ChevronRight,
   ChevronLeft,
@@ -9,10 +10,11 @@ import {
   Briefcase,
 } from "lucide-react";
 
-export const SuggestedEvents = ({ suggestedEvents }) => {
+export const SuggestedEvents = ({ suggestedEvents, onRefresh }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [page, setPage] = useState(0);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const itemsPerPage = 3;
 
@@ -29,6 +31,20 @@ export const SuggestedEvents = ({ suggestedEvents }) => {
   const closePopup = () => {
     setSelectedEvent(null);
     setShowPopup(false);
+  };
+
+  const postInterest = async (eventID) => {
+    try {
+      const volunteerID = localStorage.getItem("userId");
+      await axios.post(`${API_URL}/volunteer-dashboard/interest/${eventID}`, {
+        userID: volunteerID,
+      });
+      console.log("Interest recorded!");
+      await onRefresh();
+      closePopup();
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
 
   if (suggestedEvents.length === 0) {
@@ -167,8 +183,7 @@ export const SuggestedEvents = ({ suggestedEvents }) => {
 
             <button
               onClick={() => {
-                console.log("Confirming interest in:", selectedEvent);
-                closePopup();
+                postInterest(selectedEvent.id);
               }}
               className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg"
             >
