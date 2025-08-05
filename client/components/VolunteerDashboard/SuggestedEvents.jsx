@@ -31,6 +31,25 @@ export const SuggestedEvents = ({ suggestedEvents }) => {
     setShowPopup(false);
   };
 
+  if (suggestedEvents.length === 0) {
+    return (
+      <div className="bg-[#222b45] rounded-xl p-6 mb-6 text-center">
+        <h2 className="text-xl font-semibold text-white mb-2">
+          No Suggested Events
+        </h2>
+        <p className="text-gray-400 mb-4">
+          We couldn't find any event matches for you at this time.
+        </p>
+        <a
+          href="/events"
+          className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+        >
+          View All Available Events
+        </a>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#222b45] rounded-xl p-6 mb-6">
       <div className="flex justify-between items-center mb-4">
