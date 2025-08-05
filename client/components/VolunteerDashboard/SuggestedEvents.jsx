@@ -123,7 +123,13 @@ export const SuggestedEvents = ({ suggestedEvents }) => {
                       minute: "2-digit",
                       hour12: true,
                     }
-                  )}
+                  )}{" "}
+                  -{" "}
+                  {new Date(selectedEvent.endTime).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
                 </span>
               </div>
               <div className="flex items-center">
@@ -137,10 +143,7 @@ export const SuggestedEvents = ({ suggestedEvents }) => {
             </div>
 
             <div className="mt-6 text-sm text-gray-300">
-              <p>
-                This is a detailed view of the event. Add description or RSVP
-                notes here if available.
-              </p>
+              {selectedEvent.description}
             </div>
 
             <button
