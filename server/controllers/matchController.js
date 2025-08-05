@@ -1,14 +1,12 @@
 // server/controllers/matchController.js
 import db from "../db.js";
-import { events } from "../data/events.js";
+// import { events } from "../data/events.js";  <---- We are going to pull from the actual db
 import { volunteers as mockVolunteers } from "../data/volunteers.js";
-import {
-  addNotification as addMockNotification,
-} from "./notificationsController.js";
+import { addNotification as addMockNotification } from "./notificationsController.js";
 
-const USE_DB =
-  String(process.env.USE_DB || "").toLowerCase() === "1" ||
-  String(process.env.USE_DB || "").toLowerCase() === "true";
+const USE_DB = true;
+// String(process.env.USE_DB || "").toLowerCase() === "1" ||
+// String(process.env.USE_DB || "").toLowerCase() === "true";
 
 /**
  * GET /api/match/:volunteerId
@@ -23,36 +21,117 @@ export async function matchVolunteer(req, res) {
     let volunteer;
     if (USE_DB) {
       const [rows] = await db.query(
-        `SELECT id, location, skills, preferences, availability_start, availability_end
-         FROM volunteers WHERE id = ?`,
+        `SELECT p.user_id, p.city, p.state, p.zip_code, skill_name FROM profile AS p LEFT JOIN profile_skill AS ps ON p.user_id = ps.user_id LEFT JOIN skill AS s ON ps.skill_id = s.skill_id WHERE p.user_id = ?;`,
         [volunteerId]
       );
       if (!rows.length) {
         return res.status(404).json({ message: "Volunteer not found" });
       }
-      volunteer = rows[0];
-      // normalize CSV fields to arrays
-      volunteer.skills = (volunteer.skills || "")
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      volunteer.preferences = (volunteer.preferences || "")
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      volunteer.availability = {
-        start: volunteer.availability_start,
-        end: volunteer.availability_end,
+
+      // SG: Commented this out because we are pulling data differently from the db.
+      //   volunteer = rows[0];
+      //   // normalize CSV fields to arrays
+      //   volunteer.skills = (volunteer.skills || "")
+      //     .split(",")
+      //     .map((s) => s.trim())
+      //     .filter(Boolean);
+      //   volunteer.preferences = (volunteer.preferences || "")
+      //     .split(",")
+      //     .map((s) => s.trim())
+      //     .filter(Boolean);
+      //   volunteer.availability = {
+      //     start: volunteer.availability_start,
+      //     end: volunteer.availability_end,
+      //   };
+      // } else {
+      //   volunteer = mockVolunteers.find(
+      //     (v) => String(v.id) === String(volunteerId)
+      //   );
+      //   if (!volunteer) {
+      //     return res.status(404).json({ message: "Volunteer not found" });
+      //   }
+
+      volunteer = {
+        id: rows[0].user_id,
+        location: `${rows[0].city}, ${rows[0].state}, ${rows[0].zip_code}`,
+        skills: rows
+          .map((row) => row.skill_name)
+          .filter((name) => name !== null)
+          .map((s) => s.trim()),
+        // Availability will be handled later
       };
-    } else {
-      volunteer = mockVolunteers.find((v) => String(v.id) === String(volunteerId));
-      if (!volunteer) {
-        return res.status(404).json({ message: "Volunteer not found" });
-      }
     }
 
-    // 2) Score events
-    const matchedEvents = events
+    // SG: This query retrieves all the events found in the db. This will be used to score later on
+    const [events] = await db.query(
+      "SELECT em.event_id, em.event_name, em.event_location, s.skill_name, em.start_time, em.end_time FROM eventManage AS em LEFT JOIN event_skill AS es ON em.event_id = es.event_id LEFT JOIN skill AS s ON es.skill_id = s.skill_id WHERE em.start_time > NOW();"
+    );
+
+    /* Sample Return of the query above: 
+    12,Bobos Party,123 Houston St.,Communication,2025-08-07 03:58:05,2025-08-01 03:58:07
+    12,Bobos Party,123 Houston St.,Teamwork,2025-08-07 03:58:05,2025-08-01 03:58:07
+    12,Bobos Party,123 Houston St.,Event Planning,2025-08-07 03:58:05,2025-08-01 03:58:07
+    14,Tech Meetup: AI in 2025,"The Ion, 4201 Main St, Houston, TX",Public Speaking,2025-08-05 19:00:00,2025-08-05 21:30:00
+    14,Tech Meetup: AI in 2025,"The Ion, 4201 Main St, Houston, TX",Tech Support,2025-08-05 19:00:00,2025-08-05 21:30:00
+
+    There is a lot of redundant information in this query so we will combine all of the skills into one array
+    */
+
+    const eventMap = new Map();
+
+    events.forEach((row) => {
+      if (!eventMap.has(row.event_id)) {
+        eventMap.set(row.event_id, {
+          id: row.event_id,
+          title: row.event_name,
+          location: row.event_location,
+          startTime: row.start_time,
+          endTime: row.end_time,
+          requiredSkills: [],
+        });
+      }
+
+      if (row.skill_name) {
+        eventMap.get(row.event_id).requiredSkills.push(row.skill_name);
+      }
+    });
+
+    const parsedEvents = Array.from(eventMap.values());
+
+    //SG: Now at this point we have a object that holds all the events and the skills are all in one array.
+
+    // // 2) Score events
+    // const matchedEvents = events
+    //   .map((ev) => {
+    //     const locationMatch = ev.location === volunteer.location;
+
+    //     const matchedSkills = ev.requiredSkills.filter((skill) =>
+    //       (volunteer.skills || []).includes(skill)
+    //     );
+    //     const skillScore = matchedSkills.length;
+
+    //     const availabilityMatch =
+    //       new Date(volunteer.availability?.start) <= new Date(ev.startTime) &&
+    //       new Date(volunteer.availability?.end) >= new Date(ev.endTime);
+
+    //     const preferenceBonus = (volunteer.preferences || []).includes(
+    //       ev.preferenceTag
+    //     )
+    //       ? 1
+    //       : 0;
+
+    //     const matchScore =
+    //       (locationMatch ? 1 : 0) +
+    //       (availabilityMatch ? 1 : 0) +
+    //       skillScore +
+    //       preferenceBonus;
+
+    //     return { ...ev, matchScore, matchedSkills };
+    //   })
+    //   .filter((ev) => ev.matchScore > 2) // keep good matches
+    //   .sort((a, b) => b.matchScore - a.matchScore);
+
+    const matchedEvents = parsedEvents
       .map((ev) => {
         const locationMatch = ev.location === volunteer.location;
 
@@ -61,42 +140,37 @@ export async function matchVolunteer(req, res) {
         );
         const skillScore = matchedSkills.length;
 
-        const availabilityMatch =
-          new Date(volunteer.availability?.start) <= new Date(ev.startTime) &&
-          new Date(volunteer.availability?.end) >= new Date(ev.endTime);
+        // I will add this on later
+        // const availabilityMatch =
+        //   new Date(ev.endTime) >= new Date(volunteer.availability.start) &&
+        //   new Date(ev.startTime) <= new Date(volunteer.availability.end);
 
-        const preferenceBonus = (volunteer.preferences || []).includes(
-          ev.preferenceTag
-        )
-          ? 1
-          : 0;
-
-        const matchScore =
-          (locationMatch ? 1 : 0) +
-          (availabilityMatch ? 1 : 0) +
-          skillScore +
-          preferenceBonus;
+        // (availabilityMatch ? 2 : 0) + Add this on later
+        const matchScore = (locationMatch ? 2 : 0) + skillScore * 2;
 
         return { ...ev, matchScore, matchedSkills };
       })
-      .filter((ev) => ev.matchScore > 2) // keep good matches
-      .sort((a, b) => b.matchScore - a.matchScore);
+      .filter((ev) => ev.matchScore > 2)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 5);
+
+    // SG: I commented this stuff out because its mock data and we need to pull from the actual db.
 
     // 3) If we found a match, create a notification for the top one
-    if (matchedEvents.length > 0) {
-      const top = matchedEvents[0];
-      const message = `You've been matched to ${top.title}!`;
+    // if (matchedEvents.length > 0) {
+    //   const top = matchedEvents[0];
+    //   const message = `You've been matched to ${top.title}!`;
 
-      if (USE_DB) {
-        await db.query(
-          "INSERT INTO notifications (userId, message, is_read) VALUES (?, ?, ?)",
-          [volunteer.id, message, false]
-        );
-      } else {
-        // mock path uses in-memory notification store
-        addMockNotification(volunteer.id, message);
-      }
-    }
+    //   if (USE_DB) {
+    //     await db.query(
+    //       "INSERT INTO notifications (userId, message, is_read) VALUES (?, ?, ?)",
+    //       [volunteer.id, message, false]
+    //     );
+    //   } else {
+    //     // mock path uses in-memory notification store
+    //     addMockNotification(volunteer.id, message);
+    //   }
+    // }
 
     // 4) Return ranked matches
     return res.json(matchedEvents);
