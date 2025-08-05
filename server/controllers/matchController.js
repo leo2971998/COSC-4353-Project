@@ -64,7 +64,7 @@ export async function matchVolunteer(req, res) {
 
     // SG: This query retrieves all the events found in the db. This will be used to score later on
     const [events] = await db.query(
-      "SELECT em.event_id, em.event_name, em.event_location, s.skill_name, em.start_time, em.end_time FROM eventManage AS em LEFT JOIN event_skill AS es ON em.event_id = es.event_id LEFT JOIN skill AS s ON es.skill_id = s.skill_id WHERE em.start_time > NOW();"
+      "SELECT em.event_id, em.event_name, em.event_location, em.event_description,s.skill_name, em.start_time, em.end_time FROM eventManage AS em LEFT JOIN event_skill AS es ON em.event_id = es.event_id LEFT JOIN skill AS s ON es.skill_id = s.skill_id WHERE em.start_time > NOW();"
     );
 
     /* Sample Return of the query above: 
@@ -87,6 +87,7 @@ export async function matchVolunteer(req, res) {
           location: row.event_location,
           startTime: row.start_time,
           endTime: row.end_time,
+          description: row.event_description,
           requiredSkills: [],
         });
       }
