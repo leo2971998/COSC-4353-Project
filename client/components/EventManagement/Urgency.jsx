@@ -1,6 +1,10 @@
 import { AlertTriangle} from "lucide-react";
 
-export default function Urgency({ urgency, onChange }){
+export default function Urgency({ 
+    urgency,
+    onChange,
+    error
+}){
     return (
         
         <div>
@@ -29,6 +33,7 @@ export default function Urgency({ urgency, onChange }){
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
                     </select>
+                    {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
                 </div>
             </div>
         </div>

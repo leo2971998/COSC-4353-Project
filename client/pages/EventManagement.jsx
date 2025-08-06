@@ -178,7 +178,7 @@ export default function EventManagement(){
       }
       
       if (!manageData.event_location.trim()){
-          newErrors.event_location = "Event Location is required";
+          newErrors.event_location = "Location is required";
       }
 
       if (manageData.skills.length === 0){
@@ -269,11 +269,13 @@ export default function EventManagement(){
               <Description
                 manageData={manageData}
                 onChange={(value) => handleInputChange("event_description", value)}
+                error={errors.event_description}
               />
 
               <Location
                 manageData={manageData}
                 onChange={(value) => handleInputChange("event_location", value)}
+                error={errors.event_location}
               />
 
               <SkillsSection
@@ -287,9 +289,8 @@ export default function EventManagement(){
 
               <Urgency
                 urgency={manageData.urgency}
-                onChange={(e) =>
-                  setManageData((prevData) => ({ ...prevData, urgency: e.target.value }))
-                }
+                onChange={(e) => setManageData((prevData) => ({ ...prevData, urgency: e.target.value }))}
+                error={errors.urgency}
               />
 
               <EventDate

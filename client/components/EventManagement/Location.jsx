@@ -1,4 +1,8 @@
-export default function Location({ manageData={}, onChange }){
+export default function Location({ 
+    manageData={},
+    onChange,
+    error
+}){
     return(
         <div>
             <label
@@ -15,6 +19,7 @@ export default function Location({ manageData={}, onChange }){
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                 placeholder="Location of the Event"
             />
+            {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
         </div>
     );
 }
