@@ -101,4 +101,18 @@ router.get("/:created_by", async (req, res) => {
   }
 });
 
+router.delete('/eventManage/:event_id', (req, res) => {
+  const eventId = req.params.event_id;  // FIXED: match route param
+
+  const sql = 'DELETE FROM eventManage WHERE event_id = ?';  // FIXED: table name
+  db.query(sql, [eventId], (err, result) => {
+    if (err) {
+      console.error('Error deleting event:', err);
+      res.status(500).json({ error: 'Failed to delete event' });
+    } else {
+      res.json({ message: 'Event deleted successfully', result });
+    }
+  });
+});
+
 export default router;
