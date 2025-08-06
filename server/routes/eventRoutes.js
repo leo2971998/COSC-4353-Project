@@ -34,9 +34,9 @@ router.post("/", async (req, res) => {
     return t.length === 5 ? `${eventDate} ${t}:00` : `${eventDate} ${t}`;
   };
 
-  
+
   try {
-    await db.query(
+    const [eventResult] = await db.query(
       `INSERT INTO eventManage (event_name, event_description, event_location, skills, urgency, eventDate, created_by, start_time, end_time)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -51,6 +51,33 @@ router.post("/", async (req, res) => {
         formatTime(end_time) || null
       ]
     );
+
+    const event_id = eventResult.insertId;
+    const skillList = Array.isArray(skills) ? skills : [skills];
+
+    for (const skillName of skillList) {
+      const [existingSkillRows] = await db.query(
+        `SELECT skill_id FROM skill WHERE skill_name = ?`,
+        [skillName]
+      );
+
+      let skill_id;
+
+      if (existingSkillRows.length > 0) {
+        skill_id = existingSkillRows[0].skill_id;
+      } else {
+        const [insertSkillResult] = await db.query(
+          `INSERT INTO skill (skill_name) VALUES (?)`,
+          [skillName]
+        );
+        skill_id = insertSkillResult.insertId;
+      }
+
+      await db.query(
+        `INSERT INTO event_skill (event_id, skill_id) VALUES (?, ?)`,
+        [event_id, skill_id]
+      );
+    }
 
     res.status(200).json({ message: "Event saved" });
   } catch (err) {
