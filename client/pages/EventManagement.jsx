@@ -48,22 +48,21 @@ export default function EventManagement(){
 
   // Hard-coded skill options for now. Replace with API later if needed.
   const skillOptions = [
-    "Teaching & Education",
-    "Healthcare & Medical",
-    "Technology & IT",
-    "Construction & Manual Labor",
+    "Communication",
+    "Teamwork",
+    "First Aid",
     "Event Planning",
-    "Marketing & Communications",
-    "Food Service & Preparation",
-    "Administrative Support",
-    "Childcare & Youth Programs",
-    "Senior Care",
-    "Environmental & Conservation",
-    "Arts & Creative",
-    "Legal & Advocacy",
-    "Transportation",
-    "Language Translation",
-    "Financial & Accounting",
+    "Childcare",
+    "Food Preparation",
+    "Elderly Assistance",
+    "Tutoring",
+    "Fundraising",
+    "Public Speaking",
+    "Cleaning",
+    "Mentoring",
+    "Translation",
+    "Tech Support",
+    "Environmental Cleanup",
   ];
 
   // Verifies that all event features are filled out:

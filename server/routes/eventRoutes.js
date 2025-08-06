@@ -53,7 +53,10 @@ router.post("/", async (req, res) => {
     );
 
     const event_id = eventResult.insertId;
-    const skillList = Array.isArray(skills) ? skills : [skills];
+    // We need to split up skills, everytime there is a comma
+    const skillList = Array.isArray(skills)
+      ? skills
+      : skills.split(',').map((skill) => skill.trim());
 
     for (const skillName of skillList) {
       const [existingSkillRows] = await db.query(
@@ -101,16 +104,33 @@ router.get("/:created_by", async (req, res) => {
   }
 });
 
-router.delete('/eventManage/:event_id', (req, res) => {
-  const eventId = req.params.event_id;  // FIXED: match route param
+router.delete('/eventManage/:event_id', async (req, res) => {
+  const eventId = req.params.event_id;
 
-  const sql = 'DELETE FROM eventManage WHERE event_id = ?';  // FIXED: table name
-  db.query(sql, [eventId], (err, result) => {
+  try {
+    // First: Delete from event_skill to avoid FK conflict
+    await db.query('DELETE FROM event_skill WHERE event_id = ?', [eventId]);
+
+    // Then: Delete the event itself
+    await db.query('DELETE FROM eventManage WHERE event_id = ?', [eventId]);
+
+    res.json({ message: 'Event and associated skills deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting event:', err);
+    res.status(500).json({ error: 'Failed to delete event', details: err });
+  }
+});
+
+router.delete('/skill/:skill_id', async (req, res) => {
+  const skillId = req.params.skill_id;
+
+  const sql = 'DELETE FROM skill WHERE skill_id = ?';
+  db.query(sql, [skillId], (err, result) => {
     if (err) {
-      console.error('Error deleting event:', err);
-      res.status(500).json({ error: 'Failed to delete event' });
+      console.error('Error deleting skill:', err);
+      res.status(500).json({ error: 'Failed to delete skill' });
     } else {
-      res.json({ message: 'Event deleted successfully', result });
+      res.json({ message: 'Skill deleted successfully', result });
     }
   });
 });
