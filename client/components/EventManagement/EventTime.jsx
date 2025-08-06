@@ -15,9 +15,9 @@ export default function EventTime({
       </div>
         
       <div className="space-y-6 grid grid-cols-2">
-        <div>
+        <div className="mb-0">
           <label className="block text-sm font-medium text-gray-300 mb-2">
-            Start Time
+            Start Time *
           </label>
           <input
             type="time"
@@ -28,7 +28,7 @@ export default function EventTime({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">
-            End Time
+            End Time *
           </label>
           <input
             type="time"
@@ -37,9 +37,8 @@ export default function EventTime({
             className="flex-1 px-8 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           />
         </div>
-
-        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       </div>
+      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
     </div>
   );
 }

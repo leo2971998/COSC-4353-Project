@@ -192,6 +192,11 @@ export default function EventManagement(){
       if (manageData.eventDate.length === 0){
           newErrors.eventDate = "Please select at least one available date";
       }
+
+      if (manageData.start_time.length === 0 || manageData.end_time.length === 0) {
+          newErrors.event_time = "Please select both a start and end time";
+      }
+      
       console.log("Validation Errors:", newErrors);
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
