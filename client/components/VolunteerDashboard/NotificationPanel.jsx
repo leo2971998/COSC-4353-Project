@@ -1,46 +1,125 @@
-import { Bell, Check, X, ChevronRight } from "lucide-react";
-export const NotificationsPanel = ({ notifications }) => {
-  return (
-    <div className="bg-[#222b45] rounded-xl p-6 h-full">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center">
-          <Bell className="text-indigo-400 mr-2" size={20} />
-          <h2 className="text-xl font-semibold">Notifications</h2>
-        </div>
-        <span className="bg-indigo-600 text-xs px-2 py-1 rounded-full">
-          {notifications.length} new
-        </span>
-      </div>
-      <div className="space-y-4">
-        {notifications.map((notification) => (
-          <div key={notification.id} className="bg-[#1a2035] rounded-lg p-4">
-            <div className="flex justify-between">
-              <h3 className="font-medium">{notification.eventName}</h3>
-              <span className="text-xs text-gray-400">{notification.time}</span>
+/* NotificationPanel.jsx
+   ------------------------------------------------------------
+   Leo Nguyen – richer volunteer-request cards
+   • shows event name, when, where, required skills
+   • Accept / Decline buttons remain
+   • generic notifications unchanged
+   ------------------------------------------------------------ */
+
+import axios from "axios";
+import { useState, useRef, useEffect } from "react";
+
+const BASE = "https://cosc-4353-backend.vercel.app"; // hard URL works for everyone
+
+/* fetch + cache an event row by id */
+async function getEventCached(id, cache) {
+    if (cache.current.has(id)) return cache.current.get(id);
+    try {
+        const { data } = await axios.get(`${BASE}/events`);
+        const ev = (data.events || []).find(
+            (e) => Number(e.event_id) === Number(id)
+        );
+        cache.current.set(id, ev);          // may be undefined if not found
+        return ev;
+    } catch {
+        return undefined;
+    }
+}
+
+export default function NotificationsPanel({ notifications = [], refresh }) {
+    const [busyIds, setBusy] = useState([]);
+    const eventCache = useRef(new Map());
+
+    const respond = async (reqId, status) => {
+        try {
+            setBusy((p) => [...p, reqId]);
+            await axios.patch(`${BASE}/requests/${reqId}`, { status });
+            refresh();                             // reload list from parent
+        } catch (err) {
+            console.error("respond error:", err.message);
+        } finally {
+            setBusy((p) => p.filter((x) => x !== reqId));
+        }
+    };
+
+    /* ------- card for a volunteer-request row ------- */
+    const RequestCard = ({ n }) => {
+        const [ev, setEv] = useState(null);
+
+        useEffect(() => {
+            getEventCached(n.event_id, eventCache).then(setEv);
+        }, [n.event_id]);
+
+        return (
+            <div className="border border-gray-600 rounded-lg p-3 mb-3">
+                {/* headline */}
+                <p className="font-medium mb-1">
+                    {ev ? ev.event_name : `Event #${n.event_id}`}
+                </p>
+
+                {/* when / where */}
+                {ev && (
+                    <p className="text-xs text-gray-400 mb-1">
+                        {new Date(ev.start_time).toLocaleString()}{" "}
+                        {ev.end_time && " – " + new Date(ev.end_time).toLocaleString()}
+                        {ev.event_location && `— ${ev.event_location}`}
+                    </p>
+                )}
+
+                {/* skills */}
+                {ev?.required_skills && (
+                    <p className="text-xs text-gray-400 mb-2">
+                        <b>Skills:</b> {ev.required_skills}
+                    </p>
+                )}
+
+                <p className="mb-3">Please accept or decline.</p>
+
+                <div className="flex gap-3">
+                    <button
+                        disabled={busyIds.includes(n.request_id)}
+                        onClick={() => respond(n.request_id, "Accepted")}
+                        className="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40"
+                    >
+                        Accept
+                    </button>
+                    <button
+                        disabled={busyIds.includes(n.request_id)}
+                        onClick={() => respond(n.request_id, "Declined")}
+                        className="px-3 py-1 rounded bg-red-600 hover:bg-red-500 disabled:opacity-40"
+                    >
+                        Decline
+                    </button>
+                </div>
             </div>
-            <p className="text-sm text-gray-300 mt-1 mb-3">
-              {notification.message}
-            </p>
-            {notification.actionRequired ? (
-              <div className="flex space-x-2">
-                <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-3 rounded text-sm flex items-center justify-center">
-                  <Check size={14} className="mr-1" />
-                  Accept
-                </button>
-                <button className="flex-1 bg-transparent hover:bg-gray-700 text-white py-1.5 px-3 border border-gray-600 rounded text-sm flex items-center justify-center">
-                  <X size={14} className="mr-1" />
-                  Decline
-                </button>
-              </div>
-            ) : (
-              <button className="w-full bg-transparent hover:bg-gray-700 text-white py-1.5 px-3 border border-gray-600 rounded text-sm flex items-center justify-center">
-                View Details
-                <ChevronRight size={14} className="ml-1" />
-              </button>
+        );
+    };
+
+    /* ------- panel ------- */
+    return (
+        <div className="bg-[#1a2035] rounded-xl p-4 max-h-[80vh] overflow-y-auto">
+            <h2 className="text-lg font-semibold mb-3">Notifications</h2>
+
+            {notifications.length === 0 && (
+                <p className="text-sm text-gray-400">
+                    You’re all caught up!
+                </p>
             )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+
+            {notifications.map((n) =>
+                n.type === "request" ? (
+                    <RequestCard key={n.request_id} n={n} />
+                ) : (
+                    <div key={n.id} className="border border-gray-600 rounded-lg p-3 mb-3">
+                        <p className="mb-1">{n.message}</p>
+                        {n.created_at && (
+                            <p className="text-xs text-gray-400">
+                                {new Date(n.created_at).toLocaleString()}
+                            </p>
+                        )}
+                    </div>
+                )
+            )}
+        </div>
+    );
+}
