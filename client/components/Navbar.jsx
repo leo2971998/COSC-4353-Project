@@ -132,6 +132,12 @@ export default function Navbar({ scrollToSection }) {
                     >
                       Manage Users
                     </Link>
+                    <Link
+                      to="/admin/event-report"
+                      className="text-gray-300 hover:text-blue-400 font-medium transition"
+                    >
+                      Reports
+                    </Link>
                   </>
                 )}
                 <Button onClick={handleLogout} className="text-gray-300 hover:text-red-400 transition">
@@ -217,6 +223,13 @@ export default function Navbar({ scrollToSection }) {
                         onClick={() => setIsMenuOpen(false)}
                       >
                         Manage Users
+                      </Link>
+                      <Link
+                        to="/admin/event-report"
+                        className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Reports
                       </Link>
                     </>
                   )}
