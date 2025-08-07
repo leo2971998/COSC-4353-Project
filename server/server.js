@@ -81,15 +81,15 @@ app.post("/register", async (req, res) => {
   const { fullName, name, email, password } = req.body;
   const finalName = fullName || name;
   if (
-    typeof finalName !== "string" ||
-    !finalName.trim() ||
-    finalName.length > 255 ||
-    typeof email !== "string" ||
-    !isValidEmail(email) ||
-    email.length > 255 ||
-    typeof password !== "string" ||
-    password.length < 6 ||
-    password.length > 255
+      typeof finalName !== "string" ||
+      !finalName.trim() ||
+      finalName.length > 255 ||
+      typeof email !== "string" ||
+      !isValidEmail(email) ||
+      email.length > 255 ||
+      typeof password !== "string" ||
+      password.length < 6 ||
+      password.length > 255
   ) {
     return res.status(400).json({ message: "Invalid input" });
   }
@@ -105,8 +105,8 @@ app.post("/register", async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
     const [result] = await db.query(
-      "INSERT INTO login (full_name, email, password) VALUES (?, ?, ?)",
-      [finalName, email, hashed]
+        "INSERT INTO login (full_name, email, password) VALUES (?, ?, ?)",
+        [finalName, email, hashed]
     );
     await db.query("INSERT INTO profile (user_id) VALUES (?)", [
       result.insertId,
@@ -124,10 +124,10 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (
-    typeof email !== "string" ||
-    !isValidEmail(email) ||
-    typeof password !== "string" ||
-    !password
+      typeof email !== "string" ||
+      !isValidEmail(email) ||
+      typeof password !== "string" ||
+      !password
   ) {
     return res.status(400).json({ message: "Invalid input" });
   }
@@ -144,11 +144,11 @@ app.post("/login", async (req, res) => {
     if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
     const [profileRows] = await db.query(
-      "SELECT is_complete FROM profile WHERE user_id = ?",
-      [user.id]
+        "SELECT is_complete FROM profile WHERE user_id = ?",
+        [user.id]
     );
     const profileComplete =
-      profileRows.length && profileRows[0].is_complete === 1;
+        profileRows.length && profileRows[0].is_complete === 1;
 
     res.json({
       message: "Login successful",
@@ -180,21 +180,21 @@ app.post("/profile", async (req, res) => {
   if (!userId) return res.status(400).json({ message: "userId required" });
 
   if (
-    (address1 && address1.length > 100) ||
-    (address2 && address2.length > 100) ||
-    (city && city.length > 100) ||
-    (state && state.length > 50) ||
-    (zipCode && zipCode.length > 10) ||
-    (skills && skills.length > 255) ||
-    (preferences && preferences.length > 1000) ||
-    (availability && availability.length > 255)
+      (address1 && address1.length > 100) ||
+      (address2 && address2.length > 100) ||
+      (city && city.length > 100) ||
+      (state && state.length > 50) ||
+      (zipCode && zipCode.length > 10) ||
+      (skills && skills.length > 255) ||
+      (preferences && preferences.length > 1000) ||
+      (availability && availability.length > 255)
   ) {
     return res.status(400).json({ message: "Invalid field lengths" });
   }
 
   try {
     await db.query(
-      `INSERT INTO profile (user_id, address1, address2, city, state, zip_code, preferences, availability, is_complete)
+        `INSERT INTO profile (user_id, address1, address2, city, state, zip_code, preferences, availability, is_complete)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
            ON DUPLICATE KEY UPDATE
                               address1     = VALUES(address1),
@@ -205,16 +205,16 @@ app.post("/profile", async (req, res) => {
                               preferences  = VALUES(preferences),
                               availability = VALUES(availability),
                               is_complete  = 1`,
-      [
-        userId,
-        address1 || null,
-        address2 || null,
-        city || null,
-        state || null,
-        zipCode || null,
-        preferences || null,
-        availability || null,
-      ]
+        [
+          userId,
+          address1 || null,
+          address2 || null,
+          city || null,
+          state || null,
+          zipCode || null,
+          preferences || null,
+          availability || null,
+        ]
     );
 
     if (fullName) {
@@ -226,26 +226,26 @@ app.post("/profile", async (req, res) => {
 
     await db.query("DELETE FROM profile_skill WHERE user_id = ?", [userId]);
     const skillNames = Array.isArray(skills)
-      ? skills
-      : (skills || "").split(/,\s*/).filter((s) => s);
+        ? skills
+        : (skills || "").split(/,\s*/).filter((s) => s);
     for (const name of skillNames) {
       let [rows] = await db.query(
-        "SELECT skill_id FROM skill WHERE skill_name = ?",
-        [name]
+          "SELECT skill_id FROM skill WHERE skill_name = ?",
+          [name]
       );
       let sid;
       if (rows.length) {
         sid = rows[0].skill_id;
       } else {
         const [res2] = await db.query(
-          "INSERT INTO skill (skill_name) VALUES (?)",
-          [name]
+            "INSERT INTO skill (skill_name) VALUES (?)",
+            [name]
         );
         sid = res2.insertId;
       }
       await db.query(
-        "INSERT INTO profile_skill (user_id, skill_id) VALUES (?, ?)",
-        [userId, sid]
+          "INSERT INTO profile_skill (user_id, skill_id) VALUES (?, ?)",
+          [userId, sid]
       );
     }
 
@@ -260,24 +260,24 @@ app.post("/profile", async (req, res) => {
 app.get("/profile/:userId", async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT p.user_id,
-              l.full_name AS fullName,
-              p.address1,
-              p.address2,
-              p.city,
-              p.state,
-              p.zip_code,
-              GROUP_CONCAT(s.skill_name ORDER BY s.skill_name) AS skills,
-              p.preferences,
-              p.availability,
-              p.is_complete
+        `SELECT p.user_id,
+                l.full_name AS fullName,
+                p.address1,
+                p.address2,
+                p.city,
+                p.state,
+                p.zip_code,
+                GROUP_CONCAT(s.skill_name ORDER BY s.skill_name) AS skills,
+                p.preferences,
+                p.availability,
+                p.is_complete
          FROM profile p
-         JOIN login l ON l.id = p.user_id
-         LEFT JOIN profile_skill ps ON ps.user_id = p.user_id
-         LEFT JOIN skill s ON s.skill_id = ps.skill_id
-        WHERE p.user_id = ?
-        GROUP BY p.user_id`,
-      [req.params.userId]
+                JOIN login l ON l.id = p.user_id
+                LEFT JOIN profile_skill ps ON ps.user_id = p.user_id
+                LEFT JOIN skill s ON s.skill_id = ps.skill_id
+         WHERE p.user_id = ?
+         GROUP BY p.user_id`,
+        [req.params.userId]
     );
     if (!rows.length)
       return res.status(404).json({ message: "Profile not found" });
@@ -306,8 +306,8 @@ app.get("/profile/:userId", async (req, res) => {
 app.get("/users", async (_req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT id, full_name AS name, email, role FROM login"
-      //                ^^^^^^^^^^^^^^^ alias keeps front-end unchanged
+        "SELECT id, full_name AS name, email, role FROM login"
+        //                ^^^^^^^^^^^^^^^ alias keeps front-end unchanged
     );
     res.json(rows);
   } catch (err) {
@@ -335,9 +335,9 @@ app.put("/users/:id/role", async (req, res) => {
 app.put("/users/:id/password", async (req, res) => {
   const { password } = req.body;
   if (
-    typeof password !== "string" ||
-    password.length < 6 ||
-    password.length > 255
+      typeof password !== "string" ||
+      password.length < 6 ||
+      password.length > 255
   )
     return res.status(400).json({ message: "Invalid password" });
 
