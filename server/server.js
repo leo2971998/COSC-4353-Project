@@ -10,7 +10,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import matchRoutes from "./routes/match.js";
 import notificationRoutes from "./routes/notifications.js";
 import historyRoutes from "./routes/historyRoutes.js";
-import volunteerDashboardRoutes from "./routes/volunteerDashboardRoutes.js";
+import vDashRoutes from "./routes/vDashRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -365,6 +365,6 @@ app.delete("/users/:id", async (req, res) => {
   }
 });
 
-app.use("/volunteer-dashboard", volunteerDashboardRoutes);
+app.use("/volunteer-dashboard", vDashRoutes);
 
 export default app;

@@ -58,7 +58,7 @@ export const NextEventCard = ({
             </div>
             <div className="flex items-center">
               <Briefcase className="mr-3 text-indigo-400" size={18} />
-              <span>{category}</span>
+              <span>General</span>
             </div>
           </div>
           <button
@@ -98,7 +98,7 @@ export const NextEventCard = ({
                   </div>
                   <div className="flex items-center">
                     <Briefcase className="mr-3 text-indigo-400" size={18} />
-                    <span>{category}</span>
+                    <span>General</span>
                   </div>
                 </div>
                 <div className="mt-6">
