@@ -10,7 +10,7 @@ import { User, ChevronRight } from "lucide-react";
 import axios from "axios";
 import { DashboardNavigation } from "../components/VolunteerDashboard/DashboardNavigation";
 import { MyEvents } from "../components/VolunteerDashboard/MyEvents";
-
+import { VolunteerHistory } from "../components/VolunteerDashboard/History";
 /* ──────────────────────────────────────────────────────────────
    BASE URLs
 ────────────────────────────────────────────────────────────── */
@@ -169,11 +169,7 @@ export default function VolunteerDashboard() {
             </div>
           )}
 
-          {activeSection === "history" && (
-            <div className="text-white">
-              <p>Show volunteer history here (History component)</p>
-            </div>
-          )}
+          {activeSection === "history" && <VolunteerHistory />}
         </div>
       ) : (
         /* profile-incomplete overlay */
