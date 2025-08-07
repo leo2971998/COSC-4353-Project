@@ -9,6 +9,7 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import { User, ChevronRight } from "lucide-react";
 import axios from "axios";
 import { DashboardNavigation } from "../components/VolunteerDashboard/DashboardNavigation";
+import { MyEvents } from "../components/VolunteerDashboard/MyEvents";
 
 /* ──────────────────────────────────────────────────────────────
    BASE URLs
@@ -25,6 +26,7 @@ export default function VolunteerDashboard() {
   const [upcomingEvents, setUpcoming] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [activeSection, setActiveSection] = useState("overview");
+  const [enrolledEvents, setEnrolledEvents] = useState([]);
 
   /* ───────── helpers ───────── */
   const fetchEvents = async () => {
@@ -67,6 +69,15 @@ export default function VolunteerDashboard() {
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       )
     );
+  };
+
+  const fetchEnrolledEvents = async (userID) => {
+    try {
+      const { data } = axios.get(
+        `${API_URL}/volunteer-dashboard/enrolled-events/${userID}`
+      );
+      setEnrolledEvents(data?.events || []);
+    } catch (error) {}
   };
 
   /* ───────── load on mount ───────── */
