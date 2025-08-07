@@ -1,239 +1,273 @@
-import React, { useState, useEffect } from "react";
+/* AdminCalendar.jsx  –  v2
+   Leo Nguyen – CRUD from the calendar
+   ------------------------------------------------------------ */
+
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import AccordionPicker from "./AccordianPicker.jsx";
-import {toast} from "react-toastify";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
-/* ------------------------------------------------------------
-   Admin calendar with request workflow
-   Leo Nguyen – Fix multi-event display:
-     • badge shows "+n" when multiple events share a date
-     • modal now lets admin pick *which* event before choosing volunteers
------------------------------------------------------------- */
+const API = "https://cosc-4353-backend.vercel.app";
+
 export function CalendarView({
-                                 allEvents,
-                                 isAdmin = false,
-                                 currentUserId = null,
-                                 API_URL = "https://cosc-4353-backend.vercel.app",
+                                 allEvents = [],
+                                 refreshEvents,              // callback from parent to reload list after CRUD
                              }) {
-    const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [dayEvents, setDayEvents] = useState([]);  // array of events for selected day
-    const [activeEvent, setActiveEvent] = useState(null);
+    /* month navigation */
+    const [current, setCurrent] = useState(new Date());
 
-    /* candidate flow */
-    const [candidates, setCandidates] = useState([]);
-    const [pickedVolunteers, setPicked] = useState([]);
-    const [loading, setLoading] = useState(false);
+    /* modal state */
+    const [modal, setModal] = useState({ type: null, date: null, event: null });
+    // type: 'add' | 'edit' | null
 
     /* helpers */
-    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-    const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-    const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+    const daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
+    const firstDay    = new Date(current.getFullYear(), current.getMonth(), 1).getDay();
+    const prevMonth   = () => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1));
+    const nextMonth   = () => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1));
 
-    /* Leo Nguyen – Fix multi-event display */
-    const renderCalendarDays = () => {
-        const cells = [];
-        for (let i = 0; i < firstDay; i++) cells.push(<div key={`e-${i}`} className="h-10 md:h-14"/>);
+    /* ------------ render cells ------------ */
+    const cells = [];
+    for (let i = 0; i < firstDay; i++) cells.push(<div key={`e-${i}`} />);
 
-        for (let day = 1; day <= daysInMonth; day++) {
-            const eventsOfDay = allEvents.filter(
-                (e) =>
-                    e.date.getDate() === day &&
-                    e.date.getMonth() === currentMonth.getMonth() &&
-                    e.date.getFullYear() === currentMonth.getFullYear()
-            );
-            const count = eventsOfDay.length;
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(current.getFullYear(), current.getMonth(), day);
+        const dayEvents = allEvents.filter(
+            (e) =>
+                e.date.getDate()   === day &&
+                e.date.getMonth()  === current.getMonth() &&
+                e.date.getFullYear() === current.getFullYear()
+        );
 
-            cells.push(
-                <div
-                    key={day}
-                    onClick={() => count && openDay(eventsOfDay)}
-                    className={`h-10 md:h-14 flex flex-col items-center justify-center rounded-lg ${
-                        count ? "bg-indigo-800 hover:bg-indigo-700 cursor-pointer"
-                            : "hover:bg-[#1a2035] cursor-pointer"
-                    }`}
+        cells.push(
+            <div key={day} className="h-24 relative border border-[#1a2035] p-1">
+                {/* add button */}
+                <button
+                    onClick={() => setModal({ type: "add", date: dateObj, event: null })}
+                    className="absolute top-1 right-1 text-gray-400 hover:text-indigo-400"
                 >
-                    <span className="text-sm">{day}</span>
-                    {count > 0 && (
-                        <div className="flex items-center gap-0.5 mt-1">
-                            <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"/>
-                            {count > 1 && <span className="text-[10px] leading-none ml-0.5">{`+${count - 1}`}</span>}
-                        </div>
-                    )}
+                    <Plus size={14} />
+                </button>
+
+                {/* day number */}
+                <span className="text-xs">{day}</span>
+
+                {/* list titles */}
+                {dayEvents.slice(0, 3).map((ev) => (
+                    <button
+                        key={ev.details.event_id}
+                        onClick={() => setModal({ type: "edit", date: null, event: ev.details })}
+                        className="block w-full truncate text-left text-xs text-indigo-300 hover:text-indigo-200"
+                    >
+                        • {ev.title}
+                    </button>
+                ))}
+
+                {/* “+n more” if overflow */}
+                {dayEvents.length > 3 && (
+                    <span className="block text-xs text-gray-400">
+            +{dayEvents.length - 3} more
+          </span>
+                )}
+            </div>
+        );
+    }
+
+    return (
+        <>
+            <div className="bg-[#222b45] rounded-xl p-6 mb-6">
+                {/* header */}
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">Admin Calendar</h2>
+                    <div className="flex items-center gap-4">
+                        <button onClick={prevMonth} className="p-1 rounded-full bg-[#1a2035] hover:bg-indigo-700">
+                            <ChevronLeft size={20} />
+                        </button>
+                        <span>
+              {current.toLocaleString("default", { month: "long" })} {current.getFullYear()}
+            </span>
+                        <button onClick={nextMonth} className="p-1 rounded-full bg-[#1a2035] hover:bg-indigo-700">
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
                 </div>
-            );
-        }
-        return cells;
-    };
 
-    /* move the fetch logic into a re-usable fn */
-    const loadCandidates = async (ev) => {
-        if (!isAdmin || !ev) return;
+                {/* grid */}
+                <div className="grid grid-cols-7 gap-px bg-[#1a2035]">
+                    {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
+                        <div key={d} className="text-center text-xs py-1 bg-[#1a2035] text-gray-400">
+                            {d}
+                        </div>
+                    ))}
+                    {cells}
+                </div>
+            </div>
+
+            {/* modal */}
+            {modal.type && (
+                <EventFormModal
+                    mode={modal.type}          // "add" | "edit"
+                    defaultDate={modal.date}
+                    event={modal.event}
+                    onClose={() => setModal({ type: null, date: null, event: null })}
+                    onSuccess={() => {
+                        setModal({ type: null, date: null, event: null });
+                        refreshEvents();         // reload list in parent
+                    }}
+                />
+            )}
+        </>
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reusable form for Add / Edit                                      */
+/* ------------------------------------------------------------------ */
+function EventFormModal({ mode, defaultDate, event, onClose, onSuccess }) {
+    const isEdit = mode === "edit";
+
+    /* form state */
+    const [name,  setName]  = useState(event?.event_name || "");
+    const [desc,  setDesc]  = useState(event?.event_description || "");
+    const [loc,   setLoc]   = useState(event?.event_location || "");
+    const [urg,   setUrg]   = useState(event?.urgency || "Low");
+    const [start, setStart] = useState(
+        isEdit
+            ? event.start_time.slice(0, 16)
+            : defaultDate.toISOString().slice(0, 16)
+    );
+    const [end,   setEnd]   = useState(
+        isEdit
+            ? event.end_time.slice(0, 16)
+            : defaultDate.toISOString().slice(0, 16)
+    );
+    const [saving, setSaving] = useState(false);
+
+    /* submit */
+    const handleSave = async () => {
+        if (!name.trim()) return alert("Event name required");
         try {
-            setLoading(true);
-            const {data} = await axios.get(`${API_URL}/events/${ev.event_id}/candidates`);
-            setCandidates(data);
+            setSaving(true);
+            if (isEdit) {
+                await axios.put(`${API}/events/${event.event_id}`, {
+                    event_name: name,
+                    event_description: desc,
+                    event_location: loc,
+                    urgency: urg,
+                    start_time: start,
+                    end_time: end,
+                });
+            } else {
+                await axios.post(`${API}/events`, {
+                    event_name: name,
+                    event_description: desc,
+                    event_location: loc,
+                    urgency: urg,
+                    start_time: start,
+                    end_time: end,
+                    created_by: Number(localStorage.getItem("userId") || 0),
+                });
+            }
+            onSuccess();
         } catch (err) {
-            console.error("loadCandidates", err.message);
-            setCandidates([]);                 // Leo Nguyen – show "No matching volunteers."
+            console.error("Save error:", err.message);
+            alert("Failed to save");
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
 
-    /* open modal for one day */
-    const openDay = async (events) => {
-        setDayEvents(events);
-        /* immediately fetch candidates for the first event */
-        if (events.length) {
-            await loadCandidates(events[0].details);
-            setActiveEvent(events[0].details);
-        } else {
-            setActiveEvent(null);
-        }
-        setPicked([]);                       // reset selections
-    };
-
-    /* fire whenever admin switches to another event tab */
-    useEffect(() => {
-        loadCandidates(activeEvent);
-    }, [activeEvent]);
-
-    /* bulk send */
-    const sendRequest = async () => {
-        if (!pickedVolunteers.length) return;
+    /* delete */
+    const handleDelete = async () => {
+        if (!window.confirm("Delete this event?")) return;
         try {
-            setLoading(true);
-            await axios.post(`${API_URL}/events/${activeEvent.event_id}/requests/bulk`, {
-                volunteerIds: pickedVolunteers,
-                requestedBy: currentUserId,
-            });
-            toast.success(`Sent request${pickedVolunteers.length > 1 ? "s" : ""} 🎉`);
-            closeModal();
+            await axios.delete(`${API}/events/${event.event_id}`);
+            onSuccess();
         } catch (err) {
-            console.error("sendRequest:", err.message);
-            toast.error("Failed to send request");
-        } finally {
-            setLoading(false);
+            console.error("Delete error:", err.message);
+            alert("Failed to delete");
         }
-    };
-
-    const closeModal = () => {
-        setDayEvents([]);
-        setActiveEvent(null);
-        setCandidates([]);
-        setPicked([]);
     };
 
     return (
-        <div className="bg-[#222b45] rounded-xl p-6 mb-6">
-            {/* header */}
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">{isAdmin ? "Admin Calendar" : "Calendar"}</h2>
-                <div className="flex items-center space-x-4">
-                    <button onClick={prevMonth} className="p-1 rounded-full bg-[#1a2035] hover:bg-indigo-700">
-                        <ChevronLeft size={20}/></button>
-                    <span>{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</span>
-                    <button onClick={nextMonth} className="p-1 rounded-full bg-[#1a2035] hover:bg-indigo-700">
-                        <ChevronRight size={20}/></button>
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
+            <div className="bg-[#1a2035] text-white rounded-xl p-6 w-[90%] max-w-md relative shadow-lg">
+                <button onClick={onClose}
+                        className="absolute top-3 right-3 text-gray-400 hover:text-red-400 text-xl">&times;</button>
+
+                <h3 className="text-xl font-semibold mb-4">
+                    {isEdit ? "Edit Event" : "Add Event"}
+                </h3>
+
+                <div className="space-y-3">
+                    <Input label="Event Name" value={name} onChange={setName}/>
+                    <TextArea label="Description" value={desc} onChange={setDesc}/>
+                    <Input label="Location" value={loc} onChange={setLoc}/>
+                    <Select label="Urgency" value={urg} onChange={setUrg}
+                            options={["High","Medium","Low"]}/>
+                    <Input label="Start" type="datetime-local" value={start} onChange={setStart}/>
+                    <Input label="End"   type="datetime-local" value={end}   onChange={setEnd}/>
+                </div>
+
+                <div className="flex justify-between mt-6">
+                    {isEdit && (
+                        <button onClick={handleDelete}
+                                className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded">
+                            Delete
+                        </button>
+                    )}
+                    <button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="ml-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded disabled:opacity-40"
+                    >
+                        {saving ? "Saving…" : "Save"}
+                    </button>
                 </div>
             </div>
+        </div>
+    );
+}
 
-            <div className="grid grid-cols-7 gap-1 mb-2">
-                {dayNames.map((d) => <div key={d} className="text-center text-sm text-gray-400">{d}</div>)}
-            </div>
-            <div className="grid grid-cols-7 gap-1">{renderCalendarDays()}</div>
-
-            {/* day-modal */}
-            {dayEvents.length > 0 && (
-                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
-                    <div className="bg-[#1a2035] text-white rounded-xl p-6 w-[90%] max-w-lg relative shadow-lg">
-                        <button onClick={closeModal}
-                                className="absolute top-3 right-3 text-gray-400 hover:text-red-400">&times;</button>
-
-                        {/* event switcher if multiple */}
-                        {dayEvents.length > 1 && (
-                            <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
-                                {dayEvents.map((e) => (
-                                    <button
-                                        key={e.details.event_id}
-                                        onClick={async () => {
-                                            await loadCandidates(e.details);
-                                            setActiveEvent(e.details);
-                                        }}
-                                        className={`px-3 py-1 rounded-lg text-sm whitespace-nowrap ${
-                                            activeEvent && activeEvent.event_id === e.details.event_id
-                                                ? "bg-indigo-600"
-                                                : "bg-gray-700 hover:bg-gray-600"
-                                        }`}>
-                                        {e.title}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* active event info */}
-                        {activeEvent && (
-                            <>
-                                <h3 className="text-2xl font-semibold text-indigo-400 mb-2">
-                                    {activeEvent.event_name}
-                                </h3>
-                                <p className="text-sm">
-                                    {new Date(activeEvent.start_time).toLocaleString()}
-                                    {activeEvent.end_time && <> ― {new Date(activeEvent.end_time).toLocaleString()}</>}
-                                </p>
-                                {activeEvent.event_location &&
-                                    <p className="text-sm mt-1"><b>Location:</b> {activeEvent.event_location}</p>}
-                                {activeEvent.required_skills &&
-                                    <p className="text-sm mt-1"><b>Skills:</b> {activeEvent.required_skills}</p>}
-                                {activeEvent.event_description &&
-                                    <p className="text-sm mt-3 whitespace-pre-wrap">{activeEvent.event_description}</p>}
-                            </>
-                        )}
-
-                        {/* admin volunteer picker */}
-                        {isAdmin && activeEvent && (
-                            <>
-                                <h4 className="mt-4 font-medium">Volunteers</h4>
-                                {loading && <p className="text-sm text-gray-400">Loading…</p>}
-                                {/* Leo Nguyen – show explicit notice when nothing was returned */}
-                                {!loading && candidates.length === 0 && (
-                                <p className="text-sm text-red-400 mb-2">
-                                    No volunteers match the required skills for this event.
-                                </p>)}
-                                <AccordionPicker
-                                    multi
-                                    candidates={candidates}
-                                    requiredSkills={(activeEvent.required_skills || "")
-                                        .split(",")
-                                        .map((s) => s.trim())
-                                        .filter(Boolean)}
-                                    onChangeSelection={(arr) => setPicked(arr)}
-                                />
-
-                                {/* Leo Nguyen – If no candidates matched, show msg (AccordionPicker already shows) */}
-
-                                {candidates.length > 0 && (
-                                    <button
-                                        onClick={sendRequest}
-                                        disabled={!pickedVolunteers.length || loading}
-                                        className={`mt-4 w-full py-2 rounded-lg ${
-                                            pickedVolunteers.length
-                                                ? "bg-indigo-600 hover:bg-indigo-500"
-                                                : "bg-gray-600 cursor-not-allowed"
-                                        }`}
-                                    >
-                                        {loading ? "Sending…" : `Send Request${pickedVolunteers.length > 1 ? "s" : ""}`}
-                                    </button>
-                                )}
-                            </>
-                        )}
-                    </div>
-                </div>
-            )}
+/* small inputs */
+function Input({ label, type="text", value, onChange }) {
+    return (
+        <div>
+            <label className="block text-sm mb-1">{label}</label>
+            <input
+                type={type}
+                value={value}
+                onChange={e=>onChange(e.target.value)}
+                className="bg-[#222b45] w-full rounded px-3 py-2"
+            />
+        </div>
+    );
+}
+function TextArea({ label, value, onChange }) {
+    return (
+        <div>
+            <label className="block text-sm mb-1">{label}</label>
+            <textarea
+                value={value}
+                onChange={e=>onChange(e.target.value)}
+                rows={3}
+                className="bg-[#222b45] w-full rounded px-3 py-2"
+            />
+        </div>
+    );
+}
+function Select({ label, value, onChange, options=[] }) {
+    return (
+        <div>
+            <label className="block text-sm mb-1">{label}</label>
+            <select
+                value={value}
+                onChange={e=>onChange(e.target.value)}
+                className="bg-[#222b45] w-full rounded px-3 py-2"
+            >
+                {options.map(o=>(
+                    <option key={o}>{o}</option>
+                ))}
+            </select>
         </div>
     );
 }

@@ -14,7 +14,6 @@ import ManageUsers from "../pages/ManageUsers.jsx";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
 import VolunteerDashboard from "../pages/VolunteerDashboard.jsx";
-import AdminEventReport from "../pages/AdminEventReport.jsx";
 import "./index.css";
 
 function RequireAuth({ children, role }) {
@@ -94,14 +93,6 @@ export default function App() {
                         element={
                             <RequireAuth role="admin">
                                 <VolunteerDashboard />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="/admin/event-report"
-                        element={
-                            <RequireAuth role="admin">
-                                <AdminEventReport />
                             </RequireAuth>
                         }
                     />

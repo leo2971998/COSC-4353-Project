@@ -132,12 +132,6 @@ export default function Navbar({ scrollToSection }) {
                     >
                       Manage Users
                     </Link>
-                    <Link
-                      to="/admin/event-report"
-                      className="text-gray-300 hover:text-blue-400 font-medium transition"
-                    >
-                      Reports
-                    </Link>
                   </>
                 )}
                 <Button onClick={handleLogout} className="text-gray-300 hover:text-red-400 transition">
