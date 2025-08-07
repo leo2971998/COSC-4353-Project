@@ -45,7 +45,7 @@ export const getEnrolledEvents = async (req, res) => {
   try {
     const userID = req.params.userID;
     const sql =
-      "SELECT em.event_id ,em.event_name, em.event_description, em.event_location, em.start_time, em.end_time FROM volunteer_history AS vh JOIN eventManage AS em ON vh.event_id = em.event_id WHERE vh.volunteer_id = ? AND em.start_time > NOW() AND vh.event_status = 'Upcoming';";
+      "SELECT em.event_id ,em.event_name, em.event_description, em.event_location, em.start_time, em.end_time FROM volunteer_history AS vh JOIN eventManage AS em ON vh.event_id = em.event_id WHERE vh.volunteer_id = ? AND em.start_time > NOW() AND vh.event_status = 'Upcoming' ORDER BY em.start_time ASC;";
 
     const events = await query(sql, [userID]);
 
@@ -58,5 +58,20 @@ export const getEnrolledEvents = async (req, res) => {
   } catch (error) {
     console.error("Error in the backend for getEnrolledEvents, ", error);
     res.status(500).json({ message: "Error in getEnrolledEvents" });
+  }
+};
+
+export const deleteEnrolledEvent = async (req, res) => {
+  try {
+    const { userID, eventID } = req.params;
+    const sql =
+      "DELETE FROM volunteer_history AS vh WHERE vh.volunteer_id = ? AND vh.event_id = ?;";
+    await query(sql, [userID, eventID]);
+    res
+      .status(200)
+      .json({ message: `Event ${eventID} successfully withdrawn!` });
+  } catch (error) {
+    console.error("Could not delete the event, ", error);
+    res.status(500).json({ message: "Could not delete event!" });
   }
 };

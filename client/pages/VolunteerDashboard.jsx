@@ -73,7 +73,7 @@ export default function VolunteerDashboard() {
 
   const fetchEnrolledEvents = async (userID) => {
     try {
-      const { data } = axios.get(
+      const { data } = await axios.get(
         `${API_URL}/volunteer-dashboard/enrolled-events/${userID}`
       );
       setEnrolledEvents(data?.events || []);
@@ -92,6 +92,7 @@ export default function VolunteerDashboard() {
         fetchNextEvent(userID),
         fetchSuggestedEvents(userID),
         fetchCombinedNotifications(userID),
+        fetchEnrolledEvents(userID),
       ]);
     } catch (err) {
       console.error("Dashboard load error:", err);
@@ -122,11 +123,11 @@ export default function VolunteerDashboard() {
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-            {/* main column */}
-            <div className="lg:col-span-2">
-              {activeSection == "overview" && (
-                <>
+          {/* main column */}
+          {activeSection == "overview" && (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                <div className="lg:col-span-2">
                   <NextEventCard
                     eventName={nextEvent.event_name}
                     date={nextEvent.start_time}
@@ -147,35 +148,32 @@ export default function VolunteerDashboard() {
                     upcomingEvents={upcomingEvents}
                     allEvents={allEvents}
                   />
-                </>
-              )}
-
-              {activeSection === "my-events" && (
-                <div className="text-white">
-                  <p>Show enrolled events here (My Events component)</p>
                 </div>
-              )}
+                <NotificationsPanel
+                  notifications={notifications}
+                  refresh={() => fetchCombinedNotifications(userID)}
+                />
+              </div>
+            </>
+          )}
 
-              {activeSection === "all-events" && (
-                <div className="text-white">
-                  <p>Show all events here (All Events component)</p>
-                </div>
-              )}
-
-              {activeSection === "history" && (
-                <div className="text-white">
-                  <p>Show volunteer history here (History component)</p>
-                </div>
-              )}
+          {activeSection === "my-events" && (
+            <div className="grid grid-cols-1 lg:grid-cols-1">
+              <MyEvents enrolledEvents={enrolledEvents} onRefresh={loadData} />
             </div>
+          )}
 
-            {activeSection === "overview" && (
-              <NotificationsPanel
-                notifications={notifications}
-                refresh={() => fetchCombinedNotifications(userID)}
-              />
-            )}
-          </div>
+          {activeSection === "all-events" && (
+            <div className="text-white">
+              <p>Show all events here (All Events component)</p>
+            </div>
+          )}
+
+          {activeSection === "history" && (
+            <div className="text-white">
+              <p>Show volunteer history here (History component)</p>
+            </div>
+          )}
         </div>
       ) : (
         /* profile-incomplete overlay */

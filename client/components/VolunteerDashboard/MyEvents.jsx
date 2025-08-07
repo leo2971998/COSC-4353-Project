@@ -1,30 +1,33 @@
-// components/VolunteerDashboard/MyEvents.jsx
 import { useState } from "react";
-import {
-  Calendar,
-  MapPin,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-} from "lucide-react";
+import { Calendar, MapPin, Clock, AlertTriangle } from "lucide-react";
+import { ConfirmModal } from "./ConfirmModal";
+import axios from "axios";
 
 export function MyEvents({ enrolledEvents = [], onRefresh }) {
   const [withdrawing, setWithdrawing] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  const handleWithdraw = async (eventId, eventName) => {
-    const confirmed = confirm(
-      `Are you sure you want to withdraw from "${eventName}"?`
-    );
-    if (!confirmed) return;
+  const handleWithdraw = async () => {
+    if (!selectedEvent) return;
 
-    setWithdrawing(eventId);
+    const userID = localStorage.getItem("userId");
+    const eventID = selectedEvent.event_id;
+    setWithdrawing(selectedEvent.event_id);
 
-    // Simulate withdrawal API call
-    setTimeout(() => {
-      alert(`Successfully withdrew from "${eventName}"`);
+    try {
+      await axios.delete(
+        `${API_URL}/volunteer-dashboard/enrolled-events/${userID}/${eventID}`
+      );
+      alert(`Successfully withdrew from "${selectedEvent.event_name}"`);
+      setSelectedEvent(null);
       setWithdrawing(null);
       onRefresh();
-    }, 1000);
+    } catch (error) {
+      console.error("Withdraw failed", error);
+      alert("Something went wrong. Try again later.");
+      setWithdrawing(null);
+    }
   };
 
   if (enrolledEvents.length === 0) {
@@ -41,7 +44,7 @@ export function MyEvents({ enrolledEvents = [], onRefresh }) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-white mb-6">My Events</h2>
+      <h2 className="text-2xl font-bold text-white mb-6">My Enrolled Events</h2>
 
       <div className="grid gap-4">
         {enrolledEvents.map((event) => (
@@ -49,76 +52,60 @@ export function MyEvents({ enrolledEvents = [], onRefresh }) {
             key={event.event_id}
             className="bg-gray-900 rounded-lg p-6 border border-gray-700"
           >
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  {event.event_name}
-                </h3>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              {event.event_name}
+            </h3>
 
-                <div className="flex items-center text-gray-300 mb-2">
-                  <Calendar size={16} className="mr-2" />
-                  <span className="mr-4">
-                    {new Date(event.start_time).toLocaleString([], {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })}
-                  </span>
-                </div>
-
-                <div className="flex items-center text-gray-300 mb-3">
-                  <MapPin size={16} className="mr-2" />
-                  <span>{event.event_location}</span>
-                </div>
-
-                <p className="text-gray-400 text-sm">
-                  {event.event_description}
-                </p>
-              </div>
-
-              <div className="flex flex-col items-end space-y-2 ml-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    event.status === "confirmed"
-                      ? "bg-green-900 text-green-300"
-                      : "bg-yellow-900 text-yellow-300"
-                  }`}
-                >
-                  {event.status === "confirmed" ? (
-                    <>
-                      <CheckCircle size={12} className="inline mr-1" />
-                      Confirmed
-                    </>
-                  ) : (
-                    <>
-                      <Clock size={12} className="inline mr-1" />
-                      Pending
-                    </>
-                  )}
-                </span>
-
-                <button
-                  onClick={() =>
-                    handleWithdraw(event.event_id, event.event_name)
-                  }
-                  disabled={withdrawing === event.event_id}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-800 text-white text-sm rounded-md transition-colors flex items-center"
-                >
-                  {withdrawing === event.event_id ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Withdrawing...
-                    </>
-                  ) : (
-                    <>
-                      <AlertTriangle size={16} className="mr-2" />
-                      Withdraw
-                    </>
-                  )}
-                </button>
-              </div>
+            <div className="flex items-center text-gray-300 mb-2">
+              <Calendar size={16} className="mr-2" />
+              <span className="mr-4">
+                {new Date(event.start_time).toLocaleString([], {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}{" "}
+                -{" "}
+                {new Date(event.end_time).toLocaleTimeString("en-US", {
+                  hour: "numeric",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
+
+            <div className="flex items-center text-gray-300 mb-3">
+              <MapPin size={16} className="mr-2" />
+              <span>{event.event_location}</span>
+            </div>
+
+            <p className="text-gray-400 text-sm mb-4">
+              {event.event_description}
+            </p>
+
+            <button
+              onClick={() => setSelectedEvent(event)}
+              disabled={withdrawing === event.event_id}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-800 text-white text-sm rounded-md transition-colors flex items-center"
+            >
+              {withdrawing === event.event_id ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Withdrawing...
+                </>
+              ) : (
+                <>
+                  <AlertTriangle size={16} className="mr-2" />
+                  Withdraw
+                </>
+              )}
+            </button>
           </div>
         ))}
+        <ConfirmModal
+          isOpen={!!selectedEvent}
+          title="Confirm Withdrawal"
+          message={`Are you sure you want to withdraw from "${selectedEvent?.event_name}"? This action cannot be undone and may affect other volunteers depending on you.`}
+          onCancel={() => setSelectedEvent(null)}
+          onConfirm={handleWithdraw}
+        />
       </div>
     </div>
   );
