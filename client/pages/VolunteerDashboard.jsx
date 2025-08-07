@@ -8,29 +8,31 @@ import { WelcomeBanner } from "../components/VolunteerDashboard/WelcomeBanner";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { User, ChevronRight } from "lucide-react";
 import axios from "axios";
+import { DashboardNavigation } from "../components/VolunteerDashboard/DashboardNavigation";
 
 /* ──────────────────────────────────────────────────────────────
    BASE URLs
 ────────────────────────────────────────────────────────────── */
-const HARD_API = "https://cosc-4353-backend.vercel.app";        // always works for Leo
-const API_URL  = import.meta.env.VITE_API_URL || HARD_API;     // others use env
+const HARD_API = "https://cosc-4353-backend.vercel.app"; // always works for Leo
+const API_URL = import.meta.env.VITE_API_URL || HARD_API; // others use env
 
 export default function VolunteerDashboard() {
   /* ───────── local state ───────── */
-  const [loading, setLoading]           = useState(true);
-  const [nextEvent, setNextEvent]       = useState({});
+  const [loading, setLoading] = useState(true);
+  const [nextEvent, setNextEvent] = useState({});
   const [suggestedEvents, setSuggested] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const [upcomingEvents, setUpcoming]   = useState([]);
-  const [allEvents, setAllEvents]       = useState([]);
+  const [upcomingEvents, setUpcoming] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
+  const [activeSection, setActiveSection] = useState("overview");
 
   /* ───────── helpers ───────── */
   const fetchEvents = async () => {
     // Leo Nguyen - /events must hit HARD_API
     const { data } = await axios.get(`${HARD_API}/events`);
     const events = (data?.events || []).map((e) => ({
-      date:    new Date(e.start_time),
-      title:   e.event_name,
+      date: new Date(e.start_time),
+      title: e.event_name,
       details: e,
     }));
     setAllEvents(events);
@@ -54,13 +56,16 @@ export default function VolunteerDashboard() {
       axios.get(`${HARD_API}/vr-notifications/${uid}`),
     ]);
 
-    const generic  = (gen.notifications || []).map((n) => ({ ...n, type: "general" }));
-    const requests = (vr || []).map((n)  => ({ ...n, type: "request" }));
+    const generic = (gen.notifications || []).map((n) => ({
+      ...n,
+      type: "general",
+    }));
+    const requests = (vr || []).map((n) => ({ ...n, type: "request" }));
 
     setNotifications(
-        [...generic, ...requests].sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        )
+      [...generic, ...requests].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      )
     );
   };
 
@@ -90,83 +95,113 @@ export default function VolunteerDashboard() {
 
   /* ───────── render ───────── */
   return (
-      <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
-        <Navbar />
+    <div className="min-h-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8 text-white">
+      <Navbar />
 
-        {loading ? (
-            <LoadingSpinner fullScreen text="Loading your dashboard" />
-        ) : nextEvent?.is_complete === 1 ? (
-            <div className="container mx-auto px-4 py-6">
-              <WelcomeBanner name={nextEvent.full_name} />
+      {loading ? (
+        <LoadingSpinner fullScreen text="Loading your dashboard" />
+      ) : nextEvent?.is_complete === 1 ? (
+        <div className="container mx-auto px-4 py-6">
+          <WelcomeBanner name={nextEvent.full_name} />
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-                {/* main column */}
-                <div className="lg:col-span-2">
+          <div className="mt-6">
+            <DashboardNavigation
+              activeSection={activeSection}
+              onSectionChange={setActiveSection}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+            {/* main column */}
+            <div className="lg:col-span-2">
+              {activeSection == "overview" && (
+                <>
                   <NextEventCard
-                      eventName={nextEvent.event_name}
-                      date={nextEvent.start_time}
-                      time={nextEvent.end_time}
-                      location={nextEvent.event_location}
-                      category={nextEvent.event_category}
-                      eventInfo={nextEvent.event_description}
-                      event={nextEvent.event_id}
-                      requiredSkills={nextEvent.required_skills}
+                    eventName={nextEvent.event_name}
+                    date={nextEvent.start_time}
+                    time={nextEvent.end_time}
+                    location={nextEvent.event_location}
+                    category={nextEvent.event_category}
+                    eventInfo={nextEvent.event_description}
+                    event={nextEvent.event_id}
+                    requiredSkills={nextEvent.required_skills}
                   />
 
                   <SuggestedEvents
-                      suggestedEvents={suggestedEvents}
-                      onRefresh={loadData}
+                    suggestedEvents={suggestedEvents}
+                    onRefresh={loadData}
                   />
 
                   <CalendarView
-                      upcomingEvents={upcomingEvents}
-                      allEvents={allEvents}
+                    upcomingEvents={upcomingEvents}
+                    allEvents={allEvents}
                   />
-                </div>
+                </>
+              )}
 
-                {/* notifications */}
-                <NotificationsPanel
-                    notifications={notifications}
-                    refresh={() => fetchCombinedNotifications(userID)}
+              {activeSection === "my-events" && (
+                <div className="text-white">
+                  <p>Show enrolled events here (My Events component)</p>
+                </div>
+              )}
+
+              {activeSection === "all-events" && (
+                <div className="text-white">
+                  <p>Show all events here (All Events component)</p>
+                </div>
+              )}
+
+              {activeSection === "history" && (
+                <div className="text-white">
+                  <p>Show volunteer history here (History component)</p>
+                </div>
+              )}
+            </div>
+
+            {activeSection === "overview" && (
+              <NotificationsPanel
+                notifications={notifications}
+                refresh={() => fetchCombinedNotifications(userID)}
+              />
+            )}
+          </div>
+        </div>
+      ) : (
+        /* profile-incomplete overlay */
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+          <div className="bg-[#1a2035] text-white rounded-xl p-8 max-w-md w-full mx-4 shadow-lg border border-gray-700/50">
+            <div className="text-center">
+              <div className="mx-auto w-16 h-16 bg-indigo-600/20 rounded-full flex items-center justify-center mb-6">
+                <User className="text-indigo-400" size={32} />
+              </div>
+
+              <h2 className="text-2xl font-semibold mb-3">
+                Complete Your Profile
+              </h2>
+
+              <p className="text-gray-300 mb-8 leading-relaxed">
+                Please finish setting up your profile to access all dashboard
+                features and get the most out of your experience.
+              </p>
+
+              <button
+                onClick={() => (window.location.href = "/complete-profile")}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center group"
+              >
+                Complete Profile Now
+                <ChevronRight
+                  size={18}
+                  className="ml-2 group-hover:translate-x-1 transition-transform duration-200"
                 />
-              </div>
+              </button>
+
+              <p className="text-xs text-gray-400 mt-4">
+                This will only take a few minutes
+              </p>
             </div>
-        ) : (
-            /* profile-incomplete overlay */
-            <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-              <div className="bg-[#1a2035] text-white rounded-xl p-8 max-w-md w-full mx-4 shadow-lg border border-gray-700/50">
-                <div className="text-center">
-                  <div className="mx-auto w-16 h-16 bg-indigo-600/20 rounded-full flex items-center justify-center mb-6">
-                    <User className="text-indigo-400" size={32} />
-                  </div>
-
-                  <h2 className="text-2xl font-semibold mb-3">
-                    Complete Your Profile
-                  </h2>
-
-                  <p className="text-gray-300 mb-8 leading-relaxed">
-                    Please finish setting up your profile to access all dashboard
-                    features and get the most out of your experience.
-                  </p>
-
-                  <button
-                      onClick={() => (window.location.href = "/complete-profile")}
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center group"
-                  >
-                    Complete Profile Now
-                    <ChevronRight
-                        size={18}
-                        className="ml-2 group-hover:translate-x-1 transition-transform duration-200"
-                    />
-                  </button>
-
-                  <p className="text-xs text-gray-400 mt-4">
-                    This will only take a few minutes
-                  </p>
-                </div>
-              </div>
-            </div>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
