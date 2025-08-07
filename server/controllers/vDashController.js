@@ -18,7 +18,7 @@ export const getNextEvent = async (req, res) => {
       JOIN profile AS p ON l.id = p.user_id 
       LEFT JOIN volunteer_history AS vh ON l.id = vh.volunteer_id 
       LEFT JOIN eventManage AS em ON vh.event_id = em.event_id 
-      WHERE l.id = ? AND (em.start_time > NOW() OR em.start_time IS NULL) 
+      WHERE l.id = ? AND (em.start_time > NOW() OR em.start_time IS NULL) AND vh.event_status = "Upcoming"
       ORDER BY em.start_time ASC 
       LIMIT 1;
     `;
@@ -54,13 +54,33 @@ export const postInterest = async (req, res) => {
   const eventID = req.params.eventID;
 
   try {
-    await query(
-      "INSERT INTO volunteer_history (volunteer_id, event_id) VALUES (?, ?);",
-      [userID, eventID]
-    );
+    const checkSql = `
+      SELECT * FROM volunteer_history
+      WHERE volunteer_id = ? AND event_id = ? AND event_status = 'Withdrew';
+    `;
+    const existing = await query(checkSql, [userID, eventID]);
+
+    if (existing.length > 0) {
+      const updateSql = `
+        UPDATE volunteer_history
+        SET event_status = 'Upcoming'
+        WHERE volunteer_id = ? AND event_id = ?;
+      `;
+      await query(updateSql, [userID, eventID]);
+      return res
+        .status(200)
+        .json({ message: "Event rejoined (status updated)" });
+    }
+
+    const insertSql = `
+      INSERT INTO volunteer_history (volunteer_id, event_id)
+      VALUES (?, ?);
+    `;
+    await query(insertSql, [userID, eventID]);
+
     res.status(201).json({ message: "Interest recorded" });
   } catch (error) {
-    console.error("Error in the backend for postInterest, ", error);
+    console.error("Error in postInterest:", error);
     res.status(500).json({ message: "Error in post interest" });
   }
 };
@@ -85,17 +105,17 @@ export const getEnrolledEvents = async (req, res) => {
   }
 };
 
-export const deleteEnrolledEvent = async (req, res) => {
+export const withdrawEnrolledEvent = async (req, res) => {
   try {
     const { userID, eventID } = req.params;
     const sql =
-      "DELETE FROM volunteer_history AS vh WHERE vh.volunteer_id = ? AND vh.event_id = ?;";
+      "UPDATE volunteer_history AS vh SET vh.event_status = 'Withdrew' WHERE vh.volunteer_id = ? AND vh.event_id = ?;";
     await query(sql, [userID, eventID]);
     res
       .status(200)
       .json({ message: `Event ${eventID} successfully withdrawn!` });
   } catch (error) {
-    console.error("Could not delete the event, ", error);
-    res.status(500).json({ message: "Could not delete event!" });
+    console.error("Could not withdraw the event, ", error);
+    res.status(500).json({ message: "Could not withdraw event!" });
   }
 };

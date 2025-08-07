@@ -16,7 +16,7 @@ export function MyEvents({ enrolledEvents = [], onRefresh }) {
     setWithdrawing(selectedEvent.event_id);
 
     try {
-      await axios.delete(
+      await axios.put(
         `${API_URL}/volunteer-dashboard/enrolled-events/${userID}/${eventID}`
       );
       alert(`Successfully withdrew from "${selectedEvent.event_name}"`);
