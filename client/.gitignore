@@ -25,3 +25,5 @@ output.css
 *.sw?
 
 .env
+
+package-lock.json
