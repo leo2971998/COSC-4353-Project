@@ -85,6 +85,42 @@ export const postInterest = async (req, res) => {
   }
 };
 
+export const postBrowseEnroll = async (req, res) => {
+  const userID = req.params.userID;
+  const eventID = req.params.eventID;
+
+  try {
+    const checkSql = `
+      SELECT * FROM volunteer_history
+      WHERE volunteer_id = ? AND event_id = ? AND event_status = 'Withdrew';
+    `;
+    const existing = await query(checkSql, [userID, eventID]);
+
+    if (existing.length > 0) {
+      const updateSql = `
+        UPDATE volunteer_history
+        SET event_status = 'Upcoming'
+        WHERE volunteer_id = ? AND event_id = ?;
+      `;
+      await query(updateSql, [userID, eventID]);
+      return res
+        .status(200)
+        .json({ message: "Event rejoined (status updated)" });
+    }
+
+    const insertSql = `
+      INSERT INTO volunteer_history (volunteer_id, event_id)
+      VALUES (?, ?);
+    `;
+    await query(insertSql, [userID, eventID]);
+
+    res.status(201).json({ message: "Enrollment recorded" });
+  } catch (error) {
+    console.error("Error in postBrowseEnroll:", error);
+    res.status(500).json({ message: "Error in post browse enroll" });
+  }
+};
+
 export const getEnrolledEvents = async (req, res) => {
   try {
     const userID = req.params.userID;
