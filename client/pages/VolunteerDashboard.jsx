@@ -24,23 +24,38 @@ export default function VolunteerDashboard() {
   const [nextEvent, setNextEvent] = useState({});
   const [suggestedEvents, setSuggested] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const [upcomingEvents, setUpcoming] = useState([]);
-  const [allEvents, setAllEvents] = useState([]);
+  // const [upcomingEvents, setUpcoming] = useState([]);
+  // const [allEvents, setAllEvents] = useState([]);
+  const [calendarInfo, setCalendarInfo] = useState([]);
   const [activeSection, setActiveSection] = useState("overview");
   const [enrolledEvents, setEnrolledEvents] = useState([]);
   const [browseEvents, setBrowseEvents] = useState([]);
 
   /* ───────── helpers ───────── */
-  const fetchEvents = async () => {
-    // Leo Nguyen - /events must hit HARD_API
-    const { data } = await axios.get(`${HARD_API}/events`);
-    const events = (data?.events || []).map((e) => ({
-      date: new Date(e.start_time),
-      title: e.event_name,
-      details: e,
-    }));
-    setAllEvents(events);
-    setUpcoming(events.filter((e) => e.date >= new Date()));
+  // const fetchEvents = async () => {
+  //   // Leo Nguyen - /events must hit HARD_API
+  //   const { data } = await axios.get(`${HARD_API}/events`);
+  //   const events = (data?.events || []).map((e) => ({
+  //     date: new Date(e.start_time),
+  //     title: e.event_name,
+  //     details: e,
+  //   }));
+  //   setAllEvents(events);
+  //   setUpcoming(events.filter((e) => e.date >= new Date()));
+  // };
+
+  const fetchCalendarEvents = async (userID) => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/volunteer-dashboard/calendar/${userID}`
+      );
+      setCalendarInfo(data?.calendarData || []);
+    } catch (error) {
+      console.error(
+        "Error fetching the calendar data in the frontend: ",
+        error
+      );
+    }
   };
 
   const fetchNextEvent = async (uid) => {
@@ -103,6 +118,7 @@ export default function VolunteerDashboard() {
         fetchEnrolledEvents(userID),
         fetchBrowseEvents(userID),
         fetchSuggestedEvents(userID),
+        fetchCalendarEvents(userID),
       ]);
     } catch (error) {
       console.error("Error in onBrowseEnroll ", error);
@@ -117,7 +133,8 @@ export default function VolunteerDashboard() {
     try {
       setLoading(true);
       await Promise.all([
-        fetchEvents(),
+        // fetchEvents(),
+        fetchCalendarEvents(userID),
         fetchNextEvent(userID),
         fetchSuggestedEvents(userID),
         fetchCombinedNotifications(userID),
@@ -174,10 +191,7 @@ export default function VolunteerDashboard() {
                     onRefresh={loadData}
                   />
 
-                  <CalendarView
-                    upcomingEvents={upcomingEvents}
-                    allEvents={allEvents}
-                  />
+                  <CalendarView calendarInfo={calendarInfo} />
                 </div>
                 <NotificationsPanel
                   notifications={notifications}
