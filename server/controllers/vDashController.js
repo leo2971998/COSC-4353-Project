@@ -197,3 +197,17 @@ export const getBrowseEvents = async (req, res) => {
     res.status(500).json({ message: "Error retrieving events" });
   }
 };
+
+export const getCalendarInformation = async (req, res) => {
+  try {
+    const userID = req.params.userID;
+    const sql =
+      "SELECT em.event_id, em.event_name, em.start_time, em.end_time, em.event_location FROM eventManage AS em JOIN volunteer_history AS vh ON em.event_id = vh.event_id WHERE vh.volunteer_id = ?;";
+    const calendarData = await query(sql, [userID]);
+
+    res.status(200).json({ calendarData });
+  } catch (error) {
+    console.error("Error fetching calendar data: ", error);
+    res.status(500).json({ message: "Error fetching calendar data" });
+  }
+};
