@@ -24,31 +24,31 @@ router.post("/", async (req, res) => {
     eventDate,
     created_by,
     start_time,
-    end_time
+    end_time,
   } = req.body;
 
-  if (!created_by) return res.status(400).json({ message: "created_by id required" });
+  if (!created_by)
+    return res.status(400).json({ message: "created_by id required" });
   const formatTime = (t) => {
     if (!t) return null;
     // If only HH:mm, append seconds and space between date and time
     return t.length === 5 ? `${eventDate} ${t}:00` : `${eventDate} ${t}`;
   };
 
-
   try {
     const [eventResult] = await db.query(
-      `INSERT INTO eventManage (event_name, event_description, event_location, skills, urgency, eventDate, created_by, start_time, end_time)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO eventManage (event_name, event_description, event_location, urgency, eventDate, created_by, start_time, end_time)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         event_name || null,
         event_description || null,
         event_location || null,
-        skills || null,
+        // skills || null,
         urgency || null,
         eventDate || null,
         created_by || null,
         formatTime(start_time) || null,
-        formatTime(end_time) || null
+        formatTime(end_time) || null,
       ]
     );
 
@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
     // We need to split up skills, everytime there is a comma
     const skillList = Array.isArray(skills)
       ? skills
-      : skills.split(',').map((skill) => skill.trim());
+      : skills.split(",").map((skill) => skill.trim());
 
     for (const skillName of skillList) {
       const [existingSkillRows] = await db.query(
@@ -93,10 +93,9 @@ router.get("/:created_by", async (req, res) => {
   const created_by = req.params.created_by;
 
   try {
-    const [rows] = await db.promise().query(
-      "SELECT * FROM eventManage WHERE created_by = ?",
-      [created_by]
-    );
+    const [rows] = await db
+      .promise()
+      .query("SELECT * FROM eventManage WHERE created_by = ?", [created_by]);
     res.json(rows); // Send rows to frontend
   } catch (err) {
     console.error("Error fetching events:", err);
@@ -104,33 +103,33 @@ router.get("/:created_by", async (req, res) => {
   }
 });
 
-router.delete('/eventManage/:event_id', async (req, res) => {
+router.delete("/eventManage/:event_id", async (req, res) => {
   const eventId = req.params.event_id;
 
   try {
     // First: Delete from event_skill to avoid FK conflict
-    await db.query('DELETE FROM event_skill WHERE event_id = ?', [eventId]);
+    await db.query("DELETE FROM event_skill WHERE event_id = ?", [eventId]);
 
     // Then: Delete the event itself
-    await db.query('DELETE FROM eventManage WHERE event_id = ?', [eventId]);
+    await db.query("DELETE FROM eventManage WHERE event_id = ?", [eventId]);
 
-    res.json({ message: 'Event and associated skills deleted successfully' });
+    res.json({ message: "Event and associated skills deleted successfully" });
   } catch (err) {
-    console.error('Error deleting event:', err);
-    res.status(500).json({ error: 'Failed to delete event', details: err });
+    console.error("Error deleting event:", err);
+    res.status(500).json({ error: "Failed to delete event", details: err });
   }
 });
 
-router.delete('/skill/:skill_id', async (req, res) => {
+router.delete("/skill/:skill_id", async (req, res) => {
   const skillId = req.params.skill_id;
 
-  const sql = 'DELETE FROM skill WHERE skill_id = ?';
+  const sql = "DELETE FROM skill WHERE skill_id = ?";
   db.query(sql, [skillId], (err, result) => {
     if (err) {
-      console.error('Error deleting skill:', err);
-      res.status(500).json({ error: 'Failed to delete skill' });
+      console.error("Error deleting skill:", err);
+      res.status(500).json({ error: "Failed to delete skill" });
     } else {
-      res.json({ message: 'Skill deleted successfully', result });
+      res.json({ message: "Skill deleted successfully", result });
     }
   });
 });
