@@ -119,3 +119,45 @@ export const withdrawEnrolledEvent = async (req, res) => {
     res.status(500).json({ message: "Could not withdraw event!" });
   }
 };
+
+export const getBrowseEvents = async (req, res) => {
+  try {
+    const userID = req.params.userID;
+    const sql =
+      "SELECT em.event_id, em.event_name, em.event_description, em.event_location, em.urgency, em.start_time, em.end_time, s.skill_name, vh.event_status FROM eventManage AS em LEFT JOIN event_skill AS es ON em.event_id = es.event_id LEFT JOIN skill AS s ON es.skill_id = s.skill_id LEFT JOIN volunteer_history AS vh ON em.event_id = vh.event_id AND vh.volunteer_id = ? WHERE em.start_time > NOW() ORDER BY em.start_time ASC;";
+
+    const rows = await query(sql, [userID]);
+
+    const eventsMap = new Map();
+
+    rows.forEach((row) => {
+      if (!eventsMap.has(row.event_id)) {
+        eventsMap.set(row.event_id, {
+          event_id: row.event_id,
+          event_name: row.event_name,
+          event_description: row.event_description,
+          event_location: row.event_location,
+          urgency: row.urgency,
+          start_time: row.start_time,
+          end_time: row.end_time,
+          skills: [],
+          event_status: row.event_status,
+        });
+      }
+
+      if (row.skill_name) {
+        const eventObj = eventsMap.get(row.event_id);
+        if (!eventObj.skills.includes(row.skill_name)) {
+          eventObj.skills.push(row.skill_name);
+        }
+      }
+    });
+
+    const eventsArray = Array.from(eventsMap.values());
+
+    res.status(200).json({ events: eventsArray });
+  } catch (error) {
+    console.error("Error in getBrowseEvents: ", error);
+    res.status(500).json({ message: "Error retrieving events" });
+  }
+};
