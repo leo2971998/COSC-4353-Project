@@ -11,6 +11,7 @@ import axios from "axios";
 import { DashboardNavigation } from "../components/VolunteerDashboard/DashboardNavigation";
 import { MyEvents } from "../components/VolunteerDashboard/MyEvents";
 import { VolunteerHistory } from "../components/VolunteerDashboard/History";
+import { BrowseEvents } from "../components/VolunteerDashboard/BrowseEvents";
 /* ──────────────────────────────────────────────────────────────
    BASE URLs
 ────────────────────────────────────────────────────────────── */
@@ -89,6 +90,22 @@ export default function VolunteerDashboard() {
       setBrowseEvents(data?.events || []);
     } catch (error) {
       console.error("Error fetching all events for browse events tab: ", error);
+    }
+  };
+
+  const onBrowseEnroll = async (userID, eventID) => {
+    try {
+      await axios.post(
+        `${API_URL}/volunteer-dashboard/browse-enroll/${userID}/${eventID}`
+      );
+
+      await Promise.all([
+        fetchEnrolledEvents(userID),
+        fetchBrowseEvents(userID),
+        fetchSuggestedEvents(userID),
+      ]);
+    } catch (error) {
+      console.error("Error in onBrowseEnroll ", error);
     }
   };
 
@@ -177,9 +194,7 @@ export default function VolunteerDashboard() {
           )}
 
           {activeSection === "all-events" && (
-            <div className="text-white">
-              <p>Show all events here (All Events component)</p>
-            </div>
+            <BrowseEvents allEvents={browseEvents} onEnroll={onBrowseEnroll} />
           )}
 
           {activeSection === "history" && <VolunteerHistory />}

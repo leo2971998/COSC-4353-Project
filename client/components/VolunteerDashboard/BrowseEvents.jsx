@@ -3,7 +3,7 @@ import { Search, Filter, Calendar, MapPin, Clock } from "lucide-react";
 import { EventCard } from "./EventCard";
 import { EventDetailView } from "./EventDetailView";
 
-export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
+export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
   const [allEvents, setAllEvents] = useState(initialAllEvents);
   const [filteredEvents, setFilteredEvents] = useState(initialAllEvents);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -11,7 +11,8 @@ export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
   const [enrolling, setEnrolling] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationTerm, setLocationTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedUrgency, setSelectedUrgency] = useState("all");
+
   const [selectedDateFilter, setSelectedDateFilter] = useState("any"); // 'any', 'upcoming', 'today', 'this_week'
 
   // Update allEvents when initialAllEvents prop changes (e.g., from parent refresh)
@@ -20,14 +21,30 @@ export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
   }, [initialAllEvents]);
 
   const handleEnroll = async (eventId, eventName) => {
-    setEnrolling(eventId);
-    // Simulate API call
-    setTimeout(() => {
-      alert(`Successfully enrolled in "${eventName}"!`);
+    try {
+      setEnrolling(eventId);
+      const userID = localStorage.getItem("userId");
+      await onEnroll?.(userID, eventId);
+
+      // optimistic update
+      setAllEvents((prev) =>
+        prev.map((e) =>
+          e.event_id === eventId ? { ...e, event_status: "Upcoming" } : e
+        )
+      );
+      setFilteredEvents((prev) =>
+        prev.map((e) =>
+          e.event_id === eventId ? { ...e, event_status: "Upcoming" } : e
+        )
+      );
+
+      setShowDetail(false);
+    } catch (e) {
+      console.error("Enroll failed:", e);
+      alert("Could not enroll. Try again.");
+    } finally {
       setEnrolling(null);
-      setShowDetail(false); // Close detail view after enrolling
-      onRefresh(); // Refresh parent data
-    }, 1000);
+    }
   };
 
   const filterEvents = () => {
@@ -35,14 +52,13 @@ export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
 
     // Filter by search term (event name or skills)
     if (searchTerm) {
-      filtered = filtered.filter(
-        (event) =>
-          event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (event.required_skills &&
-            event.required_skills
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()))
-      );
+      const t = searchTerm.toLowerCase();
+      filtered = filtered.filter((event) => {
+        const name = event.event_name?.toLowerCase() || "";
+        const skills = (event.skills || []).join(", ").toLowerCase();
+        const loc = event.event_location?.toLowerCase() || "";
+        return name.includes(t) || skills.includes(t) || loc.includes(t);
+      });
     }
 
     // Filter by location
@@ -52,10 +68,10 @@ export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
       );
     }
 
-    // Filter by category
-    if (selectedCategory !== "all") {
+    // Filter by urgency
+    if (selectedUrgency !== "all") {
       filtered = filtered.filter(
-        (event) => event.event_category === selectedCategory
+        (event) => (event.urgency || "").toLowerCase() === selectedUrgency
       );
     }
 
@@ -100,13 +116,13 @@ export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
   }, [
     searchTerm,
     locationTerm,
-    selectedCategory,
+    selectedUrgency,
     selectedDateFilter,
     allEvents,
   ]);
 
-  const categories = [
-    ...new Set(allEvents.map((event) => event.event_category)),
+  const urgencies = [
+    ...new Set((allEvents || []).map((e) => e.urgency).filter(Boolean)),
   ];
 
   const handleCardClick = (event) => {
@@ -185,15 +201,15 @@ export function BrowseEvents({ allEvents: initialAllEvents, onRefresh }) {
                   size={16}
                 />
                 <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  value={selectedUrgency}
+                  onChange={(e) => setSelectedUrgency(e.target.value)}
                   className="pl-10 pr-8 py-2 bg-gray-900 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-600 appearance-none cursor-pointer"
-                  aria-label="Filter by Category"
+                  aria-label="Filter by Urgency"
                 >
-                  <option value="all">All Categories</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                  <option value="all">All Urgency</option>
+                  {urgencies.map((u) => (
+                    <option key={u} value={u.toLowerCase()}>
+                      {u}
                     </option>
                   ))}
                 </select>

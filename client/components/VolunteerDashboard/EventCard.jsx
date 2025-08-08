@@ -26,6 +26,19 @@ export function EventCard({ event, onClick }) {
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-semibold text-white flex-1 pr-4">
           {event.event_name}
+          {event.event_status ? (
+            <span
+              className={`text-xs ${
+                event.event_status === "Upcoming"
+                  ? "bg-green-700"
+                  : "bg-gray-700"
+              } px-2 py-1 rounded ml-2`}
+            >
+              {event.event_status === "Upcoming"
+                ? "Enrolled"
+                : event.event_status}
+            </span>
+          ) : null}
         </h3>
         <div className="flex space-x-2 text-gray-400">
           <button className="hover:text-white transition-colors p-1 rounded-md">
@@ -44,7 +57,15 @@ export function EventCard({ event, onClick }) {
         </div>
         <div className="flex items-center">
           <Settings size={16} className="mr-2 text-indigo-400" />
-          <span>{displaySkills(event.skills)}</span>
+          <span>
+            {Array.isArray(event.skills) && event.skills.length
+              ? event.skills.length > 2
+                ? `${event.skills[0]}, ${event.skills[1]} and ${
+                    event.skills.length - 2
+                  } more`
+                : event.skills.join(", ")
+              : "No skills specified"}
+          </span>
         </div>
         <div className="flex items-center">
           <List size={16} className="mr-2 text-indigo-400" />

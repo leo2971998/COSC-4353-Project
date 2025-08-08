@@ -39,8 +39,13 @@ export function EventDetailView({ event, onBack, onEnroll }) {
     });
   };
 
-  const skillsArray = event.skills
-    ? event.skills.split(",").map((s) => s.trim())
+  const skillsArray = Array.isArray(event.skills)
+    ? event.skills
+    : typeof event.skills === "string" && event.skills.length
+    ? event.skills
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
 
   return (
@@ -59,12 +64,20 @@ export function EventDetailView({ event, onBack, onEnroll }) {
         <span>{event.event_location}</span>
       </div>
 
-      <button
-        onClick={() => onEnroll(event.event_id, event.event_name)}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 mb-8"
-      >
-        Enroll Now
-      </button>
+      {!event.event_status || event.event_status === "Withdrew" ? (
+        <button
+          onClick={() => onEnroll(event.event_id, event.event_name)}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 mb-8"
+        >
+          Enroll Now
+        </button>
+      ) : (
+        <div className="w-full mb-8 text-center">
+          <span className="inline-block bg-green-700 text-white px-4 py-2 rounded">
+            Already Enrolled
+          </span>
+        </div>
+      )}
 
       <div className="space-y-8">
         <div>
@@ -84,16 +97,10 @@ export function EventDetailView({ event, onBack, onEnroll }) {
               </span>
             </div>
             <div className="flex items-center">
-              <List size={16} className="mr-2 text-indigo-400" />
-              <span>Category: {event.event_category}</span>
-            </div>
-            <div className="flex items-center">
-              <Users size={16} className="mr-2 text-indigo-400" />
-              <span>Volunteers Needed: {event.volunteers_needed}</span>
-            </div>
-            <div className="flex items-center">
               <Settings size={16} className="mr-2 text-indigo-400" />
-              <span>Skills: {event.skills || "N/A"}</span>
+              <span>
+                Skills: {skillsArray.length ? skillsArray.join(", ") : "N/A"}
+              </span>
             </div>
           </div>
         </div>
