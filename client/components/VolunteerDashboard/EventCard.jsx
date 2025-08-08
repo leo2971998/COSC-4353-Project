@@ -1,4 +1,12 @@
-import { MapPin, Settings, List, Share2, Star } from "lucide-react";
+import {
+  MapPin,
+  Settings,
+  List,
+  Share2,
+  Star,
+  ClockAlert,
+  Clock,
+} from "lucide-react";
 
 export function EventCard({ event, onClick }) {
   const truncateDescription = (description, maxLength) => {
@@ -40,20 +48,32 @@ export function EventCard({ event, onClick }) {
             </span>
           ) : null}
         </h3>
-        <div className="flex space-x-2 text-gray-400">
-          <button className="hover:text-white transition-colors p-1 rounded-md">
-            <Share2 size={18} />
-          </button>
-          <button className="hover:text-white transition-colors p-1 rounded-md">
-            <Star size={18} />
-          </button>
-        </div>
       </div>
 
       <div className="space-y-2 text-gray-300 text-sm mb-4">
         <div className="flex items-center">
           <MapPin size={16} className="mr-2 text-indigo-400" />
           <span>{event.event_location}</span>
+        </div>
+        <div className="flex items-center">
+          <Clock size={16} className="mr-2 text-indigo-400" />
+          <span>
+            {new Date(event.start_time).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            at{" "}
+            {new Date(event.start_time).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+            })}{" "}
+            -{" "}
+            {new Date(event.end_time).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+            })}
+          </span>
         </div>
         <div className="flex items-center">
           <Settings size={16} className="mr-2 text-indigo-400" />
@@ -68,8 +88,8 @@ export function EventCard({ event, onClick }) {
           </span>
         </div>
         <div className="flex items-center">
-          <List size={16} className="mr-2 text-indigo-400" />
-          <span>{event.event_category}</span>
+          <ClockAlert size={16} className="mr-2 text-indigo-400" />
+          <span>{event.urgency}</span>
         </div>
       </div>
 
