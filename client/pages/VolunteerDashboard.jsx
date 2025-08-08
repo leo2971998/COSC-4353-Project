@@ -27,6 +27,7 @@ export default function VolunteerDashboard() {
   const [allEvents, setAllEvents] = useState([]);
   const [activeSection, setActiveSection] = useState("overview");
   const [enrolledEvents, setEnrolledEvents] = useState([]);
+  const [browseEvents, setBrowseEvents] = useState([]);
 
   /* ───────── helpers ───────── */
   const fetchEvents = async () => {
@@ -80,6 +81,17 @@ export default function VolunteerDashboard() {
     } catch (error) {}
   };
 
+  const fetchBrowseEvents = async (userID) => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/volunteer-dashboard/browse-events/${userID}`
+      );
+      setBrowseEvents(data?.events || []);
+    } catch (error) {
+      console.error("Error fetching all events for browse events tab: ", error);
+    }
+  };
+
   /* ───────── load on mount ───────── */
   const userID = localStorage.getItem("userId");
 
@@ -93,6 +105,7 @@ export default function VolunteerDashboard() {
         fetchSuggestedEvents(userID),
         fetchCombinedNotifications(userID),
         fetchEnrolledEvents(userID),
+        fetchBrowseEvents(userID),
       ]);
     } catch (err) {
       console.error("Dashboard load error:", err);
