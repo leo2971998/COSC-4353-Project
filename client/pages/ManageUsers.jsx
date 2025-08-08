@@ -2,6 +2,7 @@
 // Leo Nguyen – 2234488
 
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Layout   from "../components/Layout";
 import Navbar   from "../components/Navbar";
 import Footer   from "../components/Footer";
@@ -33,7 +34,7 @@ export default function ManageUsers() {
       setUsers(await res.json());
     } catch (e) {
       console.error("[fetchUsers]", e.message);
-      alert(`Could not load users: ${e.message}`);
+      toast.error(`Could not load users: ${e.message}`);
     }
   };
   useEffect(() => { fetchUsers(); }, []);
@@ -74,7 +75,7 @@ export default function ManageUsers() {
 
   const saveNewUser = async () => {
     if (!newName.trim() || !newEmail.trim() || !newPass.trim()) {
-      alert("All fields required"); return;
+      toast.error("All fields required"); return;
     }
     try {
       /* register */
@@ -98,7 +99,7 @@ export default function ManageUsers() {
       fetchUsers();
     } catch (e) {
       console.error("[addUser]", e.message);
-      alert(`Could not add user: ${e.message}`);
+      toast.error(`Could not add user: ${e.message}`);
     }
   };
 

@@ -1,6 +1,5 @@
 // client/components/Layout.jsx
-import NotificationCenter from "./NotificationCenter";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useState } from "react";
 
 export default function Layout({ children, notifications = [] }) {
@@ -21,6 +20,15 @@ export default function Layout({ children, notifications = [] }) {
   }, []);
 
   useEffect(() => {
+    flash.forEach((msg) => toast(msg));
+    if (flash.length) setFlash([]);
+  }, [flash]);
+
+  useEffect(() => {
+    notifications.forEach((msg) => toast(msg));
+  }, [notifications]);
+
+  useEffect(() => {
     const check = () => {
       setProfileIncomplete(localStorage.getItem("profileComplete") === "false");
     };
@@ -32,7 +40,6 @@ export default function Layout({ children, notifications = [] }) {
   return (
     <div className="min-h-screen bg-gray-900 text-white relative">
       {/* Global Notifications */}
-      <NotificationCenter notifications={[...flash, ...notifications]} />
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
 
       {profileIncomplete && (

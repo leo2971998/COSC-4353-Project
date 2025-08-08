@@ -195,8 +195,15 @@ export default function VolunteerDashboard() {
                   <CalendarView calendarInfo={calendarInfo} />
                 </div>
                 <NotificationsPanel
-                  notifications={notifications}
-                  refresh={() => fetchCombinedNotifications(userID)}
+                    notifications={notifications}
+                    refresh={async () => {
+                      await Promise.all([
+                        fetchCombinedNotifications(userID), // notifications
+                        fetchEnrolledEvents(userID),        // My Events
+                        fetchCalendarEvents(userID),        // calendar
+                        fetchBrowseEvents(userID),          // optional: removes accepted item from Browse
+                      ]);
+                    }}
                 />
               </div>
             </>

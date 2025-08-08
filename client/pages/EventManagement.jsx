@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import EventHeader from "../components/EventManagement/EventHeader";
 import Navbar from "../components/Navbar";
 import Description from "../components/EventManagement/Description";
@@ -208,9 +209,9 @@ export default function EventManagement(){
     if (!validateForm()) return;
 
     const created_by = localStorage.getItem("userId"); // pull from storage
-    if (!created_by) { 
-      alert("Please log in first"); 
-      return; 
+    if (!created_by) {
+      toast.error("Please log in first");
+      return;
     }
 
     const payload = {
@@ -236,7 +237,7 @@ export default function EventManagement(){
       
       if (!res.ok) {
         console.error(data.message || "Event save failed");
-        alert(data.message || "Event save failed");
+        toast.error(data.message || "Event save failed");
         return;
       }
 
@@ -246,7 +247,7 @@ export default function EventManagement(){
       navigate("/");
     } catch (err) {
       console.error("Error submitting event:", err);
-      alert("Network Error: cound not save event");
+      toast.error("Network Error: cound not save event");
     }
   };
 
