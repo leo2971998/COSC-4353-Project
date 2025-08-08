@@ -19,6 +19,8 @@ export default function VolunteerHistoryTableRow({ event }) {
         return `${base} bg-red-600/20 text-red-400 border border-red-600/30`;
       case "signed up":
         return `${base} bg-blue-600/20 text-blue-400 border border-blue-600/30`;
+      case "withdrew":
+        return `${base} bg-red-400/20 text-red-400 border border-red-800/30`;
       default:
         return `${base} bg-gray-600/20 text-gray-400 border border-gray-600/30`;
     }

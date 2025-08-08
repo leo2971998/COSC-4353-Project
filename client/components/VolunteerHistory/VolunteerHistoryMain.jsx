@@ -56,6 +56,7 @@ export default function VolunteerHistoryMain({ events }) {
                 <option value="attended">Attended</option>
                 <option value="missed">Missed</option>
                 <option value="signed up">Signed Up</option>
+                <option value="withdrew">Withdrew</option>
               </select>
 
               <select
