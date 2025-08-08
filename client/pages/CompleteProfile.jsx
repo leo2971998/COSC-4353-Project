@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import Layout from "../components/Layout";
 import Navbar from "../components/Navbar";
@@ -221,7 +222,7 @@ export default function CompleteProfile() {
 
     const userId = localStorage.getItem("userId");
     if (!userId) {
-      alert("Please log in first");
+      toast.error("Please log in first");
       return;
     }
 
@@ -248,7 +249,7 @@ export default function CompleteProfile() {
 
       if (!res.ok) {
         console.error(data.message || "Profile save failed");
-        alert(data.message || "Profile save failed");
+        toast.error(data.message || "Profile save failed");
         return;
       }
 
@@ -273,7 +274,7 @@ export default function CompleteProfile() {
       navigate("/");
     } catch (err) {
       console.error("Error saving profile:", err);
-      alert("Network error: could not save profile");
+      toast.error("Network error: could not save profile");
     }
   };
 
