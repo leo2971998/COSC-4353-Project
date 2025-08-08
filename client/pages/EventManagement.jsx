@@ -12,6 +12,7 @@ import Location from "../components/EventManagement/Location";
 import SkillsSection from "../components/CompleteProfile/Skills";
 import Urgency from "../components/EventManagement/Urgency";
 import EventDate from "../components/EventManagement/EventDate"
+import EventTime from "../components/EventManagement/EventTime";
 import { Button } from "../components/ui/Button";
 
 // Test to see if I can see changes in console:
@@ -20,16 +21,18 @@ console.log("Hello")
 // Main Function:
 export default function EventManagement(){
   const navigate = useNavigate();
-  const API_URL = "https://cosc-4353-backend.vercel.app";
+  const API_URL = "http://localhost:3000";
 
   const [manageData, setManageData] = useState({
     // Event Features:
-    eventName: "",
-    eventDescription: "",
-    location: "",
+    event_name: "",
+    event_description: "",
+    event_location: "",
     skills: [],
     urgency: "",
     eventDate: [],
+    start_time: "",
+    end_time: ""
   });
 
   // --- Local UI State ---
@@ -38,32 +41,36 @@ export default function EventManagement(){
   const [selectedDate, setSelectedDate] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  // Start & End Time:
+  const [selectedStart, setSelectedStart] = useState("");
+  const [selectedEnd, setSelectedEnd] = useState("");
+
+
   // Hard-coded skill options for now. Replace with API later if needed.
   const skillOptions = [
-    "Teaching & Education",
-    "Healthcare & Medical",
-    "Technology & IT",
-    "Construction & Manual Labor",
+    "Communication",
+    "Teamwork",
+    "First Aid",
     "Event Planning",
-    "Marketing & Communications",
-    "Food Service & Preparation",
-    "Administrative Support",
-    "Childcare & Youth Programs",
-    "Senior Care",
-    "Environmental & Conservation",
-    "Arts & Creative",
-    "Legal & Advocacy",
-    "Transportation",
-    "Language Translation",
-    "Financial & Accounting",
+    "Childcare",
+    "Food Preparation",
+    "Elderly Assistance",
+    "Tutoring",
+    "Fundraising",
+    "Public Speaking",
+    "Cleaning",
+    "Mentoring",
+    "Translation",
+    "Tech Support",
+    "Environmental Cleanup",
   ];
 
   // Verifies that all event features are filled out:
   useEffect(() => {
     const changed =
-      manageData.eventName ||
-      manageData.eventDescription ||
-      manageData.location ||
+      manageData.event_name ||
+      manageData.event_description ||
+      manageData.event_location ||
       manageData.skills.length > 0 ||
       manageData.urgency ||
       manageData.eventDate.length > 0;
@@ -86,10 +93,10 @@ export default function EventManagement(){
 
   // Loading Event Details:
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
+    const created_by = localStorage.getItem("created_by");
+    if (!created_by) return;
 
-    fetch(`${API_URL}/events/${userId}`)
+    fetch(`${API_URL}/events/${created_by}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!data) return;
@@ -97,9 +104,9 @@ export default function EventManagement(){
           setManageData((prev) => ({
             ...prev,
             // prefer new backend alias -> fallback legacy fields -> keep existing
-            eventName: data.eventName ?? "",
-            eventDescription: data.eventDescription ?? "",
-            location: data.location ?? "",
+            event_name: data.event_name ?? "",
+            event_description: data.event_description ?? "",
+            event_location: data.event_location ?? "",
             skills: data.skills ? data.skills.split(/,\s*/) : [],
             urgency: data.urgency ?? "",
             eventDate: data.eventDate ? data.eventDate.split(/,\s*/): [],
@@ -147,23 +154,31 @@ export default function EventManagement(){
       eventDate: prev.eventDate.filter((d) => d !== dateToRemove),
     }));
   };
+
+  const onStartChange = (value) => {
+    setManageData(prev => ({ ...prev, start_time: value }));
+  };
+
+  const onEndChange = (value) => {
+    setManageData(prev => ({ ...prev, end_time: value }));
+  };
     
   // --- Validation ---
   const validateForm = () => {
       const newErrors = {};
 
-      if (!manageData.eventName.trim()){
-          newErrors.eventName = "Event Name is required";
-      } else if (manageData.eventName.length > 100){
-          newErrors.eventName = "Event Name must be 100 characters or less";
+      if (!manageData.event_name.trim()){
+          newErrors.event_name = "Event Name is required";
+      } else if (manageData.event_name.length > 100){
+          newErrors.event_name = "Event Name must be 100 characters or less";
       }
 
-      if (!manageData.eventDescription.trim()){
-          newErrors.eventDescription = "Event Description is required";
+      if (!manageData.event_description.trim()){
+          newErrors.event_description = "Event Description is required";
       }
       
-      if (!manageData.location.trim()){
-          newErrors.location = "Event Location is required";
+      if (!manageData.event_location.trim()){
+          newErrors.event_location = "Location is required";
       }
 
       if (manageData.skills.length === 0){
@@ -177,6 +192,11 @@ export default function EventManagement(){
       if (manageData.eventDate.length === 0){
           newErrors.eventDate = "Please select at least one available date";
       }
+
+      if (manageData.start_time.length === 0 || manageData.end_time.length === 0) {
+          newErrors.event_time = "Please select both a start and end time";
+      }
+      
       console.log("Validation Errors:", newErrors);
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
@@ -187,25 +207,27 @@ export default function EventManagement(){
     e.preventDefault();
     if (!validateForm()) return;
 
-    const userId = localStorage.getItem("userId"); // pull from storage
-    if (!userId) { 
+    const created_by = localStorage.getItem("userId"); // pull from storage
+    if (!created_by) { 
       alert("Please log in first"); 
       return; 
     }
 
     const payload = {
-      userId,
-      eventName: manageData.eventName,
-      eventDescription: manageData.eventDescription,
-      location: manageData.location,
+      created_by,
+      event_name: manageData.event_name,
+      event_description: manageData.event_description,
+      event_location: manageData.event_location,
       skills: manageData.skills.join(","), // convert array to string
       urgency: manageData.urgency,
-      eventDate: manageData.eventDate.join(",") // convert array to string
+      eventDate: manageData.eventDate.join(","), // convert array to string
+      start_time: manageData.start_time,
+      end_time: manageData.end_time
     };
     console.log("1. Frontend: Sending Payload", payload);
 
     try {
-      const res = await fetch(`${API_URL}/events`, {
+      const res = await fetch(`${API_URL}/event-management/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -239,19 +261,21 @@ export default function EventManagement(){
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Form Container */}
               <EventInfo
-                eventName={manageData.eventName}
-                error={errors.eventName}
-                onChange={(value) => handleInputChange("eventName", value)}
+                event_name={manageData.event_name}
+                error={errors.event_name}
+                onChange={(value) => handleInputChange("event_name", value)}
               />
 
               <Description
                 manageData={manageData}
-                onChange={(value) => handleInputChange("eventDescription", value)}
+                onChange={(value) => handleInputChange("event_description", value)}
+                error={errors.event_description}
               />
 
               <Location
                 manageData={manageData}
-                onChange={(value) => handleInputChange("location", value)}
+                onChange={(value) => handleInputChange("event_location", value)}
+                error={errors.event_location}
               />
 
               <SkillsSection
@@ -265,9 +289,8 @@ export default function EventManagement(){
 
               <Urgency
                 urgency={manageData.urgency}
-                onChange={(e) =>
-                  setManageData((prevData) => ({ ...prevData, urgency: e.target.value }))
-                }
+                onChange={(e) => setManageData((prevData) => ({ ...prevData, urgency: e.target.value }))}
+                error={errors.urgency}
               />
 
               <EventDate
@@ -278,6 +301,15 @@ export default function EventManagement(){
                 onRemoveDate={handleDateRemove}
                 error={errors.eventDate}
               />
+
+              <EventTime
+                selectedStartTime={manageData.start_time}
+                selectedEndTime={manageData.end_time}
+                onStartTimeChange={onStartChange}
+                onEndTimeChange={onEndChange}
+                error={errors.event_time}
+              />
+
               <div className="pt-6">
                 <Button
                   type="submit"

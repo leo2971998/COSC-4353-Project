@@ -75,6 +75,7 @@ app.listen(PORT, () => {
 
 app.use("/", eventRoutes);
 app.use("/history", historyRoutes);
+app.use("/event-management", eventRoutes);
 
 // Register
 app.post("/register", async (req, res) => {
