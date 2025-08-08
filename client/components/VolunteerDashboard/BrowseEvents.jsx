@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Search, Filter, Calendar, MapPin, Clock } from "lucide-react";
 import { EventCard } from "./EventCard";
 import { EventDetailView } from "./EventDetailView";
+import { toast } from "react-toastify";
 
 export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
   const [allEvents, setAllEvents] = useState(initialAllEvents);
@@ -43,7 +44,7 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
       setShowDetail(false);
     } catch (e) {
       console.error("Enroll failed:", e);
-      alert("Could not enroll. Try again.");
+      toast.error("Could not enroll. Try again.");
     } finally {
       setEnrolling(null);
     }
