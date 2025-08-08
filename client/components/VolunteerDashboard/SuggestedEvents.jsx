@@ -10,7 +10,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-export const SuggestedEvents = ({ suggestedEvents, onRefresh }) => {
+export const SuggestedEvents = ({ suggestedEvents, onRefresh, setActiveS }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [page, setPage] = useState(0);
@@ -56,12 +56,12 @@ export const SuggestedEvents = ({ suggestedEvents, onRefresh }) => {
         <p className="text-gray-400 mb-4">
           We couldn't find any event matches for you at this time.
         </p>
-        <a
-          href="/events"
+        <button
+          onClick={() => setActiveS("all-events")}
           className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"
         >
           View All Available Events
-        </a>
+        </button>
       </div>
     );
   }

@@ -189,6 +189,7 @@ export default function VolunteerDashboard() {
                   <SuggestedEvents
                     suggestedEvents={suggestedEvents}
                     onRefresh={loadData}
+                    setActiveS={setActiveSection}
                   />
 
                   <CalendarView calendarInfo={calendarInfo} />
