@@ -6,6 +6,7 @@ import {
   Settings,
   List,
   ArrowLeft,
+  ClockAlert,
 } from "lucide-react";
 
 export function EventDetailView({ event, onBack, onEnroll }) {
@@ -74,7 +75,7 @@ export function EventDetailView({ event, onBack, onEnroll }) {
       ) : (
         <div className="w-full mb-8 text-center">
           <span className="inline-block bg-green-700 text-white px-4 py-2 rounded">
-            Already Enrolled
+            You Already Enrolled
           </span>
         </div>
       )}
@@ -102,6 +103,10 @@ export function EventDetailView({ event, onBack, onEnroll }) {
                 Skills: {skillsArray.length ? skillsArray.join(", ") : "N/A"}
               </span>
             </div>
+            <div className="flex items-center">
+              <ClockAlert size={16} className="mr-2 text-indigo-400" />
+              <span>Urgency: {event.urgency}</span>
+            </div>
           </div>
         </div>
 
@@ -117,7 +122,7 @@ export function EventDetailView({ event, onBack, onEnroll }) {
         {skillsArray.length > 0 && (
           <div>
             <h2 className="text-xl font-semibold text-white mb-4">
-              Required Skills
+              Recommended Skills
             </h2>
             <div className="flex flex-wrap gap-2">
               {skillsArray.map((skill, index) => (

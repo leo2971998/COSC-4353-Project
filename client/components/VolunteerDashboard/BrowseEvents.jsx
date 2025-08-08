@@ -14,6 +14,8 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
   const [selectedUrgency, setSelectedUrgency] = useState("all");
 
   const [selectedDateFilter, setSelectedDateFilter] = useState("any"); // 'any', 'upcoming', 'today', 'this_week'
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 9;
 
   // Update allEvents when initialAllEvents prop changes (e.g., from parent refresh)
   useEffect(() => {
@@ -61,10 +63,10 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
       });
     }
 
-    // Filter by location
     if (locationTerm) {
+      const l = locationTerm.toLowerCase();
       filtered = filtered.filter((event) =>
-        event.event_location.toLowerCase().includes(locationTerm.toLowerCase())
+        (event.event_location || "").toLowerCase().includes(l)
       );
     }
 
@@ -113,6 +115,7 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
 
   useEffect(() => {
     filterEvents();
+    setPage(1);
   }, [
     searchTerm,
     locationTerm,
@@ -134,6 +137,26 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
     setSelectedEvent(null);
     setShowDetail(false);
   };
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil((filteredEvents?.length || 0) / PAGE_SIZE)
+  );
+  const startIndex = (page - 1) * PAGE_SIZE;
+  const pageItems = (filteredEvents || []).slice(
+    startIndex,
+    startIndex + PAGE_SIZE
+  );
+  const showingFrom = filteredEvents.length ? startIndex + 1 : 0;
+  const showingTo = Math.min(startIndex + PAGE_SIZE, filteredEvents.length);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [totalPages, page]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [page]);
 
   return (
     <div className="space-y-6">
@@ -192,7 +215,8 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
             <h2 className="text-2xl font-bold text-white">Browse All Events</h2>
             <div className="flex items-center space-x-4">
               <span className="text-gray-300 text-lg font-medium">
-                {filteredEvents.length} Events Found
+                Showing {showingFrom} to {showingTo} of {filteredEvents.length}{" "}
+                Events
               </span>
 
               <div className="relative">
@@ -236,7 +260,7 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map((event) => (
+            {pageItems.map((event) => (
               <EventCard
                 key={event.event_id}
                 event={event}
@@ -244,6 +268,30 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
               />
             ))}
           </div>
+          {/* Pagination controls */}
+          {filteredEvents.length > 0 && (
+            <div className="flex items-center justify-center gap-3 mt-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white disabled:opacity-50"
+              >
+                Prev
+              </button>
+
+              <span className="text-gray-300">
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-3 py-2 bg-gray-900 border border-gray-700 rounded text-white disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
 
           {filteredEvents.length === 0 && (
             <div className="text-center py-12">
