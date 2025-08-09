@@ -112,12 +112,14 @@ export default function Navbar({ scrollToSection }) {
                 >
                   Profile
                 </Link>
-                <Link
-                  to="/event-management"
-                  className="text-gray-300 hover:text-blue-400 font-medium transition"
-                >
-                  Event Management
-                </Link>
+                {isAdmin && (
+                    <Link
+                        to="/event-management"
+                        className="text-gray-300 hover:text-blue-400 font-medium transition"
+                    >
+                      Event Management
+                    </Link>
+                )}
                 {isAdmin && (
                   <>
                     <Link
@@ -195,13 +197,14 @@ export default function Navbar({ scrollToSection }) {
                   >
                     Profile
                   </Link>
-                  <Link
-                    to="/event-management"
-                    className="block px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-800 rounded-md"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Event Management
-                  </Link>
+                  {isAdmin && (
+                      <Link
+                          to="/event-management"
+                          className="text-gray-300 hover:text-blue-400 font-medium transition"
+                      >
+                        Event Management
+                      </Link>
+                  )}
                   {isAdmin && (
                     <>
                       <Link
