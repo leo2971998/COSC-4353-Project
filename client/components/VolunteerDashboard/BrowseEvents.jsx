@@ -41,6 +41,7 @@ export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
         )
       );
 
+      toast.success(`Enrolled in ${eventName}`);
       setShowDetail(false);
     } catch (e) {
       console.error("Enroll failed:", e);

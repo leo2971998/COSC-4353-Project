@@ -12,6 +12,7 @@ import { DashboardNavigation } from "../components/VolunteerDashboard/DashboardN
 import { MyEvents } from "../components/VolunteerDashboard/MyEvents";
 import { VolunteerHistory } from "../components/VolunteerDashboard/History";
 import { BrowseEvents } from "../components/VolunteerDashboard/BrowseEvents";
+import { toast } from "react-hot-toast";
 /* ──────────────────────────────────────────────────────────────
    BASE URLs
 ────────────────────────────────────────────────────────────── */
@@ -120,8 +121,10 @@ export default function VolunteerDashboard() {
         fetchSuggestedEvents(userID),
         fetchCalendarEvents(userID),
       ]);
+      toast.success("Enrollment successful");
     } catch (error) {
       console.error("Error in onBrowseEnroll ", error);
+      toast.error("Enrollment failed");
     }
   };
 
@@ -195,15 +198,15 @@ export default function VolunteerDashboard() {
                   <CalendarView calendarInfo={calendarInfo} />
                 </div>
                 <NotificationsPanel
-                    notifications={notifications}
-                    refresh={async () => {
-                      await Promise.all([
-                        fetchCombinedNotifications(userID), // notifications
-                        fetchEnrolledEvents(userID),        // My Events
-                        fetchCalendarEvents(userID),        // calendar
-                        fetchBrowseEvents(userID),          // optional: removes accepted item from Browse
-                      ]);
-                    }}
+                  notifications={notifications}
+                  refresh={async () => {
+                    await Promise.all([
+                      fetchCombinedNotifications(userID), // notifications
+                      fetchEnrolledEvents(userID), // My Events
+                      fetchCalendarEvents(userID), // calendar
+                      fetchBrowseEvents(userID), // optional: removes accepted item from Browse
+                    ]);
+                  }}
                 />
               </div>
             </>

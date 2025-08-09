@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Calendar, MapPin, Clock, AlertTriangle } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 export function MyEvents({ enrolledEvents = [], onRefresh }) {
   const [withdrawing, setWithdrawing] = useState(null);
@@ -21,12 +21,12 @@ export function MyEvents({ enrolledEvents = [], onRefresh }) {
         `${API_URL}/volunteer-dashboard/enrolled-events/${userID}/${eventID}`
       );
       toast.success(`Successfully withdrew from "${selectedEvent.event_name}"`);
+      await onRefresh?.();
       setSelectedEvent(null);
-      setWithdrawing(null);
-      onRefresh();
     } catch (error) {
       console.error("Withdraw failed", error);
       toast.error("Something went wrong. Try again later.");
+    } finally {
       setWithdrawing(null);
     }
   };
