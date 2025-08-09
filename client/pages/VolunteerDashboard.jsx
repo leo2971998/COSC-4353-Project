@@ -116,6 +116,7 @@ export default function VolunteerDashboard() {
       );
 
       await Promise.all([
+        fetchNextEvent(userID),
         fetchEnrolledEvents(userID),
         fetchBrowseEvents(userID),
         fetchSuggestedEvents(userID),
