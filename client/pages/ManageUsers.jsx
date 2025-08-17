@@ -8,8 +8,7 @@ import Navbar   from "../components/Navbar";
 import Footer   from "../components/Footer";
 import { Button } from "../components/ui/Button";   // your shadcn/ui Button
 import { Edit, Trash, UserCircle, Plus, X } from "lucide-react";
-
-const API_URL = "https://cosc-4353-backend.vercel.app";
+import { API_URL } from "../api";
 
 export default function ManageUsers() {
   /* state */

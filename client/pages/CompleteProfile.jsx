@@ -21,10 +21,10 @@ import Preferences from "../components/CompleteProfile/Preferences";
 import Availability from "../components/CompleteProfile/Availability";
 import { STATES } from "../components/CompleteProfile/STATES";
 import { Button } from "../components/ui/Button";
+import { API_URL } from "../api";
 
 export default function CompleteProfile() {
   const navigate = useNavigate();
-  const API_URL = "https://cosc-4353-backend.vercel.app"; // no trailing slash
 
   // --- Form State ---
   const [formData, setFormData] = useState({

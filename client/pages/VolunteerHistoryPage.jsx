@@ -3,10 +3,9 @@ import Navbar from "../components/Navbar";
 import VHeader from "../components/VolunteerHistory/VHeader";
 import VolunteerHistoryMain from "../components/VolunteerHistory/VolunteerHistoryMain";
 import axios from "axios";
+import { API_URL } from "../api";
 
 export default function VolunteerHistoryPage() {
-  // Import the URL from the env file.
-  const API_URL = import.meta.env.VITE_API_URL;
   // This is mock data for right now
   const [volunteerHistory, setVolunteerHistory] = useState([]);
 

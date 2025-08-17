@@ -9,8 +9,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import AccordionPicker from "./AccordianPicker.jsx";
-
-const API = "https://cosc-4353-backend.vercel.app";
+import { API_URL } from "../../api";
 
 /* ====================================================================
    Calendar root
@@ -38,7 +37,7 @@ export default function CalendarView({ allEvents = [], currentUserId, refreshEve
     const loadCandidates = useCallback(async (ev) => {
         try {
             setLoading(true);
-            const { data } = await axios.get(`${API}/events/${ev.event_id}/candidates`);
+            const { data } = await axios.get(`${API_URL}/events/${ev.event_id}/candidates`);
             setCands(data);
         } catch (err) {
             console.error("candidate load:", err.message);
@@ -51,7 +50,7 @@ export default function CalendarView({ allEvents = [], currentUserId, refreshEve
         if (!picked.length) return;
         try {
             setLoading(true);
-            await axios.post(`${API}/events/${selEvent.event_id}/requests/bulk`, {
+            await axios.post(`${API_URL}/events/${selEvent.event_id}/requests/bulk`, {
                 volunteerIds: picked,
                 requestedBy:  currentUserId,
             });

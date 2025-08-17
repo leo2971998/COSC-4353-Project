@@ -7,8 +7,7 @@ import Footer from "../components/Footer";
 import CalendarView from "../components/AdminDashboard/AdminCalendar.jsx";
 import EventReportModal from "../components/AdminDashboard/EventReportModal.jsx";
 import VolunteerActivityReportModal from "../components/AdminDashboard/VolunteerActivityReportModal.jsx";
-
-const API_URL = "https://cosc-4353-backend.vercel.app";
+import { API_URL } from "../api";
 
 /* Small helper */
 const ymdLocal = (d = new Date()) => {

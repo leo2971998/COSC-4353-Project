@@ -8,14 +8,13 @@
 
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
-
-const BASE = "https://cosc-4353-backend.vercel.app"; // hard URL works for everyone
+import { API_URL } from "../../api";
 
 /* fetch + cache an event row by id */
 async function getEventCached(id, cache) {
     if (cache.current.has(id)) return cache.current.get(id);
     try {
-        const { data } = await axios.get(`${BASE}/events`);
+        const { data } = await axios.get(`${API_URL}/events`);
         const ev = (data.events || []).find(
             (e) => Number(e.event_id) === Number(id)
         );
@@ -33,7 +32,7 @@ export default function NotificationsPanel({ notifications = [], refresh }) {
     const respond = async (reqId, status) => {
         try {
             setBusy((p) => [...p, reqId]);
-            await axios.patch(`${BASE}/requests/${reqId}`, { status });
+            await axios.patch(`${API_URL}/requests/${reqId}`, { status });
             refresh();                             // reload list from parent
         } catch (err) {
             console.error("respond error:", err.message);

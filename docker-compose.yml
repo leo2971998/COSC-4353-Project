@@ -1,8 +1,0 @@
-services:
-  server:
-    build: ./server
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./server:/app
-    command: npm run dev

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { API_URL } from "../../api";
 import {
   ChevronRight,
   ChevronLeft,
@@ -20,7 +21,6 @@ export const SuggestedEvents = ({
   const [showPopup, setShowPopup] = useState(false);
   const [page, setPage] = useState(0);
   const [saving, setSaving] = useState(false);
-  const API_URL = import.meta.env.VITE_API_URL;
   const itemsPerPage = 3;
 
   // Normalize field names
