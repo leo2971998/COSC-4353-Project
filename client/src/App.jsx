@@ -14,6 +14,8 @@ import ManageUsers from "../pages/ManageUsers.jsx";
 import VolunteerHistoryPage from "../pages/VolunteerHistoryPage.jsx";
 import ScrollToTop from "../components/CompleteProfile/ScrollToTop.jsx";
 import VolunteerDashboard from "../pages/VolunteerDashboard.jsx";
+import AdminDemo from "../pages/AdminDemo.jsx";
+import VolunteerDemoDashboard from "../pages/VolunteerDemoDashboard.jsx";
 import "./index.css";
 
 function RequireAuth({ children, role }) {
@@ -99,6 +101,8 @@ export default function App() {
 
                     {/* dashboard accessible after login */}
                     <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
+                    <Route path="/admin-demo" element={<AdminDemo />} />
+                    <Route path="/volunteer-demo" element={<VolunteerDemoDashboard />} />
                 </Routes>
             </Router>
 
