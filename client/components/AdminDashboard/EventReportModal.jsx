@@ -12,8 +12,7 @@ import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { ChevronDown, ChevronRight } from "lucide-react";
-
-const API = "https://cosc-4353-backend.vercel.app";
+import { API_URL } from "../../api";
 
 export default function EventReportModal({ open, onClose }) {
     if (!open) return null;
@@ -38,7 +37,7 @@ export default function EventReportModal({ open, onClose }) {
     const loadPeople = async (eventId) => {
         if (peopleByEvent[eventId]) return;
         try {
-            const { data } = await axios.get(`${API}/requests/event/${eventId}`);
+            const { data } = await axios.get(`${API_URL}/requests/event/${eventId}`);
             setPeopleByEvent((prev) => ({ ...prev, [eventId]: Array.isArray(data) ? data : [] }));
         } catch {
             toast.error("Failed to load assignments");
@@ -52,7 +51,7 @@ export default function EventReportModal({ open, onClose }) {
         const qs = new URLSearchParams({ start: from, end: to, urgency, status });
         try {
             setLoading(true);
-            const { data } = await axios.get(`${API}/reports/event-summary?`+qs.toString());
+            const { data } = await axios.get(`${API_URL}/reports/event-summary?`+qs.toString());
             setRows(Array.isArray(data) ? data : []);
             setApplied({ from, to, urgency, status });
             setExpanded(null);

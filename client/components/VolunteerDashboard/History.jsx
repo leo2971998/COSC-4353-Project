@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import VolunteerHistoryMain from "../VolunteerHistory/VolunteerHistoryMain";
 import axios from "axios";
+import { API_URL } from "../../api";
 
 export function VolunteerHistory() {
   const [volunteerHistory, setVolunteerHistory] = useState([]);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const getVolunteerHistory = async () => {
     try {

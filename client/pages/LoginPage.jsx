@@ -8,10 +8,10 @@ import Layout from "../components/Layout";
 import { Button } from "../components/ui/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { API_URL } from "../api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const API_URL = "https://cosc-4353-backend.vercel.app"; // no trailing slash
   const [loading, setLoading] = useState(false);
 
   const {

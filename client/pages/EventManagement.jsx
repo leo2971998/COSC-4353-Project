@@ -15,14 +15,11 @@ import Urgency from "../components/EventManagement/Urgency";
 import EventDate from "../components/EventManagement/EventDate"
 import EventTime from "../components/EventManagement/EventTime";
 import { Button } from "../components/ui/Button";
-
-// Test to see if I can see changes in console:
-console.log("Hello")
+import { API_URL } from "../api";
 
 // Main Function:
 export default function EventManagement(){
   const navigate = useNavigate();
-  const API_URL = "http://localhost:3000";
 
   const [manageData, setManageData] = useState({
     // Event Features:
@@ -198,7 +195,6 @@ export default function EventManagement(){
           newErrors.event_time = "Please select both a start and end time";
       }
       
-      console.log("Validation Errors:", newErrors);
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
   };
@@ -225,7 +221,6 @@ export default function EventManagement(){
       start_time: manageData.start_time,
       end_time: manageData.end_time
     };
-    console.log("1. Frontend: Sending Payload", payload);
 
     try {
       const res = await fetch(`${API_URL}/event-management/`, {

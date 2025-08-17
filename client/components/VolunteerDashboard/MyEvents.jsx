@@ -3,11 +3,11 @@ import { Calendar, MapPin, Clock, AlertTriangle } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { API_URL } from "../../api";
 
 export function MyEvents({ enrolledEvents = [], onRefresh }) {
   const [withdrawing, setWithdrawing] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleWithdraw = async () => {
     if (!selectedEvent) return;

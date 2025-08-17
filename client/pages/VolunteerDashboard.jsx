@@ -13,11 +13,7 @@ import { MyEvents } from "../components/VolunteerDashboard/MyEvents";
 import { VolunteerHistory } from "../components/VolunteerDashboard/History";
 import { BrowseEvents } from "../components/VolunteerDashboard/BrowseEvents";
 import { toast } from "react-hot-toast";
-/* ──────────────────────────────────────────────────────────────
-   BASE URLs
-────────────────────────────────────────────────────────────── */
-const HARD_API = "https://cosc-4353-backend.vercel.app"; // always works for Leo
-const API_URL = import.meta.env.VITE_API_URL || HARD_API; // others use env
+import { API_URL } from "../api";
 
 export default function VolunteerDashboard() {
   /* ───────── local state ───────── */
@@ -34,8 +30,7 @@ export default function VolunteerDashboard() {
 
   /* ───────── helpers ───────── */
   // const fetchEvents = async () => {
-  //   // Leo Nguyen - /events must hit HARD_API
-  //   const { data } = await axios.get(`${HARD_API}/events`);
+  //   const { data } = await axios.get(`${API_URL}/events`);
   //   const events = (data?.events || []).map((e) => ({
   //     date: new Date(e.start_time),
   //     title: e.event_name,
@@ -72,8 +67,8 @@ export default function VolunteerDashboard() {
   // Leo Nguyen - combine general + volunteer-request notifications
   const fetchCombinedNotifications = async (uid) => {
     const [{ data: gen }, { data: vr }] = await Promise.all([
-      axios.get(`${HARD_API}/notifications/${uid}`),
-      axios.get(`${HARD_API}/vr-notifications/${uid}`),
+      axios.get(`${API_URL}/notifications/${uid}`),
+      axios.get(`${API_URL}/vr-notifications/${uid}`),
     ]);
 
     const generic = (gen.notifications || []).map((n) => ({
