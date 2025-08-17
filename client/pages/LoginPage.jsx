@@ -19,6 +19,18 @@ export default function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: { email: "", password: "" } });
+  const demoLogin = (role) => {
+    const demoUser =
+      role === "admin"
+        ? { id: 1, role: "admin", fullName: "Demo Admin" }
+        : { id: 2, role: "volunteer", fullName: "Demo Volunteer" };
+    localStorage.setItem("user", JSON.stringify(demoUser));
+    localStorage.setItem("userId", String(demoUser.id));
+    localStorage.setItem("fullName", demoUser.fullName);
+    localStorage.setItem("profileComplete", "true");
+    localStorage.setItem("isLoggedIn", "true");
+    navigate(role === "admin" ? "/admin-demo" : "/volunteer-demo");
+  };
 
   const onSubmit = async (formData) => {
     setLoading(true);
@@ -43,20 +55,22 @@ export default function LoginPage() {
 
       toast.success("Login successful");
 
-      // Persist session info
-      if (data.userId) {
-        const fullName =
-            data.fullName ?? data.full_name ?? data.name ?? null;
+      // Persist session info (handle various backend field names)
+      const userId = data.userId ?? data.user_id ?? data.id;
+      const fullName = data.fullName ?? data.full_name ?? data.name ?? null;
+      const profileComplete =
+          data.profileComplete ?? data.profile_complete ?? false;
 
+      if (userId) {
         localStorage.setItem(
             "user",
-            JSON.stringify({ id: data.userId, role: data.role, fullName })
+            JSON.stringify({ id: userId, role: data.role, fullName })
         );
-        localStorage.setItem("userId", String(data.userId));
+        localStorage.setItem("userId", String(userId));
         if (fullName) localStorage.setItem("fullName", fullName);
         localStorage.setItem(
             "profileComplete",
-            data.profileComplete ? "true" : "false"
+            profileComplete ? "true" : "false"
         );
         localStorage.setItem("isLoggedIn", "true");
       }
@@ -160,6 +174,23 @@ export default function LoginPage() {
                   Need an account? Register
                 </Button>
               </Link>
+            </div>
+            <div className="text-center mt-6">
+              <p className="text-gray-400 mb-2">Or try a demo</p>
+              <div className="flex justify-center gap-4">
+                <Button
+                  onClick={() => demoLogin("admin")}
+                  className="bg-gradient-to-r from-amber-600 to-pink-600 hover:from-amber-700 hover:to-pink-700 text-white py-2 px-4 rounded-xl"
+                >
+                  Demo Admin
+                </Button>
+                <Button
+                  onClick={() => demoLogin("volunteer")}
+                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white py-2 px-4 rounded-xl"
+                >
+                  Demo Volunteer
+                </Button>
+              </div>
             </div>
           </div>
         </div>
