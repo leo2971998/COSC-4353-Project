@@ -43,20 +43,22 @@ export default function LoginPage() {
 
       toast.success("Login successful");
 
-      // Persist session info
-      if (data.userId) {
-        const fullName =
-            data.fullName ?? data.full_name ?? data.name ?? null;
+      // Persist session info (handle various backend field names)
+      const userId = data.userId ?? data.user_id ?? data.id;
+      const fullName = data.fullName ?? data.full_name ?? data.name ?? null;
+      const profileComplete =
+          data.profileComplete ?? data.profile_complete ?? false;
 
+      if (userId) {
         localStorage.setItem(
             "user",
-            JSON.stringify({ id: data.userId, role: data.role, fullName })
+            JSON.stringify({ id: userId, role: data.role, fullName })
         );
-        localStorage.setItem("userId", String(data.userId));
+        localStorage.setItem("userId", String(userId));
         if (fullName) localStorage.setItem("fullName", fullName);
         localStorage.setItem(
             "profileComplete",
-            data.profileComplete ? "true" : "false"
+            profileComplete ? "true" : "false"
         );
         localStorage.setItem("isLoggedIn", "true");
       }
