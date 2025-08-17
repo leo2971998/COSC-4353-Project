@@ -18,3 +18,7 @@ This repository contains the React front-end for the COSC-4353 project. The back
 ## Build
 
 Run `npm run build` to create the production-ready files in `client/dist/`.
+
+## Deployment
+
+The included `vercel.json` file tells Vercel to run `npm run build` and serve the output from `client/dist`.
