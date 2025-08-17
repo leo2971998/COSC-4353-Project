@@ -12,8 +12,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-
-const API = "https://cosc-4353-backend.vercel.app";
+import { API_URL } from "../../api";
 
 /* === Inline sub-modal for participation history (now respects date range) === */
 function HistoryModal({ open, onClose, volunteer, from, to }) {
@@ -37,7 +36,7 @@ function HistoryModal({ open, onClose, volunteer, from, to }) {
         setLoading(true);
         (async () => {
             try {
-                const { data } = await axios.get(`${API}/history/${volunteer.volunteer_id}`);
+                const { data } = await axios.get(`${API_URL}/history/${volunteer.volunteer_id}`);
                 const all = data?.volunteer_history || [];
                 setRows(all.filter(r => inRange(r.start_time)));
             } catch {
@@ -118,7 +117,7 @@ export default function VolunteerActivityReportModal({ open, onClose }) {
         const qs = new URLSearchParams({ start: from, end: to, urgency, status });
         try {
             setLoading(true);
-            const { data } = await axios.get(`${API}/reports/volunteer-activity?` + qs.toString());
+            const { data } = await axios.get(`${API_URL}/reports/volunteer-activity?` + qs.toString());
             setRows(Array.isArray(data) ? data : []);
             setApplied({ from, to, urgency, status });
         } catch {

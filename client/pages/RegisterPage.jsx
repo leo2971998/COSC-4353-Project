@@ -10,12 +10,10 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import { Button } from "../components/ui/Button";
+import { API_URL } from "../api";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  // Backend root (no trailing slash)
-  const API_ROOT = "https://cosc-4353-backend.vercel.app";
-
   const {
     register,
     handleSubmit,
@@ -37,7 +35,7 @@ export default function RegisterPage() {
         password: formData.password,
       };
 
-      const res = await fetch(`${API_ROOT}/register`, {
+      const res = await fetch(`${API_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
