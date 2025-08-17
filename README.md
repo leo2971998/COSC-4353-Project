@@ -6,10 +6,10 @@ This repository contains the React front-end for the COSC-4353 project. The back
 
 1. Install dependencies:
    ```sh
-   cd client
    npm install
    ```
-2. Copy `.env.example` to `.env` and adjust `VITE_API_URL` if needed.
+   The root `package.json` installs the client dependencies automatically.
+2. Copy `.env.example` to `.env` inside `client` and adjust `VITE_API_URL` if needed.
 3. Start the development server:
    ```sh
    npm run dev
@@ -17,4 +17,8 @@ This repository contains the React front-end for the COSC-4353 project. The back
 
 ## Build
 
-Run `npm run build` inside `client` to create the production-ready files in `dist/`.
+Run `npm run build` to create the production-ready files in `client/dist/`.
+
+## Deployment
+
+The included `vercel.json` file tells Vercel to run `npm run build` and serve the output from `client/dist`.

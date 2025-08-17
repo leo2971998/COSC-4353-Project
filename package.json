@@ -1,0 +1,10 @@
+{
+  "name": "cosc-4353-project",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix client",
+    "dev": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "preview": "npm run preview --prefix client"
+  }
+}
