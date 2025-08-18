@@ -2,15 +2,15 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import Layout from '../components/Layout.jsx';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
-jest.mock('react-toastify', () => {
-  const actual = jest.requireActual('react-toastify');
+jest.mock('react-hot-toast', () => {
+  const actual = jest.requireActual('react-hot-toast');
   const React = require('react');
   return {
     ...actual,
     toast: jest.fn(),
-    ToastContainer: ({ children }) => React.createElement('div', null, children),
+    Toaster: ({ children }) => React.createElement('div', null, children),
   };
 });
 

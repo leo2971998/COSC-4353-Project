@@ -1,7 +1,7 @@
 // Leo Nguyen – LoginPage component (full updated; stores fullName; robust JSON parsing)
 
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
