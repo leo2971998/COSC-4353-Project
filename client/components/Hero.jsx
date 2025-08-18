@@ -1,7 +1,10 @@
 import { Button } from "./ui/Button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Monitor, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero({ scrollToSection }) {
+  const navigate = useNavigate();
+
   return (
     <section
       id="hero"
@@ -36,6 +39,40 @@ export default function Hero({ scrollToSection }) {
           Discover How It Works
           <ChevronDown className="ml-2 w-5 h-5" />
         </Button>
+
+        {/* Demo Section */}
+        <div className="mt-8 pt-8 border-t border-gray-700/50">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+            Experience the Platform
+          </h2>
+          <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto">
+            Try our interactive demos to see how volunteers and administrators use the platform
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button
+              onClick={() => navigate("/volunteer-demo")}
+              size="lg"
+              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-green-500/30"
+            >
+              <Users className="mr-2 w-5 h-5" />
+              Volunteer Demo
+            </Button>
+            
+            <Button
+              onClick={() => navigate("/admin-demo")}
+              size="lg"
+              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-amber-500/30"
+            >
+              <Monitor className="mr-2 w-5 h-5" />
+              Admin Demo
+            </Button>
+          </div>
+          
+          <p className="text-sm text-gray-400 mt-4">
+            🎯 Demo Mode - Explore with sample data, no real account needed
+          </p>
+        </div>
       </div>
     </section>
   );
