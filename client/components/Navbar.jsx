@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Users } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 export default function Navbar({ scrollToSection }) {
   const location = useLocation();
@@ -33,8 +34,10 @@ export default function Navbar({ scrollToSection }) {
     localStorage.removeItem("userId");
     localStorage.removeItem("profileComplete");
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("flashMessages"); // Clear any existing flash messages
     setUser(null);
     setIsMenuOpen(false);
+    toast.success("Logged out successfully");
     navigate("/");
   };
 
