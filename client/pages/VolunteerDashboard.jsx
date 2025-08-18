@@ -158,7 +158,7 @@ export default function VolunteerDashboard() {
 
       {loading ? (
         <LoadingSpinner fullScreen text="Loading your dashboard" />
-      ) : nextEvent?.is_complete === 1 ? (
+      ) : localStorage.getItem("profileComplete") === "true" ? (
         <div className="container mx-auto px-4 py-6">
           <WelcomeBanner name={nextEvent.full_name} />
 
