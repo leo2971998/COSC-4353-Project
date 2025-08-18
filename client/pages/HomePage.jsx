@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import Demo from "../components/Demo";
 import About from "../components/About";
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
@@ -19,6 +20,7 @@ export default function HomePage() {
     <Layout>
       <Navbar scrollToSection={scrollToSection} />
       <Hero scrollToSection={scrollToSection} />
+      <Demo />
       <About />
       <Footer />
     </Layout>
