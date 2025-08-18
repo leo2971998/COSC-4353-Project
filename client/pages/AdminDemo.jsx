@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import CalendarView from "../components/AdminDashboard/AdminCalendar.jsx";
+import CalendarView from "../components/AdminDashboard/DemoAdminCalendar.jsx";
 import DemoModeIndicator from "../components/DemoModeIndicator";
 import FeatureTooltip from "../components/FeatureTooltip";
 import { Users, Calendar, TrendingUp, ClipboardList } from "lucide-react";
