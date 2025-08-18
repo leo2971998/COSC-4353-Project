@@ -3,7 +3,7 @@ import { WelcomeBanner } from "../components/VolunteerDashboard/WelcomeBanner";
 import { NextEventCard } from "../components/VolunteerDashboard/NextEventCard";
 import { SuggestedEvents } from "../components/VolunteerDashboard/SuggestedEvents";
 import NotificationsPanel from "../components/VolunteerDashboard/NotificationPanel";
-import { CalendarView } from "../components/VolunteerDashboard/Calendar";
+import { CalendarView } from "../components/VolunteerDashboard/DemoCalendar";
 import DemoModeIndicator from "../components/DemoModeIndicator";
 import FeatureTooltip from "../components/FeatureTooltip";
 import { Calendar, Heart, Users, Clock } from "lucide-react";
