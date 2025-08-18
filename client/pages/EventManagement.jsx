@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import EventHeader from "../components/EventManagement/EventHeader";
 import Navbar from "../components/Navbar";
 import Description from "../components/EventManagement/Description";

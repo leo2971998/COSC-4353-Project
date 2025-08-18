@@ -1,5 +1,5 @@
 // client/components/Layout.jsx
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
 
 export default function Layout({ children, notifications = [] }) {
@@ -39,9 +39,6 @@ export default function Layout({ children, notifications = [] }) {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white relative">
-      {/* Global Notifications */}
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-
       {profileIncomplete && (
         <div className="bg-yellow-600 text-black text-center py-2">
           Please complete your profile for full access.

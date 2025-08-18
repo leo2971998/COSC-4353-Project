@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Search, Filter, Calendar, MapPin, Clock } from "lucide-react";
 import { EventCard } from "./EventCard";
 import { EventDetailView } from "./EventDetailView";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 export function BrowseEvents({ allEvents: initialAllEvents, onEnroll }) {
   const [allEvents, setAllEvents] = useState(initialAllEvents);

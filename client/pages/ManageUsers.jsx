@@ -2,7 +2,7 @@
 // Leo Nguyen – 2234488
 
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import Layout   from "../components/Layout";
 import Navbar   from "../components/Navbar";
 import Footer   from "../components/Footer";
