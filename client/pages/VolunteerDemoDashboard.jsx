@@ -11,8 +11,8 @@ import { Calendar, Heart, Users, Clock } from "lucide-react";
 const nextEvent = {
   event_id: 1,
   event_name: "Park Cleanup",
-  start_time: "2025-06-15T09:00:00",
-  end_time: "2025-06-15T12:00:00",
+  start_time: "2025-08-20T09:00:00",
+  end_time: "2025-08-20T12:00:00",
   event_location: "Central Park",
   event_category: "Community",
   event_description: "Help clean up the park with fellow volunteers. We'll provide all tools and refreshments!",
@@ -22,8 +22,8 @@ const suggestedEvents = [
   {
     event_id: 2,
     event_name: "Food Drive",
-    start_time: "2025-06-20T10:00:00",
-    end_time: "2025-06-20T14:00:00",
+    start_time: "2025-08-25T10:00:00",
+    end_time: "2025-08-25T14:00:00",
     event_location: "Community Center",
     event_category: "Charity",
     event_description: "Sort and pack food donations for families in need.",
@@ -31,8 +31,8 @@ const suggestedEvents = [
   {
     event_id: 3,
     event_name: "Senior Center Visit",
-    start_time: "2025-06-25T14:00:00",
-    end_time: "2025-06-25T17:00:00",
+    start_time: "2025-08-28T14:00:00",
+    end_time: "2025-08-28T17:00:00",
     event_location: "Sunset Senior Living",
     event_category: "Social",
     event_description: "Spend time with seniors playing games, reading, and sharing stories.",
@@ -40,11 +40,29 @@ const suggestedEvents = [
   {
     event_id: 4,
     event_name: "School Tutoring",
-    start_time: "2025-07-02T15:30:00",
-    end_time: "2025-07-02T17:30:00",
+    start_time: "2025-09-02T15:30:00",
+    end_time: "2025-09-02T17:30:00",
     event_location: "Lincoln Elementary School",
     event_category: "Education",
     event_description: "Help elementary students with math and reading homework.",
+  },
+  {
+    event_id: 5,
+    event_name: "Animal Shelter Support",
+    start_time: "2025-09-05T10:00:00",
+    end_time: "2025-09-05T13:00:00",
+    event_location: "Happy Paws Animal Shelter",
+    event_category: "Animal Care",
+    event_description: "Dog walking, cleaning, and general care for shelter animals.",
+  },
+  {
+    event_id: 6,
+    event_name: "Community Garden",
+    start_time: "2025-09-08T08:00:00",
+    end_time: "2025-09-08T11:00:00",
+    event_location: "Greenwood Community Garden",
+    event_category: "Environment",
+    event_description: "Help maintain the community garden and harvest produce for local families.",
   }
 ];
 
@@ -58,7 +76,7 @@ const notifications = [
   {
     id: 2,
     type: "general",
-    message: "New volunteer opportunity: Animal Shelter Support this weekend",
+    message: "New volunteer opportunity: Animal Shelter Support on September 5th",
     created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
   },
   {
@@ -70,8 +88,14 @@ const notifications = [
   {
     id: 4,
     type: "general",
-    message: "Reminder: Park Cleanup event tomorrow at 9:00 AM",
+    message: "Reminder: Park Cleanup event on August 20th at 9:00 AM",
     created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 5,
+    type: "general",
+    message: "Community Garden event scheduled for September 8th - help harvest for local families!",
+    created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
   }
 ];
 
@@ -82,20 +106,71 @@ const calendarInfo = [
     start_time: nextEvent.start_time,
     end_time: nextEvent.end_time,
     event_location: nextEvent.event_location,
+    event_category: nextEvent.event_category,
+    event_description: nextEvent.event_description,
   },
   {
     event_id: 2,
     event_name: "Food Drive",
-    start_time: "2025-06-20T10:00:00",
-    end_time: "2025-06-20T14:00:00",
+    start_time: "2025-08-25T10:00:00",
+    end_time: "2025-08-25T14:00:00",
     event_location: "Community Center",
+    event_category: "Charity",
+    event_description: "Sort and pack food donations for families in need.",
   },
   {
     event_id: 3,
     event_name: "Senior Center Visit",
-    start_time: "2025-06-25T14:00:00",
-    end_time: "2025-06-25T17:00:00",
+    start_time: "2025-08-28T14:00:00",
+    end_time: "2025-08-28T17:00:00",
     event_location: "Sunset Senior Living",
+    event_category: "Social",
+    event_description: "Spend time with seniors playing games, reading, and sharing stories.",
+  },
+  {
+    event_id: 4,
+    event_name: "School Tutoring",
+    start_time: "2025-09-02T15:30:00",
+    end_time: "2025-09-02T17:30:00",
+    event_location: "Lincoln Elementary School",
+    event_category: "Education",
+    event_description: "Help elementary students with math and reading homework.",
+  },
+  {
+    event_id: 5,
+    event_name: "Animal Shelter Support",
+    start_time: "2025-09-05T10:00:00",
+    end_time: "2025-09-05T13:00:00",
+    event_location: "Happy Paws Animal Shelter",
+    event_category: "Animal Care",
+    event_description: "Dog walking, cleaning, and general care for shelter animals.",
+  },
+  {
+    event_id: 6,
+    event_name: "Community Garden",
+    start_time: "2025-09-08T08:00:00",
+    end_time: "2025-09-08T11:00:00",
+    event_location: "Greenwood Community Garden",
+    event_category: "Environment",
+    event_description: "Help maintain the community garden and harvest produce for local families.",
+  },
+  {
+    event_id: 7,
+    event_name: "Blood Drive Volunteer",
+    start_time: "2025-09-12T09:00:00",
+    end_time: "2025-09-12T15:00:00",
+    event_location: "City Hall",
+    event_category: "Health",
+    event_description: "Assist with registration and coordination for the monthly blood drive.",
+  },
+  {
+    event_id: 8,
+    event_name: "Youth Mentoring",
+    start_time: "2025-09-18T15:00:00",
+    end_time: "2025-09-18T18:00:00",
+    event_location: "Teen Center",
+    event_category: "Education",
+    event_description: "Mentor at-risk youth through activities and educational support.",
   }
 ];
 

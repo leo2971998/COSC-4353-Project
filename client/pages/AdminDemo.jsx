@@ -6,10 +6,11 @@ import DemoModeIndicator from "../components/DemoModeIndicator";
 import FeatureTooltip from "../components/FeatureTooltip";
 import { Users, Calendar, TrendingUp, ClipboardList } from "lucide-react";
 
-// Enhanced demo events with realistic data
+// Enhanced demo events with realistic data spanning current and next month
 const demoEvents = [
+  // Current month events (August 2025)
   { 
-    date: new Date("2025-06-15T09:00:00"), 
+    date: new Date("2025-08-15T09:00:00"), 
     title: "Park Cleanup", 
     details: {
       event_location: "Central Park",
@@ -19,7 +20,7 @@ const demoEvents = [
     }
   },
   { 
-    date: new Date("2025-06-20T10:00:00"), 
+    date: new Date("2025-08-20T10:00:00"), 
     title: "Food Drive", 
     details: {
       event_location: "Community Center",
@@ -29,7 +30,7 @@ const demoEvents = [
     }
   },
   { 
-    date: new Date("2025-06-25T14:00:00"), 
+    date: new Date("2025-08-25T14:00:00"), 
     title: "Senior Center Visit", 
     details: {
       event_location: "Sunset Senior Living",
@@ -39,7 +40,7 @@ const demoEvents = [
     }
   },
   { 
-    date: new Date("2025-07-02T08:00:00"), 
+    date: new Date("2025-08-28T08:00:00"), 
     title: "School Tutoring", 
     details: {
       event_location: "Lincoln Elementary School",
@@ -48,14 +49,65 @@ const demoEvents = [
       urgency: "High"
     }
   },
+  // Next month events (September 2025)
   { 
-    date: new Date("2025-07-10T16:00:00"), 
+    date: new Date("2025-09-02T16:00:00"), 
     title: "Animal Shelter Support", 
     details: {
       event_location: "Happy Paws Animal Shelter",
       event_description: "Dog walking, cleaning, and general care",
       required_skills: "Animal care, physical work",
       urgency: "Medium"
+    }
+  },
+  { 
+    date: new Date("2025-09-08T11:00:00"), 
+    title: "Community Garden", 
+    details: {
+      event_location: "Greenwood Community Garden",
+      event_description: "Planting, weeding, and harvesting for local families",
+      required_skills: "Gardening, physical work",
+      urgency: "Low"
+    }
+  },
+  { 
+    date: new Date("2025-09-12T09:30:00"), 
+    title: "Blood Drive", 
+    details: {
+      event_location: "City Hall",
+      event_description: "Volunteer coordination for monthly blood drive",
+      required_skills: "Customer service, organization",
+      urgency: "High"
+    }
+  },
+  { 
+    date: new Date("2025-09-18T15:00:00"), 
+    title: "Youth Mentoring", 
+    details: {
+      event_location: "Teen Center",
+      event_description: "Mentoring and activity support for at-risk youth",
+      required_skills: "Communication, leadership, patience",
+      urgency: "Medium"
+    }
+  },
+  { 
+    date: new Date("2025-09-22T10:00:00"), 
+    title: "Homeless Shelter Meal Prep", 
+    details: {
+      event_location: "Hope Shelter",
+      event_description: "Preparing and serving meals for homeless individuals",
+      required_skills: "Food preparation, customer service",
+      urgency: "High"
+    }
+  },
+  { 
+    date: new Date("2025-09-26T13:00:00"), 
+    title: "Library Reading Program", 
+    details: {
+      event_location: "Downtown Public Library",
+      event_description: "Reading to children and organizing educational activities",
+      required_skills: "Reading, child interaction, creativity",
+      urgency: "Low"
     }
   }
 ];

@@ -32,24 +32,34 @@ export default function Hero({ scrollToSection }) {
         </p>
 
         {/* Demo Access Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-          <Button
-            onClick={() => navigate("/volunteer-demo")}
-            size="lg"
-            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
-          >
-            <Users className="mr-2 w-5 h-5" />
-            Try Volunteer Demo
-          </Button>
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
+          <div className="text-center">
+            <Button
+              onClick={() => navigate("/volunteer-demo")}
+              size="lg"
+              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto mb-2"
+            >
+              <Users className="mr-2 w-5 h-5" />
+              Try Volunteer Demo
+            </Button>
+            <p className="text-sm text-gray-400 max-w-xs">
+              Explore the volunteer experience: view events, track hours, and see personalized recommendations
+            </p>
+          </div>
           
-          <Button
-            onClick={() => navigate("/admin-demo")}
-            size="lg"
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
-          >
-            <Shield className="mr-2 w-5 h-5" />
-            Try Admin Demo
-          </Button>
+          <div className="text-center">
+            <Button
+              onClick={() => navigate("/admin-demo")}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto mb-2"
+            >
+              <Shield className="mr-2 w-5 h-5" />
+              Try Admin Demo
+            </Button>
+            <p className="text-sm text-gray-400 max-w-xs">
+              Experience admin tools: manage events, assign volunteers, and view comprehensive analytics
+            </p>
+          </div>
         </div>
 
         <Button
